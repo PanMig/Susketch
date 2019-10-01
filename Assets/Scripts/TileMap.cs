@@ -1,48 +1,111 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class TileMap : MonoBehaviour
+public class TileMap : MonoBehaviour, IPointerClickHandler
 {
     public GameObject groundTile;
-    public GameObject level1Tile;
-    public GameObject level2Tile;
 
-    private const int rows = 20;
-    private const int columns = 20;
-    private static int[,] tileMap = new int[rows, columns];
+    public int rows = 20;
+    public int columns = 20;
+    private static Tile[,] tileMap;
 
-    public void InitializeTileMap()
+    private RectTransform gridRect;
+    private GridLayoutGroup gridLayoutGroup;
+    public GridLayout grid;
+
+    [SerializeField] private TileThemes[] tileThemes;
+    private int currTileID;
+
+    public int cellSize;
+    public int spacing;
+
+    public void Awake()
     {
-        for (int i = 0; i < rows; i++)
+        gridRect = GetComponent<RectTransform>();
+        gridLayoutGroup = GetComponent<GridLayoutGroup>();
+        grid = GetComponent<GridLayout>();
+
+        // set the panel that holds the grid
+        SetGridLayoutGroup();
+    }
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
         {
-            for (int j = 0; j < columns; j++)
+            //Vector2 v;
+            //RectTransformUtility.ScreenPointToLocalPointInRectangle(gridRect, Camera.main.ScreenToWorldPoint(Input.mousePosition), Camera.main, out v);
+
+            //Debug.Log(v);
+        }
+    }
+
+    public void SetGrid()
+    {
+        float _desiredWidth = columns * (cellSize + spacing);
+        Debug.Log(_desiredWidth);
+        float _desiredheight = rows * (cellSize + spacing);
+        Debug.Log(_desiredheight);
+        gridRect.sizeDelta = new Vector2(_desiredWidth, _desiredheight);
+    }
+
+    public void SetGridLayoutGroup()
+    {
+        if (gridLayoutGroup != null)
+        {
+            float _desiredWidth = columns * (gridLayoutGroup.cellSize.x + gridLayoutGroup.spacing.x);
+            float _desiredheight = rows * (gridLayoutGroup.cellSize.y + gridLayoutGroup.spacing.y);
+            gridRect.sizeDelta = new Vector2(_desiredWidth, _desiredheight);
+        }
+    }
+
+    public void InitTileMap()
+    {
+        tileMap = new Tile[rows, columns];
+        TileThemes tileTheme;
+
+        for (int row = 0; row < rows; row++)
+        {
+            for (int col = 0; col < columns; col++)
             {
-                tileMap[i, j] = 0;
-                RenderTile(tileMap[i, j], i, j);
+                tileTheme = tileThemes[Random.Range(0, 1)];
+                tileMap[row, col] = new Tile(tileTheme.prefab , gridRect.transform, tileTheme.tileID, row, col);
             }
         }
-    } 
-    
-    private void RenderTile(int tileID, int posX, int posY)
-    {
-        switch (tileID)
-        {
-            case (int)Tiles.EnviromentTiles.ground:
-                GameObject tile = Instantiate(groundTile, new Vector3(posX, posY, 0), Quaternion.identity);
-                tile.transform.parent = transform;
-                break;
-            case (int)Tiles.EnviromentTiles.level_1:
-                GameObject tile_1 = Instantiate(groundTile, new Vector3(posX, posY, 0), Quaternion.identity);
-                tile_1.transform.parent = transform;
-                break;
-            case (int)Tiles.EnviromentTiles.level_2:
-                GameObject tile_2 = Instantiate(groundTile, new Vector3(posX, posY, 0), Quaternion.identity);
-                tile_2.transform.parent = transform;
 
-                break;
-            default:
-                break;
-        }
+        StartCoroutine(CTest());
+    }
+
+    private IEnumerator CTest()
+    {
+        yield return new WaitForEndOfFrame();
+        Debug.Log(tileMap[0, 0].image.rectTransform.localPosition.x);
+        Debug.Log(tileMap[0, 0].image.rectTransform.localPosition.y);
+    }
+
+    public Tile GetTileWithIndex(int x, int y)
+    {
+        return tileMap[x, y];
+    }
+
+    public Tile GetTileWithPosition(int x, int y)
+    {
+        return tileMap[x, y];
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        Debug.Log("Clicked: " + eventData.pointerCurrentRaycast.gameObject.transform.localPosition);
+        var x = eventData.pointerCurrentRaycast.gameObject.transform.localPosition.x;
+        var y = eventData.pointerCurrentRaycast.gameObject.transform.localPosition.y;
+
+        var index_x = (int) Mathf.Floor(x/52);
+        var index_y = (int) Mathf.Floor(y/45);
+
+        Tile tile = GetTileWithIndex(index_x, index_y);
+        //tile.SetTile(tileThemes[1]);
     }
 }

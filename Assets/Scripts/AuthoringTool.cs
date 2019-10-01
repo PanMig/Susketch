@@ -10,7 +10,7 @@ public class AuthoringTool : MonoBehaviour
     void Start()
     {
         tileMap = GetComponentInChildren<TileMap>();
-        tileMap.InitializeTileMap();   
+        tileMap.InitTileMap();   
     }
 
     // Update is called once per frame
