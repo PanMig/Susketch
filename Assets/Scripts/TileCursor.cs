@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
 
     public enum CursorType
@@ -35,18 +35,6 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
         }
     }
 
-    private void FillBoundedArea(PointerEventData eventData)
-    {
-        if (eventData.pointerCurrentRaycast.gameObject != null)
-        {
-            int index_row, index_col;
-            GetIndexFromCoordinates(eventData, out index_row, out index_col);
-            var oldColor = (int)TileMap.GetTileWithIndex(index_row, index_col).envTileID;
-            Brush.Instance.FillRegion(index_row, index_col, Brush.Instance.brushThemes[Brush.Instance.currentBrush], Brush.Instance.brushThemes[oldColor]);
-        }
-        
-    }
-
     public void OnDrag(PointerEventData eventData)
     {
         if (currentCursorType == CursorType.tile)
@@ -59,6 +47,19 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
         }
     }
 
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (currentCursorType == CursorType.tile || currentCursorType == CursorType.decoration)
+        {
+            
+        }
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
     }
@@ -68,6 +69,18 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
     }
 
     #endregion
+
+    private void FillBoundedArea(PointerEventData eventData)
+    {
+        if (eventData.pointerCurrentRaycast.gameObject != null)
+        {
+            int index_row, index_col;
+            GetIndexFromCoordinates(eventData, out index_row, out index_col);
+            var oldColor = (int)TileMap.GetTileWithIndex(index_row, index_col).envTileID;
+            Brush.Instance.FillRegion(index_row, index_col, Brush.Instance.brushThemes[Brush.Instance.currTileBrush], Brush.Instance.brushThemes[oldColor]);
+        }
+
+    }
 
     private static void GetIndexFromCoordinates(PointerEventData eventData, out int index_row, out int index_col)
     {
@@ -107,7 +120,7 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
             // column, row.
             Tile tile = TileMap.GetTileWithIndex(index_row, index_col);
 
-            int index = Brush.Instance.currentBrush;
+            int index = Brush.Instance.currTileBrush;
 
             tile.SetTile(Brush.Instance.brushThemes[index]);
             //Debug.Log(tile.gameObj.name + "_" + tile.envTileID + " " + tile.decID);
@@ -122,7 +135,7 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
             Tile tile = TileMap.GetTileWithIndex(index_row, index_col);
 
             // zero index is always the empty decoration, that's why we add plus one to current brush index.
-            int index = (Brush.Instance.currentBrush + 1) - Brush.Instance.brushThemes.Count();
+            int index = Brush.Instance.currDecBrush;
 
             tile.SetDecoration(Brush.Instance.decorations[index]);
             //Debug.Log(tile.gameObj.name + "_" + tile.envTileID + " " + tile.decID);

@@ -5,7 +5,8 @@ public class Brush : MonoBehaviour
 {
     public static Brush Instance { get; private set; }
 
-    public int currentBrush;
+    public int currTileBrush;
+    public int currDecBrush;
 
     public TileThemes[] brushThemes;
     public Decoration[] decorations;
@@ -34,9 +35,15 @@ public class Brush : MonoBehaviour
         }
     }
 
-    public void SetBrush(int type)
+    public void SetTileBrush(int type)
     {
-        Instance.currentBrush = type;
+        Instance.currTileBrush = type;
+    }
+
+    public void SetDecorationBrush(int type)
+    {
+        Instance.currDecBrush = type;
+
     }
 
     // Bucket like paint tool that uses recursive flood fill algorithm.
@@ -55,8 +62,6 @@ public class Brush : MonoBehaviour
             FillRegion(posX - 1, posY, fill, old);
             FillRegion(posX , posY - 1, fill, old);
         }
-
-
     }
 
 }

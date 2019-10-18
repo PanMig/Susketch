@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System;
 
 
 // TODO : Separate model from view
@@ -11,9 +12,12 @@ public class TileMap : MonoBehaviour
     public static int rows = 20;
     public static int columns = 20;
     private static Tile[,] tileMap;
+    private static Region[,] regions = new Region[4,4];
 
     private RectTransform gridRect;
     private GridLayoutGroup gridLayoutGroup;
+    private readonly int CELL_PER_REGION = 5;
+    private readonly int REGIONS = 16;
 
     public void Awake()
     {
@@ -44,7 +48,7 @@ public class TileMap : MonoBehaviour
         {
             for (int col = 0; col < columns; col++)
             {
-                tileTheme = Brush.Instance.brushThemes[Random.Range(0,1)];
+                tileTheme = Brush.Instance.brushThemes[UnityEngine.Random.Range(0,1)];
                 dec = Brush.Instance.decorations[0];
                 tileMap[row, col] = new Tile(tileTheme.prefab , gridRect.transform, tileTheme.envTileID, dec.decorationID ,row, col);
             }
@@ -52,6 +56,44 @@ public class TileMap : MonoBehaviour
         // Player base 1 
 
         // Player base 2
+    }
+
+    public void InitRegions()
+    {
+        int stepX = 0, stepY = 0;
+        for (int i = 0; i < 4; i++)
+        {
+            stepX = i * 5;
+            for (int j = 0; j < 4; j++)
+            {
+                stepY = j * 5;
+                regions[i,j] = new Region(FillRegion(stepX, stepY));
+            }
+        }
+    }
+
+    private Tile[,] FillRegion(int stepX, int stepY)
+    {
+        Tile[,] tileSet = new Tile[5, 5];
+        for (int row = 0; row < CELL_PER_REGION; row++)
+        {
+            for (int col = 0; col < CELL_PER_REGION; col++)
+            {
+                tileSet[row, col] = tileMap[row+stepX, col+stepY];
+            }
+        }
+        return tileSet;
+    }
+
+    public void PaintRegion(int row, int column, int brushIndex)
+    {
+        for (int i = 0; i < CELL_PER_REGION; i++)
+        {
+            for (int j = 0; j < CELL_PER_REGION; j++)
+            {
+                regions[row,column].tileSet[i, j].SetTile(Brush.Instance.brushThemes[brushIndex]);
+            }
+        }
     }
 
     public void FillTileMap()
@@ -63,7 +105,7 @@ public class TileMap : MonoBehaviour
         {
             for (int col = 0; col < columns; col++)
             {
-                tileTheme = Brush.Instance.brushThemes[Random.Range(0, 3)];
+                tileTheme = Brush.Instance.brushThemes[UnityEngine.Random.Range(0, 3)];
                 tileMap[row, col].SetTile(tileTheme);
             }
         }

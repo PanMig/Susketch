@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Change it with the TEMPLATE METHOD pattern.
 public class AuthoringTool : MonoBehaviour
 {
     private TileMap tileMap;
@@ -10,6 +11,9 @@ public class AuthoringTool : MonoBehaviour
     void Start()
     {
         tileMap = GetComponentInChildren<TileMap>();
-        tileMap.InitTileMap();   
+        tileMap.InitTileMap();
+        tileMap.InitRegions();
+        tileMap.PaintRegion(3, 0, 1);
+        tileMap.PaintRegion(0, 3, 1);
     }
 }
