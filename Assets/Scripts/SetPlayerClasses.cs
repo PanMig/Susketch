@@ -16,8 +16,6 @@ public class SetPlayerClasses : MonoBehaviour
         {
             //Debug.Log(item);
         }
-        CharacterParameters teamBlue = new CharacterParameters(class_blue);
-        CharacterParameters teamRed = new CharacterParameters(class_red);
     }
 
     public float[] SetTeamParameters(int type)

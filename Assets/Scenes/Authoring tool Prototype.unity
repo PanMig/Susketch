@@ -1987,7 +1987,7 @@ Transform:
   - {fileID: 281606157}
   - {fileID: 852177432}
   m_Father: {fileID: 2018068463}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &781365702
 GameObject:
@@ -5636,7 +5636,6 @@ GameObject:
   - component: {fileID: 2018068463}
   - component: {fileID: 2018068464}
   - component: {fileID: 2018068465}
-  - component: {fileID: 2018068466}
   m_Layer: 0
   m_Name: Authoring Tool
   m_TagString: Untagged
@@ -5656,6 +5655,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1529403100}
+  - {fileID: 2078029693}
   - {fileID: 768931613}
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -5684,20 +5684,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e535b19c724c0e4fb745e5895add5ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2018068466
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2018068462}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fbe7299f38d3eea45a2e83abcb98444e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerBlue: {fileID: 397145879}
-  playerRed: {fileID: 1645098940}
 --- !u!1 &2036727521
 GameObject:
   m_ObjectHideFlags: 0
@@ -6276,6 +6262,54 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
   m_IsOn: 1
+--- !u!1 &2078029692
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2078029693}
+  - component: {fileID: 2078029694}
+  m_Layer: 0
+  m_Name: FPS Classes
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2078029693
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2078029692}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2018068463}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2078029694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2078029692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a11ff25aece6a549b5c092088603272, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scoutParams: {fileID: 11400000, guid: ef25eed010f33a1499a4dfe4363059cb, type: 2}
+  sniperParams: {fileID: 11400000, guid: d297321137864a0409b8563c8df7e262, type: 2}
+  soldierParams: {fileID: 11400000, guid: d786d8377b97b8a418dcbe20c3cb2281, type: 2}
+  heavyParams: {fileID: 11400000, guid: 5168f38dac4d4e44c83ff902c13f8579, type: 2}
+  demoManParams: {fileID: 11400000, guid: fe322bcd2e1034548bd77993ed7a2a61, type: 2}
 --- !u!1 &2104093184
 GameObject:
   m_ObjectHideFlags: 0

@@ -57,7 +57,6 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
 
     public void OnPointerExit(PointerEventData eventData)
     {
-
     }
 
     public void OnBeginDrag(PointerEventData eventData)

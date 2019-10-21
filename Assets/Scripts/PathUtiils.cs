@@ -80,8 +80,8 @@ public static class PathUtils
         if(tile.X + 1 >=0 && tile.X + 1 < 20 && tile.Y >= 0 & tile.Y < 20)
         {
             Tile temp = TileMap.GetTileWithIndex(tile.X + 1, tile.Y);
-            if (temp.envTileID != TileUtils.EnviromentTiles.level_1 && temp.envTileID != TileUtils.EnviromentTiles.level_2 || 
-                temp.envTileID == TileUtils.EnviromentTiles.level_1 && tile.decID == TileUtils.Decorations.stairs)
+            if (temp.envTileID != TileEnums.EnviromentTiles.level_1 && temp.envTileID != TileEnums.EnviromentTiles.level_2 || 
+                temp.envTileID == TileEnums.EnviromentTiles.level_1 && tile.decID == TileEnums.Decorations.stairs)
             {
                 neighbours.Add(temp);
             }
@@ -89,8 +89,8 @@ public static class PathUtils
         if(tile.X - 1 >= 0 && tile.X - 1 < 20 && tile.Y >= 0 & tile.Y < 20)
         {
             Tile temp = TileMap.GetTileWithIndex(tile.X - 1, tile.Y);
-            if (temp.envTileID != TileUtils.EnviromentTiles.level_1 && temp.envTileID != TileUtils.EnviromentTiles.level_2 ||
-                temp.envTileID == TileUtils.EnviromentTiles.level_1 && tile.decID == TileUtils.Decorations.stairs)
+            if (temp.envTileID != TileEnums.EnviromentTiles.level_1 && temp.envTileID != TileEnums.EnviromentTiles.level_2 ||
+                temp.envTileID == TileEnums.EnviromentTiles.level_1 && tile.decID == TileEnums.Decorations.stairs)
             {
                 neighbours.Add(temp);
             }
@@ -98,8 +98,8 @@ public static class PathUtils
         if (tile.X >= 0 && tile.X < 20 && tile.Y + 1 >= 0 & tile.Y + 1 < 20)
         {
             Tile temp = TileMap.GetTileWithIndex(tile.X, tile.Y + 1);
-            if (temp.envTileID != TileUtils.EnviromentTiles.level_1 && temp.envTileID != TileUtils.EnviromentTiles.level_2 ||
-                temp.envTileID == TileUtils.EnviromentTiles.level_1 && tile.decID == TileUtils.Decorations.stairs)
+            if (temp.envTileID != TileEnums.EnviromentTiles.level_1 && temp.envTileID != TileEnums.EnviromentTiles.level_2 ||
+                temp.envTileID == TileEnums.EnviromentTiles.level_1 && tile.decID == TileEnums.Decorations.stairs)
             {
                 neighbours.Add(temp);
             }
@@ -107,8 +107,8 @@ public static class PathUtils
         if (tile.X >= 0 && tile.X < 20 && tile.Y - 1 >= 0 & tile.Y - 1 < 20)
         {
             Tile temp = TileMap.GetTileWithIndex(tile.X, tile.Y - 1);
-            if (temp.envTileID != TileUtils.EnviromentTiles.level_1 && temp.envTileID != TileUtils.EnviromentTiles.level_2 ||
-                temp.envTileID == TileUtils.EnviromentTiles.level_1 && tile.decID == TileUtils.Decorations.stairs)
+            if (temp.envTileID != TileEnums.EnviromentTiles.level_1 && temp.envTileID != TileEnums.EnviromentTiles.level_2 ||
+                temp.envTileID == TileEnums.EnviromentTiles.level_1 && tile.decID == TileEnums.Decorations.stairs)
             {
                 neighbours.Add(temp);
             }

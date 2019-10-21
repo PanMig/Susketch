@@ -10,10 +10,10 @@ public struct Tile
     public Transform parent;
     public int X;
     public int Y;
-    public TileUtils.EnviromentTiles envTileID;
-    public TileUtils.Decorations decID;
+    public TileEnums.EnviromentTiles envTileID;
+    public TileEnums.Decorations decID;
 
-    public Tile(GameObject prefab, Transform parent, TileUtils.EnviromentTiles envTileID, TileUtils.Decorations decID ,int posX, int posY)
+    public Tile(GameObject prefab, Transform parent, TileEnums.EnviromentTiles envTileID, TileEnums.Decorations decID ,int posX, int posY)
     {
         this.X = posX;
         this.Y = posY;

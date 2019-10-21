@@ -7,5 +7,5 @@ public class Decoration : ScriptableObject
 {
     public GameObject prefab;
     public Sprite sprite;
-    public TileUtils.Decorations decorationID;
+    public TileEnums.Decorations decorationID;
 }

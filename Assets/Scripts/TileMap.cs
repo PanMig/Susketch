@@ -53,9 +53,6 @@ public class TileMap : MonoBehaviour
                 tileMap[row, col] = new Tile(tileTheme.prefab , gridRect.transform, tileTheme.envTileID, dec.decorationID ,row, col);
             }
         }
-        // Player base 1 
-
-        // Player base 2
     }
 
     public void InitRegions()
@@ -126,5 +123,47 @@ public class TileMap : MonoBehaviour
     public static void SetTileMapTile(int row, int col, Tile tile)
     {
         tileMap[row, col] = tile;
+    }
+
+    public string[,] GetTileMapToString()
+    {
+        string[,] stringMap = new string[rows, columns];
+
+        for (int row = 0; row < rows; row++)
+        {
+            for (int col = 0; col < columns; col++)
+            {
+                if(tileMap[row,col].envTileID == TileEnums.EnviromentTiles.ground)
+                {
+                    stringMap[row, col] = "0";
+                }
+                else if (tileMap[row, col].envTileID == TileEnums.EnviromentTiles.level_1)
+                {
+                    stringMap[row, col] = "1";
+                }
+                else if (tileMap[row, col].envTileID == TileEnums.EnviromentTiles.level_2)
+                {
+                    stringMap[row, col] = "2";
+                }
+                if(tileMap[row, col].decID == TileEnums.Decorations.healthPack)
+                {
+                    stringMap[row, col] += "H";
+                }
+                if (tileMap[row, col].decID == TileEnums.Decorations.damageBoost)
+                {
+                    stringMap[row, col] += "D";
+                }
+                if (tileMap[row, col].decID == TileEnums.Decorations.armorVest)
+                {
+                    stringMap[row, col] += "A";
+                }
+                if (tileMap[row, col].decID == TileEnums.Decorations.stairs)
+                {
+                    stringMap[row, col] += "S";
+                }
+            }
+        }
+
+        return stringMap;
     }
 }

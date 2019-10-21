@@ -62,19 +62,22 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\ArrayParsingUtils.cs" />
     <Compile Include="Assets\Scripts\AuthoringTool.cs" />
     <Compile Include="Assets\Scripts\Brush.cs" />
-    <Compile Include="Assets\Scripts\CharacterParameters.cs" />
+    <Compile Include="Assets\Scripts\CharacterClass.cs" />
+    <Compile Include="Assets\Scripts\CharacterParams.cs" />
     <Compile Include="Assets\Scripts\Decoration.cs" />
+    <Compile Include="Assets\Scripts\FPSClasses.cs" />
     <Compile Include="Assets\Scripts\PathManager.cs" />
     <Compile Include="Assets\Scripts\PathUtiils.cs" />
     <Compile Include="Assets\Scripts\Region.cs" />
     <Compile Include="Assets\Scripts\SetPlayerClasses.cs" />
     <Compile Include="Assets\Scripts\Tile.cs" />
     <Compile Include="Assets\Scripts\TileCursor.cs" />
+    <Compile Include="Assets\Scripts\TileEnums.cs" />
     <Compile Include="Assets\Scripts\TileMap.cs" />
     <Compile Include="Assets\Scripts\TileThemes.cs" />
-    <Compile Include="Assets\Scripts\TileUtils.cs" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro_Properties.cginc" />
@@ -305,6 +308,15 @@
     </Reference>
     <Reference Include="UnityEngine.XRModule">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.2.4f1/Editor/Data/Managed/UnityEngine/UnityEngine.XRModule.dll</HintPath>
+    </Reference>
+    <Reference Include="Numpy">
+      <HintPath>D:/Unity Projects/FPS-DL-Authoring-Tool-/Assets/Numpy.dll</HintPath>
+    </Reference>
+    <Reference Include="Python.Included">
+      <HintPath>D:/Unity Projects/FPS-DL-Authoring-Tool-/Assets/Python.Included.dll</HintPath>
+    </Reference>
+    <Reference Include="Python.Runtime.NETStandard">
+      <HintPath>D:/Unity Projects/FPS-DL-Authoring-Tool-/Assets/Python.Runtime.NETStandard.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.Editor">
       <HintPath>D:/Unity Projects/FPS-DL-Authoring-Tool-/Library/PackageCache/com.unity.analytics@3.3.2/Unity.Analytics.Editor.dll</HintPath>

@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Tile", menuName = "ScriptableObjects/TileThemes")]
 public class TileThemes : ScriptableObject
 {
-    public TileUtils.EnviromentTiles envTileID;
+    public TileEnums.EnviromentTiles envTileID;
     public GameObject prefab;
     public Sprite sprite;
 }
