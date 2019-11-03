@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 using System;
+using TileMapLogic;
 
 public struct Tile
 {

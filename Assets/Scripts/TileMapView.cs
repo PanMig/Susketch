@@ -2,27 +2,34 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TileMapLogic;
 
 public class TileMapView : MonoBehaviour
 {
-    private RectTransform gridRect;
-    private GridLayoutGroup gridLayoutGroup;
+    public RectTransform gridRect;
+    protected GridLayoutGroup gridLayoutGroup;
+
 
     public void Awake()
+    {
+        InitView();
+    }
+
+    public virtual void InitView()
     {
         gridRect = GetComponent<RectTransform>();
         gridLayoutGroup = GetComponent<GridLayoutGroup>();
 
         // set the panel that holds the grid
-        SetGridLayoutGroup();
+        SetGridLayoutGroup(TileMap.rows, TileMap.columns);
     }
 
-    public void SetGridLayoutGroup()
+    public void SetGridLayoutGroup(int rows, int cols)
     {
         if (gridLayoutGroup != null)
         {
-            float _desiredWidth = TileMap.columns * (gridLayoutGroup.cellSize.x + gridLayoutGroup.spacing.x);
-            float _desiredheight = TileMap.rows * (gridLayoutGroup.cellSize.y + gridLayoutGroup.spacing.y);
+            float _desiredWidth = rows * (gridLayoutGroup.cellSize.x + gridLayoutGroup.spacing.x);
+            float _desiredheight = cols * (gridLayoutGroup.cellSize.y + gridLayoutGroup.spacing.y);
             gridRect.sizeDelta = new Vector2(_desiredWidth, _desiredheight);
         }
     }

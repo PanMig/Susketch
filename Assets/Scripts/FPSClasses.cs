@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class FPSClasses : MonoBehaviour
 {
+    public CharacterParams[] characters;
     public CharacterParams scoutParams;
     public CharacterParams sniperParams;
     public CharacterParams soldierParams;
