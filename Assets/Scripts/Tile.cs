@@ -32,6 +32,11 @@ public struct Tile
         TileMap.SetTileMapTile(X, Y, this);
     }
 
+    public void SetTile(Color color)
+    {
+        image.color = color;
+    }
+
     public void Highlight()
     {
         GameObject decorationObj = GameObject.Instantiate(Brush.Instance.highlightPrefab, gameObj.transform);

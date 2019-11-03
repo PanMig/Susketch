@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Numpy;
+using NumSharp;
 
 public static class ArrayParsingUtils
 {
@@ -37,8 +37,22 @@ public static class ArrayParsingUtils
         return false;
     }
 
-    public static void ParseToChannelArray(string[,] array)
+    public static T[,] Make2DArray<T>(T[] input, int height, int width)
     {
+        T[,] output = new T[height, width];
+        for (int i = 0; i < height; i++)
+        {
+            for (int j = 0; j < width; j++)
+            {
+                output[i, j] = input[i * width + j];
+            }
+        }
+        return output;
+    }
+
+    public static NDArray ParseToChannelArray(string[,] array)
+    {
+        var (d_x, d_y) = (20, 20);
         float[,] ground_map = new float[20, 20];
         float[,] first_floor_map = new float[20, 20];
         float[,] second_floor_map = new float[20, 20];
@@ -70,8 +84,21 @@ public static class ArrayParsingUtils
             }
         }
 
-        // stack arrays together
+        var g = np.array(ground_map);
+        var l1 = np.array(first_floor_map);
+        var l2 = np.array(second_floor_map);
+        var armor = np.array(armor_map);
+        var dd = np.array(dd_map);
+        var hp = np.array(hp_map);
+        var stairs = np.array(stairs_map);
+
+        var stackedArr = np.stack(new NDArray[7] { g, l1, l2, armor, dd, hp, stairs }, -1);
+        
+        return stackedArr;
 
 
+        
     }
+
+
 }

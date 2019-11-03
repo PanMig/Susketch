@@ -13,11 +13,12 @@ public class TileMap : MonoBehaviour
     public static int columns = 20;
     private static Tile[,] tileMap;
     private static Region[,] regions = new Region[4,4];
+    private readonly int CELL_PER_REGION = 5;
+    private readonly int REGIONS = 16;
 
     private RectTransform gridRect;
     private GridLayoutGroup gridLayoutGroup;
-    private readonly int CELL_PER_REGION = 5;
-    private readonly int REGIONS = 16;
+
 
     public void Awake()
     {
@@ -93,9 +94,19 @@ public class TileMap : MonoBehaviour
         }
     }
 
+    public void PaintRegion(int row, int column, Color color)
+    {
+        for (int i = 0; i < CELL_PER_REGION; i++)
+        {
+            for (int j = 0; j < CELL_PER_REGION; j++)
+            {
+                regions[row, column].tileSet[i, j].SetTile(color);
+            }
+        }
+    }
+
     public void FillTileMap()
     {
-        
         TileThemes tileTheme;
 
         for (int row = 0; row < rows; row++)
@@ -106,13 +117,6 @@ public class TileMap : MonoBehaviour
                 tileMap[row, col].SetTile(tileTheme);
             }
         }
-    }
-
-    private IEnumerator CTest()
-    {
-        yield return new WaitForEndOfFrame();
-        Debug.Log(tileMap[0, 0].image.rectTransform.localPosition.x);
-        Debug.Log(tileMap[0, 0].image.rectTransform.localPosition.y);
     }
 
     public static Tile GetTileWithIndex(int row, int col)
@@ -163,7 +167,6 @@ public class TileMap : MonoBehaviour
                 }
             }
         }
-
         return stringMap;
     }
 }
