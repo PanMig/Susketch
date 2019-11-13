@@ -39,6 +39,7 @@ public class AuthoringTool : MonoBehaviour
         return input_map;
     }
 
+    // TODO : Make sure that team0 (red) is first in the array and then team1(blue).
     private NDArray GetWeaponInputs()
     {
         var teamBlue = new CharacterClass(fpsClasses.characters[playerBlue.value].class_params);
@@ -47,10 +48,10 @@ public class AuthoringTool : MonoBehaviour
         var blue = teamBlue.Class_params;
         var red = teamRed.Class_params;
 
-        // concat two arrays
+        // concat two arrays (first red then blue)
         var merged = new double[blue.Length + red.Length];
-        blue.CopyTo(merged, 0);
-        red.CopyTo(merged, blue.Length);
+        red.CopyTo(merged, 0);
+        blue.CopyTo(merged, blue.Length);
 
         NDArray arr = new NDArray(merged);
         input_weapons = np.array(arr);
@@ -74,8 +75,19 @@ public class AuthoringTool : MonoBehaviour
         var input_weapons = GetWeaponInputs();
         var results = model.PredictDramaticArc(input_map, input_weapons);
         arc_text.text = results.ToString();
-        if(results > 0) { arc_text.color = Color.red; }
-        else { arc_text.color = Color.blue; }
+        if(results > 0) { arc_text.color = Color.blue; }
+        else { arc_text.color = Color.red; }
+    }
+
+    public void KillRatioButtonHandler()
+    {
+        var input_map = GetMapInput();
+        var coverChannel = np.zeros(1, 20, 20, 1);
+        input_map = np.concatenate(new NDArray[2]{ input_map, coverChannel},3);
+        Debug.Log(input_map.shape);
+        var input_weapons = GetWeaponInputs();
+        var results = model.PredictKillRatio(input_map, input_weapons);
+        Debug.Log(results[0]);
     }
 
 }

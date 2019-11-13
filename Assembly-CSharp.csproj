@@ -315,6 +315,24 @@
     <Reference Include="UnityEngine.XRModule">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.2.4f1/Editor/Data/Managed/UnityEngine/UnityEngine.XRModule.dll</HintPath>
     </Reference>
+    <Reference Include="Google.Protobuf">
+      <HintPath>D:/Unity Projects/FPS-DL-Authoring-Tool-/Assets/Plugins/Tensorflow.NET/Assemblies/Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="NumSharp.Core">
+      <HintPath>D:/Unity Projects/FPS-DL-Authoring-Tool-/Assets/Plugins/Tensorflow.NET/Assemblies/NumSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Buffers">
+      <HintPath>D:/Unity Projects/FPS-DL-Authoring-Tool-/Assets/Plugins/Tensorflow.NET/Assemblies/System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory">
+      <HintPath>D:/Unity Projects/FPS-DL-Authoring-Tool-/Assets/Plugins/Tensorflow.NET/Assemblies/System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe">
+      <HintPath>D:/Unity Projects/FPS-DL-Authoring-Tool-/Assets/Plugins/Tensorflow.NET/Assemblies/System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="TensorFlow.NET">
+      <HintPath>D:/Unity Projects/FPS-DL-Authoring-Tool-/Assets/Plugins/Tensorflow.NET/Assemblies/TensorFlow.NET.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Analytics.Editor">
       <HintPath>D:/Unity Projects/FPS-DL-Authoring-Tool-/Library/PackageCache/com.unity.analytics@3.3.2/Unity.Analytics.Editor.dll</HintPath>
     </Reference>
@@ -323,24 +341,6 @@
     </Reference>
     <Reference Include="Unity.Analytics.Tracker">
       <HintPath>D:/Unity Projects/FPS-DL-Authoring-Tool-/Library/PackageCache/com.unity.analytics@3.3.2/Unity.Analytics.Tracker.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Memory">
-      <HintPath>D:/Unity Projects/FPS-DL-Authoring-Tool-/Assets/Plugins/Tensorflow.NET/Assemblies/System.Memory.dll</HintPath>
-    </Reference>
-    <Reference Include="NumSharp.Core">
-      <HintPath>D:/Unity Projects/FPS-DL-Authoring-Tool-/Assets/Plugins/Tensorflow.NET/Assemblies/NumSharp.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Protobuf">
-      <HintPath>D:/Unity Projects/FPS-DL-Authoring-Tool-/Assets/Plugins/Tensorflow.NET/Assemblies/Google.Protobuf.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Buffers">
-      <HintPath>D:/Unity Projects/FPS-DL-Authoring-Tool-/Assets/Plugins/Tensorflow.NET/Assemblies/System.Buffers.dll</HintPath>
-    </Reference>
-    <Reference Include="TensorFlow.NET">
-      <HintPath>D:/Unity Projects/FPS-DL-Authoring-Tool-/Assets/Plugins/Tensorflow.NET/Assemblies/TensorFlow.NET.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe">
-      <HintPath>D:/Unity Projects/FPS-DL-Authoring-Tool-/Assets/Plugins/Tensorflow.NET/Assemblies/System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.2.4f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
