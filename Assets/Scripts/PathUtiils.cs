@@ -22,7 +22,7 @@ public static class PathUtils
                     return true;
                 }
                 //v.SetTile(Brush.Instance.brushThemes[3]);
-                List<Tile> neighbours = GetNeighboursInFourDirections(v);
+                List<Tile> neighbours = GetNeighbours(v);
                 foreach (var neighbour in neighbours)
                 {
                     frontier.Push(neighbour);
@@ -45,7 +45,7 @@ public static class PathUtils
         {
             var current = frontier.Dequeue();
 
-            List<Tile> neighbours = GetNeighboursInFourDirections(current);
+            List<Tile> neighbours = GetNeighbours(current);
             foreach (var next in neighbours)
             {
                 if (!came_from.ContainsKey(next))
@@ -62,7 +62,6 @@ public static class PathUtils
     {
         List<Tile> tilePath = new List<Tile>();
         var came_from = BFS(start, goal);
-        Debug.Log(came_from.Count);
 
         var _current = goal;
         while(_current.gameObj != start.gameObj)
@@ -74,7 +73,7 @@ public static class PathUtils
         return tilePath;
     }
 
-    public static List<Tile> GetNeighboursInFourDirections(Tile tile)
+    public static List<Tile> GetNeighbours(Tile tile)
     {
         List<Tile> neighbours = new List<Tile>();
 
@@ -114,39 +113,46 @@ public static class PathUtils
                 neighbours.Add(temp);
             }
         }
-        //if (tile.X + 1 >= 0 && tile.X + 1 < 20 && tile.Y + 1 >= 0 & tile.Y + 1 < 20)
-        //{
-        //    Tile temp = TileMap.GetTileWithIndex(tile.X + 1, tile.Y + 1);
-        //    if (temp.envTileID != TileUtils.EnviromentTiles.level_1 && temp.envTileID != TileUtils.EnviromentTiles.level_2)
-        //    {
-        //        neighbours.Add(temp);
-        //    }
-        //}
-        //if (tile.X + 1 >= 0 && tile.X + 1 < 20 && tile.Y - 1 >= 0 & tile.Y - 1 < 20)
-        //{
-        //    Tile temp = TileMap.GetTileWithIndex(tile.X + 1, tile.Y - 1);
-        //    if (temp.envTileID != TileUtils.EnviromentTiles.level_1 && temp.envTileID != TileUtils.EnviromentTiles.level_2)
-        //    {
-        //        neighbours.Add(temp);
-        //    }
-        //}
-        //if (tile.X - 1 >= 0 && tile.X - 1 < 20 && tile.Y  + 1 >= 0 & tile.Y + 1 < 20)
-        //{
-        //    Tile temp = TileMap.GetTileWithIndex(tile.X - 1, tile.Y + 1);
-        //    if (temp.envTileID != TileUtils.EnviromentTiles.level_1 && temp.envTileID != TileUtils.EnviromentTiles.level_2)
-        //    {
-        //        neighbours.Add(temp);
-        //    }
-        //}
-        //if (tile.X - 1 >= 0 && tile.X - 1 < 20 && tile.Y - 1 >= 0 & tile.Y - 1 < 20)
-        //{
-        //    Tile temp = TileMap.GetTileWithIndex(tile.X - 1, tile.Y - 1);
-        //    if (temp.envTileID != TileUtils.EnviromentTiles.level_1 && temp.envTileID != TileUtils.EnviromentTiles.level_2)
-        //    {
-        //        neighbours.Add(temp);
-        //    }
-        //}
+
+        // extra four dimensions
+        if (tile.X + 1>= 0 && tile.X + 1 < 20 && tile.Y + 1 >= 0 & tile.Y + 1 < 20)
+        {
+            Tile temp = TileMap.GetTileWithIndex(tile.X + 1, tile.Y + 1);
+            if (temp.envTileID != TileEnums.EnviromentTiles.level_1 && temp.envTileID != TileEnums.EnviromentTiles.level_2 ||
+                temp.envTileID == TileEnums.EnviromentTiles.level_1 && tile.decID == TileEnums.Decorations.stairs)
+            {
+                neighbours.Add(temp);
+            }
+        }
+        if (tile.X + 1 >= 0 && tile.X + 1 < 20 && tile.Y - 1 >= 0 & tile.Y - 1 < 20)
+        {
+            Tile temp = TileMap.GetTileWithIndex(tile.X + 1, tile.Y - 1);
+            if (temp.envTileID != TileEnums.EnviromentTiles.level_1 && temp.envTileID != TileEnums.EnviromentTiles.level_2 ||
+                temp.envTileID == TileEnums.EnviromentTiles.level_1 && tile.decID == TileEnums.Decorations.stairs)
+            {
+                neighbours.Add(temp);
+            }
+        }
+        if (tile.X - 1 >= 0 && tile.X - 1 < 20 && tile.Y + 1 >= 0 & tile.Y + 1 < 20)
+        {
+            Tile temp = TileMap.GetTileWithIndex(tile.X - 1, tile.Y + 1);
+            if (temp.envTileID != TileEnums.EnviromentTiles.level_1 && temp.envTileID != TileEnums.EnviromentTiles.level_2 ||
+                temp.envTileID == TileEnums.EnviromentTiles.level_1 && tile.decID == TileEnums.Decorations.stairs)
+            {
+                neighbours.Add(temp);
+            }
+        }
+        if (tile.X - 1 >= 0 && tile.X - 1 < 20 && tile.Y - 1 >= 0 & tile.Y - 1 < 20)
+        {
+            Tile temp = TileMap.GetTileWithIndex(tile.X - 1, tile.Y - 1);
+            if (temp.envTileID != TileEnums.EnviromentTiles.level_1 && temp.envTileID != TileEnums.EnviromentTiles.level_2 ||
+                temp.envTileID == TileEnums.EnviromentTiles.level_1 && tile.decID == TileEnums.Decorations.stairs)
+            {
+                neighbours.Add(temp);
+            }
+        }
 
         return neighbours;
     }
+
 }

@@ -50,6 +50,7 @@ public static class ArrayParsingUtils
         return output;
     }
 
+    //TODO : Make sure that the parsing of maps is correct (check with python).
     public static NDArray ParseToChannelArray(string[,] array)
     {
         var (d_x, d_y) = (20, 20);
@@ -95,9 +96,6 @@ public static class ArrayParsingUtils
         var stackedArr = np.stack(new NDArray[7] { g, l1, l2, armor, dd, hp, stairs }, -1);
         
         return stackedArr;
-
-
-        
     }
 
 

@@ -4,20 +4,37 @@ using UnityEngine;
 using Tensorflow;
 using static Tensorflow.Binding;
 using NumSharp;
+using static TileMapLogic.TileMap;
+
 
 public class TFModel : MonoBehaviour
 {
-    public float[] PredictDeathHeatmap(NDArray map, NDArray weapons)
-    {
-        var pbFile = "death_heatmap.bytes";
-        float[] heatmap = new float[16];
-        // import GraphDef from pb file
-        var graph = new Graph().as_default();
-        graph.Import(Application.dataPath + "/" + pbFile);
+    private static Graph heatmapGraph;
+    private static Graph dArcGraph;
+    private static Graph combatPaceGraph;
+    private static Graph killRatioGraph;
 
-        Tensor input_maps = graph.OperationByName("input_layer");
-        Tensor input_weapons = graph.OperationByName("input_1");
-        Tensor output = graph.OperationByName("output_layer/BiasAdd");
+    public void Start()
+    {
+        heatmapGraph = InitGraph(heatmapGraph, "death_heatmap");
+        killRatioGraph = InitGraph(heatmapGraph, "kill_ratio");
+        dArcGraph = InitGraph(dArcGraph, "dramatic_arc");
+    }
+
+    private Graph InitGraph(Graph graph, string pbFile)
+    {
+        graph = new Graph();
+        var model_file = Resources.Load<TextAsset>(pbFile).bytes;
+        graph.Import(model_file);
+        return graph;
+    }
+
+    public static float[] PredictDeathHeatmap(NDArray map, NDArray weapons)
+    {
+        heatmapGraph.as_default();
+        Tensor input_maps = heatmapGraph.OperationByName("input_layer");
+        Tensor input_weapons = heatmapGraph.OperationByName("input_1");
+        Tensor output = heatmapGraph.OperationByName("output_layer/BiasAdd");
 
         using (var sess = tf.Session())
         {
@@ -32,17 +49,12 @@ public class TFModel : MonoBehaviour
         }
     }
 
-    public float[] PredictKillRatio(NDArray map, NDArray weapons)
+    public static float PredictKillRatio(NDArray map, NDArray weapons)
     {
-        var pbFile = "kill_ratio.bytes";
-        float[] heatmap = new float[16];
-        // import GraphDef from pb file
-        var graph = new Graph().as_default();
-        graph.Import(Application.dataPath + "/" + pbFile);
-
-        Tensor input_maps = graph.OperationByName("input_layer");
-        Tensor input_weapons = graph.OperationByName("input_12");
-        Tensor output = graph.OperationByName("output_layer/BiasAdd");
+        killRatioGraph.as_default();
+        Tensor input_maps = killRatioGraph.OperationByName("input_layer");
+        Tensor input_weapons = killRatioGraph.OperationByName("input_12");
+        Tensor output = killRatioGraph.OperationByName("output_layer/BiasAdd");
 
         using (var sess = tf.Session())
         {
@@ -53,25 +65,20 @@ public class TFModel : MonoBehaviour
             });
 
             var x = results.ToArray<float>();
-            return x;
+            return x[0];
         }
     }
 
-    public float PredictDramaticArc(NDArray map, NDArray weapons)
+    public static float PredictDramaticArc(NDArray map, NDArray weapons)
     {
-        var pbFile = "dramatic_arc.bytes";
-        float[] dramatic_arc = new float[5];
-        // import GraphDef from pb file
-        var graph = new Graph().as_default();
-        graph.Import(Application.dataPath + "/" + pbFile);
-
-        Tensor input_maps = graph.OperationByName("input_layer");
-        Tensor input_weapons = graph.OperationByName("input_1");
-        Tensor output = graph.OperationByName("output_0/BiasAdd");
-        Tensor output2 = graph.OperationByName("output_1/BiasAdd");
-        Tensor output3 = graph.OperationByName("output_2/BiasAdd");
-        Tensor output4 = graph.OperationByName("output_3/BiasAdd");
-        Tensor output5 = graph.OperationByName("output_4/BiasAdd");
+        dArcGraph.as_default();
+        Tensor input_maps = dArcGraph.OperationByName("input_layer");
+        Tensor input_weapons = dArcGraph.OperationByName("input_1");
+        Tensor output = dArcGraph.OperationByName("output_0/BiasAdd");
+        Tensor output2 = dArcGraph.OperationByName("output_1/BiasAdd");
+        Tensor output3 = dArcGraph.OperationByName("output_2/BiasAdd");
+        Tensor output4 = dArcGraph.OperationByName("output_3/BiasAdd");
+        Tensor output5 = dArcGraph.OperationByName("output_4/BiasAdd");
 
         using (var sess = tf.Session())
         {
@@ -105,12 +112,43 @@ public class TFModel : MonoBehaviour
                 new FeedItem(input_weapons, weapons)
             });
 
-            var value = (output_1*20) + (output_2 * 20) + (output_3 *20) + (output_4*20) + (output_5*20);
+            var value = output_1 + output_2 + output_3 + output_4 + output_5;
             var x = value.ToArray<float>()[0];
             return x;
         }
     }
 
+    public static NDArray GetInputWeapons(CharacterParams blueClass, CharacterParams redClass)
+    {
+        var blue = blueClass.class_params;
+        var red = redClass.class_params;
+
+        // concat two arrays (first red then blue)
+        var merged = new double[blue.Length + red.Length];
+        red.CopyTo(merged, 0);
+        blue.CopyTo(merged, blue.Length);
+
+        NDArray arr = new NDArray(merged);
+        var input_weapons = np.array(arr);
+
+        input_weapons = np.expand_dims(input_weapons, 0);
+        return input_weapons;
+    }
+
+    public static NDArray GetInputMap()
+    {
+        var map = GetTileMapToString();
+        var input_map = ArrayParsingUtils.ParseToChannelArray(map);
+        input_map = np.expand_dims(input_map, 0);
+        return input_map;
+    }
+
+    public static NDArray ConcatCoverChannel(NDArray input_map)
+    {
+        var coverChannel = np.zeros(1, 20, 20, 1);
+        input_map = np.concatenate(new NDArray[2] { input_map, coverChannel }, 3);
+        return input_map;
+    }
 
 
 }

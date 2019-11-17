@@ -8,13 +8,12 @@ namespace TileMapLogic
 {
     public class TileMap
     {
-        public static int rows = 20;
-        public static int columns = 20;
+        public static readonly int rows = 20;
+        public static readonly int columns = 20;
         private static Tile[,] tileMap;
         private static Region[,] regions = new Region[4, 4];
         private static readonly int CELL_PER_REGION = 5;
         private static readonly int REGIONS = 16;
-
 
         public static void InitTileMap(Transform GridTransformParent)
         {
@@ -145,6 +144,23 @@ namespace TileMapLogic
                 }
             }
             return stringMap;
+        }
+
+        //TODO load tilemap from csv file.
+        public static void LoadtileMapFromFile(string fileName)
+        {
+
+        }
+
+        public static Tile GetRandomRegionCell(int regionNumX, int regionNumY)
+        {
+            int xRange = regionNumX * 5;
+            int yRange = regionNumY * 5;
+
+            int row = UnityEngine.Random.Range(xRange - 5, xRange - 1);
+            int column = UnityEngine.Random.Range(yRange - 5, yRange - 1);
+
+            return GetTileWithIndex(row, column);
         }
     }
 }

@@ -1,24 +1,28 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading;
 using UnityEngine.UI;
 using NumSharp;
 using static TileMapLogic.TileMap;
+using static MLSuggestionsMng;
+using static TFModel;
 
 // Change it with the TEMPLATE METHOD pattern.
 public class AuthoringTool : MonoBehaviour
 {
     private FPSClasses fpsClasses;
-    public TFModel model;
     public MetricsManager metricsMng;
+    public MLSuggestionsMng suggestionsMng;
     public TileMapView tileMapView;
 
     private NDArray input_map;
     private NDArray input_weapons;
 
-    public Dropdown playerBlue;
-    public Dropdown playerRed;
+    public Dropdown playerBlueDropdown;
+    public Dropdown playerRedDropdown;
     public Text arc_text;
+
 
     // Start is called before the first frame update
     void Start()
@@ -29,21 +33,22 @@ public class AuthoringTool : MonoBehaviour
         PaintRegion(3, 0, 4);
         PaintRegion(0, 3, 5);
 
+        //InvokeRepeating("FindClassBalance", 2.0f, 5.0f);
     }
 
-    private NDArray GetMapInput()
-    {
-        var map = GetTileMapToString();
-        input_map = ArrayParsingUtils.ParseToChannelArray(map);
-        input_map = np.expand_dims(input_map, 0);
-        return input_map;
-    }
+    //private NDArray GetMapInput()
+    //{
+    //    var map = GetTileMapToString();
+    //    input_map = ArrayParsingUtils.ParseToChannelArray(map);
+    //    input_map = np.expand_dims(input_map, 0);
+    //    return input_map;
+    //}
 
     // TODO : Make sure that team0 (red) is first in the array and then team1(blue).
     private NDArray GetWeaponInputs()
     {
-        var teamBlue = new CharacterClass(fpsClasses.characters[playerBlue.value].class_params);
-        var teamRed = new CharacterClass(fpsClasses.characters[playerRed.value].class_params);
+        var teamBlue = new CharacterClass(fpsClasses.characters[playerBlueDropdown.value].class_params);
+        var teamRed = new CharacterClass(fpsClasses.characters[playerRedDropdown.value].class_params);
 
         var blue = teamBlue.Class_params;
         var red = teamRed.Class_params;
@@ -62,32 +67,45 @@ public class AuthoringTool : MonoBehaviour
 
     public void DeathHeatmapButtonHandler()
     {
-        var input_map = GetMapInput();
-        var input_weapons = GetWeaponInputs();
-        var results = model.PredictDeathHeatmap(input_map, input_weapons);
+        SetModelInput();
+        var results = PredictDeathHeatmap(input_map, input_weapons);
         var heatmap = ArrayParsingUtils.Make2DArray(results, 4, 4);
         metricsMng.GenerateDeathHeatmap(heatmap);
     }
 
     public void DramaticArcButtonHandler()
     {
-        var input_map = GetMapInput();
-        var input_weapons = GetWeaponInputs();
-        var results = model.PredictDramaticArc(input_map, input_weapons);
+        SetModelInput();
+        var results = PredictDramaticArc(input_map, input_weapons);
         arc_text.text = results.ToString();
-        if(results > 0) { arc_text.color = Color.blue; }
+        if (results > 0) { arc_text.color = Color.blue; }
         else { arc_text.color = Color.red; }
+    }
+
+    private void SetModelInput()
+    {
+        input_map = GetInputMap();
+        input_weapons = GetInputWeapons(fpsClasses.characters[playerBlueDropdown.value], 
+            fpsClasses.characters[playerRedDropdown.value]);
     }
 
     public void KillRatioButtonHandler()
     {
-        var input_map = GetMapInput();
-        var coverChannel = np.zeros(1, 20, 20, 1);
-        input_map = np.concatenate(new NDArray[2]{ input_map, coverChannel},3);
-        Debug.Log(input_map.shape);
-        var input_weapons = GetWeaponInputs();
-        var results = model.PredictKillRatio(input_map, input_weapons);
-        Debug.Log(results[0]);
+        SetModelInput();
+        input_map = ConcatCoverChannel(input_map);
+        var results = PredictKillRatio(input_map, input_weapons);
+        Debug.Log(results);
+    }
+
+    public async void FindClassBalance()
+    {
+        var balanced_classes = await GetBalancedMatchup(fpsClasses.matchups, GetInputMap());
+        Debug.Log(balanced_classes[0] + ", " + balanced_classes[1]);
+    }
+
+    public async void GeneratePickUps()
+    {
+
     }
 
 }
