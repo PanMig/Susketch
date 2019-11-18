@@ -3,22 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using NumSharp;
+using System;
 using System.Threading.Tasks;
 using static TFModel;
+using TileMapLogic;
+using static AuthoringTool;
 
 public class MLSuggestionsMng : MonoBehaviour
 {
-    private enum pickups { health, armor, damage, none};
+    private enum pickups { none, health, armor, damage};
 
     public static Task<CharacterParams[]> GetBalancedMatchup(List<CharacterParams[]> classMatchups, NDArray input_map)
     {
         return Task.Run(() =>
         {
-            //expand maps dimension by one.
-            input_map = ConcatCoverChannel(input_map);
 
             var classes = new CharacterParams[2];
-            var desiredBalancedVal = 0.5f;
+            var thresshold = 0.5f;
             float score = 0;
             var scores = new List<float>();
             foreach (var matchup in classMatchups)
@@ -28,36 +29,72 @@ public class MLSuggestionsMng : MonoBehaviour
                 scores.Add(score);
             }
 
-            var closest = scores.Aggregate((x, y) => Mathf.Abs(x - desiredBalancedVal) < Mathf.Abs(y - desiredBalancedVal) ? x : y);
-            var resultIdx = scores.IndexOf(closest);
+            int resultIdx = GetClosestIdxToThresshold(thresshold, scores);
 
-            classes[0] = classMatchups[resultIdx][0];
-            classes[1] = classMatchups[resultIdx][1];
+            classes[0] = classMatchups[resultIdx][0]; // red team.
+            classes[1] = classMatchups[resultIdx][1]; // blue team.
 
             return classes;
         });
     }
 
-    //public static Task<float[][]> SpawnBalancedPickUps()
-    //{
-    //    List<float> balanceScores = new List<float>();
-    //    var desiredBalancedVal = 0.5f;
+    private static int GetClosestIdxToThresshold(float thresshold, List<float> scores)
+    {
+        var closest = scores.Aggregate((x, y) => Mathf.Abs(x - thresshold) < Mathf.Abs(y - thresshold) ? x : y);
+        var resultIdx = scores.IndexOf(closest);
+        return resultIdx;
+    }
 
-    //    return Task.Run(() =>
-    //    {
-    //        // randomly select a region to spawn a pickup.
-    //        for (int i = 1; i < 5; i++)
-    //        {
-    //            for (int j = 1; j < 5; j++)
-    //            {
-    //                int diceRoll = Random.Range(0, 3);
+    // TODO : it has bugs with the tile painting.
+    public static Tile[,] SpawnBalancedPickUps(TileMap tilemapMain)
+    {
+        TileMap map;
+        Dictionary<TileMap, float> mapsDict = new Dictionary<TileMap, float>();
+        float thresshold = 0.5f;
+        float score = 0.0f;
+        int diceRoll;
+        System.Random RNG = new System.Random();
 
-    //            }
-    //        }
+        // randomly select a region to spawn a pickups
 
-    //        var closest = balanceScores.Aggregate((x, y) => Mathf.Abs(x - desiredBalancedVal) < Mathf.Abs(y - desiredBalancedVal) ? x : y);
-    //        var resultIdx = balanceScores.IndexOf(closest);
-
-    //    });
-    //}
+        for (int m = 0; m < 20; m++)
+        {
+            // this will erase all previous decorations on the main map.
+            // TODO : keep stairs.
+            tileMapMain.RemoveDecorations();
+            map = new TileMap(tileMapMain.GetTileMap());
+            // iterate regions.
+            for (int i = 1; i < 5; i++)
+            {
+                for (int j = 1; j < 5; j++)
+                {
+                    diceRoll = RNG.Next(1, 5);
+                    if (diceRoll == (int)pickups.health)
+                    {
+                        Tile fillTile = map.GetRandomRegionCell(i, j);
+                        fillTile.decID = TileEnums.Decorations.healthPack;
+                        map.SetTileMapTile(fillTile);
+                    }
+                    else if (diceRoll == (int)pickups.armor)
+                    {
+                        Tile fillTile = map.GetRandomRegionCell(i, j);
+                        fillTile.decID = TileEnums.Decorations.armorVest;
+                        map.SetTileMapTile(fillTile);
+                    }
+                    else if (diceRoll == (int)pickups.damage)
+                    {
+                        Tile fillTile = map.GetRandomRegionCell(i, j);
+                        fillTile.decID = TileEnums.Decorations.damageBoost;
+                        map.SetTileMapTile(fillTile);
+                    }
+                }
+            }
+            score = PredictKillRatio(GetInputMap(map), GetInputWeapons(blueClass, redClass));
+            mapsDict.Add(map, score);
+        }
+        var valueslist = mapsDict.Values.ToList();
+        var bestMatch = valueslist[GetClosestIdxToThresshold(thresshold,valueslist)];
+        var balancedMap = mapsDict.FirstOrDefault(x => x.Value == bestMatch);
+        return balancedMap.Key.GetTileMap();
+    }
 }

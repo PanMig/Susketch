@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using TileMapLogic;
+using static AuthoringTool;
 
 public class Brush : MonoBehaviour
 {
@@ -54,10 +55,10 @@ public class Brush : MonoBehaviour
         if ((posX < 0) || (posX >= TileMap.rows)) return;
         if((posY < 0) || (posY >= TileMap.columns)) return;
 
-        Tile tile = TileMap.GetTileWithIndex(posX, posY);
+        Tile tile = tileMapMain.GetTileWithIndex(posX, posY);
         if(tile.envTileID == old.envTileID)
         {
-            tile.SetTile(fill);
+            tile.PaintTile(fill);
             FillRegion(posX + 1, posY, fill, old);
             FillRegion(posX, posY + 1, fill, old);
             FillRegion(posX - 1, posY, fill, old);

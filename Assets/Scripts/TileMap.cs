@@ -10,12 +10,23 @@ namespace TileMapLogic
     {
         public static readonly int rows = 20;
         public static readonly int columns = 20;
-        private static Tile[,] tileMap;
-        private static Region[,] regions = new Region[4, 4];
+        private Tile[,] tileMap;
+        private Region[,] regions = new Region[4, 4];
         private static readonly int CELL_PER_REGION = 5;
         private static readonly int REGIONS = 16;
 
-        public static void InitTileMap(Transform GridTransformParent)
+        public TileMap()
+        {
+
+        }
+
+        public TileMap(Tile[,] map)
+        {
+            InitTileMap(Brush.Instance.transform);
+            SetTileMap(map);
+        }
+
+        public void InitTileMap(Transform GridTransformParent)
         {
             tileMap = new Tile[rows, columns];
             TileThemes tileTheme;
@@ -32,7 +43,8 @@ namespace TileMapLogic
             }
         }
 
-        public static void InitRegions()
+
+        public void InitRegions()
         {
             int stepX = 0, stepY = 0;
             for (int i = 0; i < 4; i++)
@@ -46,7 +58,7 @@ namespace TileMapLogic
             }
         }
 
-        private static Tile[,] FillRegion(int stepX, int stepY)
+        private Tile[,] FillRegion(int stepX, int stepY)
         {
             Tile[,] tileSet = new Tile[5, 5];
             for (int row = 0; row < CELL_PER_REGION; row++)
@@ -59,29 +71,29 @@ namespace TileMapLogic
             return tileSet;
         }
 
-        public static void PaintRegion(int row, int column, int brushIndex)
+        public void PaintRegion(int row, int column, int brushIndex)
         {
             for (int i = 0; i < CELL_PER_REGION; i++)
             {
                 for (int j = 0; j < CELL_PER_REGION; j++)
                 {
-                    regions[row, column].tileSet[i, j].SetTile(Brush.Instance.brushThemes[brushIndex]);
+                    regions[row, column].tileSet[i, j].PaintTile(Brush.Instance.brushThemes[brushIndex]);
                 }
             }
         }
 
-        public static void PaintRegion(int row, int column, Color color)
+        public void PaintRegion(int row, int column, Color color)
         {
             for (int i = 0; i < CELL_PER_REGION; i++)
             {
                 for (int j = 0; j < CELL_PER_REGION; j++)
                 {
-                    regions[row, column].tileSet[i, j].SetTile(color);
+                    regions[row, column].tileSet[i, j].PaintTile(color);
                 }
             }
         }
 
-        public static void FillTileMap()
+        public void FillTileMap()
         {
             TileThemes tileTheme;
 
@@ -90,22 +102,27 @@ namespace TileMapLogic
                 for (int col = 0; col < columns; col++)
                 {
                     tileTheme = Brush.Instance.brushThemes[UnityEngine.Random.Range(0, 3)];
-                    tileMap[row, col].SetTile(tileTheme);
+                    tileMap[row, col].PaintTile(tileTheme);
                 }
             }
         }
 
-        public static Tile GetTileWithIndex(int row, int col)
+        public Tile GetTileWithIndex(int row, int col)
         {
             return tileMap[row, col];
         }
 
-        public static void SetTileMapTile(int row, int col, Tile tile)
+        public Tile GetTileWithIndex(int row, int col, Tile[,] map)
         {
-            tileMap[row, col] = tile;
+            return map[row, col];
         }
 
-        public static string[,] GetTileMapToString()
+        public void SetTileMapTile(Tile tile)
+        {
+            tileMap[tile.X, tile.Y] = tile;
+        }
+
+        public string[,] GetTileMapToString()
         {
             string[,] stringMap = new string[rows, columns];
 
@@ -147,20 +164,50 @@ namespace TileMapLogic
         }
 
         //TODO load tilemap from csv file.
-        public static void LoadtileMapFromFile(string fileName)
+        public void LoadtileMapFromFile(string fileName)
         {
 
         }
 
-        public static Tile GetRandomRegionCell(int regionNumX, int regionNumY)
+        public Tile GetRandomRegionCell(int regionNumX, int regionNumY)
         {
+            System.Random RNG = new System.Random();
             int xRange = regionNumX * 5;
             int yRange = regionNumY * 5;
 
+            //int row = RNG.Next(xRange - 5, xRange - 1);
+            //int column = RNG.Next(yRange - 5, yRange - 1);
             int row = UnityEngine.Random.Range(xRange - 5, xRange - 1);
             int column = UnityEngine.Random.Range(yRange - 5, yRange - 1);
 
             return GetTileWithIndex(row, column);
+        }
+
+        public Tile[,] GetTileMap()
+        {
+            return tileMap;
+        }
+
+        public void SetTileMap(Tile[,] map)
+        {
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    tileMap[i, j].SetTile(map[i, j], this);
+                }
+            }
+        }
+
+        public void RemoveDecorations()
+        {
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    tileMap[i, j].RemoveDecoration();
+                }
+            }
         }
     }
 }

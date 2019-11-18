@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using TileMapLogic;
+using static AuthoringTool;
 
 public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
@@ -76,7 +77,7 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
         {
             int index_row, index_col;
             GetIndexFromCoordinates(eventData, out index_row, out index_col);
-            var oldColor = (int)TileMap.GetTileWithIndex(index_row, index_col).envTileID;
+            var oldColor = (int) tileMapMain.GetTileWithIndex(index_row, index_col).envTileID;
             Brush.Instance.FillRegion(index_row, index_col, Brush.Instance.brushThemes[Brush.Instance.currTileBrush], Brush.Instance.brushThemes[oldColor]);
         }
 
@@ -118,12 +119,12 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
         if (Enumerable.Range(0, 20).Contains(index_row) && Enumerable.Range(0, 20).Contains(index_col))
         {
             // column, row.
-            Tile tile = TileMap.GetTileWithIndex(index_row, index_col);
+            Tile tile = tileMapMain.GetTileWithIndex(index_row, index_col);
 
             int index = Brush.Instance.currTileBrush;
 
-            tile.SetTile(Brush.Instance.brushThemes[index]);
-            //Debug.Log(tile.gameObj.name + "_" + tile.envTileID + " " + tile.decID);
+            tile.PaintTile(Brush.Instance.brushThemes[index]);
+            Debug.Log(tile.gameObj.name + "_" + tile.envTileID + " " + tile.decID);
         }
     }
 
@@ -132,13 +133,13 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
         if (Enumerable.Range(0, 20).Contains(index_row) && Enumerable.Range(0, 20).Contains(index_col))
         {
             // column, row.
-            Tile tile = TileMap.GetTileWithIndex(index_row, index_col);
+            Tile tile = tileMapMain.GetTileWithIndex(index_row, index_col);
 
             // zero index is always the empty decoration, that's why we add plus one to current brush index.
             int index = Brush.Instance.currDecBrush;
 
-            tile.SetDecoration(Brush.Instance.decorations[index]);
-            //Debug.Log(tile.gameObj.name + "_" + tile.envTileID + " " + tile.decID);
+            tile.PaintDecoration(Brush.Instance.decorations[index]);
+            Debug.Log(tile.gameObj.name + "_" + tile.envTileID + " " + tile.decID);
         }
     }
 
@@ -162,11 +163,7 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            bool x = PathUtils.DFS_Iterative(TileMap.GetTileWithIndex(19, 0), TileMap.GetTileWithIndex(0, 19));
-            Debug.Log(x);
-        }
+        
     }
 
 

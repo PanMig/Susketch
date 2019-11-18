@@ -58,7 +58,7 @@ public class DeathHeatmap : MonoBehaviour
             for (int j = 0; j < 4; j++)
             {
                 var normalized = values[i, j] * 10.0f;
-                heatmap[i, j].SetTile(new Color(normalized, 0 , 0, 1.0f));
+                heatmap[i, j].PaintTile(new Color(normalized, 0 , 0, 1.0f));
             }
         }
         gameObject.SetActive(true);

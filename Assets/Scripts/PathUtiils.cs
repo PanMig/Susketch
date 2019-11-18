@@ -2,10 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using TileMapLogic;
+using static AuthoringTool;
 
 public static class PathUtils
 {
-    public static bool DFS_Iterative(Tile start, Tile goal)
+    public static bool DFS_Iterative(Tile start, Tile goal, TileMap tileMap)
     {
         Stack<Tile> frontier = new Stack<Tile>();
         HashSet<Tile> visited = new HashSet<Tile>();
@@ -22,7 +23,7 @@ public static class PathUtils
                     return true;
                 }
                 //v.SetTile(Brush.Instance.brushThemes[3]);
-                List<Tile> neighbours = GetNeighbours(v);
+                List<Tile> neighbours = GetNeighbours(v, tileMap);
                 foreach (var neighbour in neighbours)
                 {
                     frontier.Push(neighbour);
@@ -33,7 +34,7 @@ public static class PathUtils
         return false;
     }
 
-    public static Dictionary<Tile,Tile> BFS(Tile start, Tile goal)
+    public static Dictionary<Tile,Tile> BFS(Tile start, Tile goal, TileMap tileMap)
     {
         Queue<Tile> frontier = new Queue<Tile>();
         frontier.Enqueue(start);
@@ -45,7 +46,7 @@ public static class PathUtils
         {
             var current = frontier.Dequeue();
 
-            List<Tile> neighbours = GetNeighbours(current);
+            List<Tile> neighbours = GetNeighbours(current, tileMap);
             foreach (var next in neighbours)
             {
                 if (!came_from.ContainsKey(next))
@@ -58,10 +59,10 @@ public static class PathUtils
         return came_from;
     }
 
-    public static List<Tile> BFSGetShortestPath(Tile start, Tile goal)
+    public static List<Tile> BFSGetShortestPath(Tile start, Tile goal, TileMap tileMap)
     {
         List<Tile> tilePath = new List<Tile>();
-        var came_from = BFS(start, goal);
+        var came_from = BFS(start, goal, tileMap);
 
         var _current = goal;
         while(_current.gameObj != start.gameObj)
@@ -73,13 +74,13 @@ public static class PathUtils
         return tilePath;
     }
 
-    public static List<Tile> GetNeighbours(Tile tile)
+    public static List<Tile> GetNeighbours(Tile tile, TileMap tileMap)
     {
         List<Tile> neighbours = new List<Tile>();
 
         if(tile.X + 1 >=0 && tile.X + 1 < 20 && tile.Y >= 0 & tile.Y < 20)
         {
-            Tile temp = TileMap.GetTileWithIndex(tile.X + 1, tile.Y);
+            Tile temp = tileMap.GetTileWithIndex(tile.X + 1, tile.Y);
             if (temp.envTileID != TileEnums.EnviromentTiles.level_1 && temp.envTileID != TileEnums.EnviromentTiles.level_2 || 
                 temp.envTileID == TileEnums.EnviromentTiles.level_1 && tile.decID == TileEnums.Decorations.stairs)
             {
@@ -88,7 +89,7 @@ public static class PathUtils
         }
         if(tile.X - 1 >= 0 && tile.X - 1 < 20 && tile.Y >= 0 & tile.Y < 20)
         {
-            Tile temp = TileMap.GetTileWithIndex(tile.X - 1, tile.Y);
+            Tile temp = tileMap.GetTileWithIndex(tile.X - 1, tile.Y);
             if (temp.envTileID != TileEnums.EnviromentTiles.level_1 && temp.envTileID != TileEnums.EnviromentTiles.level_2 ||
                 temp.envTileID == TileEnums.EnviromentTiles.level_1 && tile.decID == TileEnums.Decorations.stairs)
             {
@@ -97,7 +98,7 @@ public static class PathUtils
         }
         if (tile.X >= 0 && tile.X < 20 && tile.Y + 1 >= 0 & tile.Y + 1 < 20)
         {
-            Tile temp = TileMap.GetTileWithIndex(tile.X, tile.Y + 1);
+            Tile temp = tileMap.GetTileWithIndex(tile.X, tile.Y + 1);
             if (temp.envTileID != TileEnums.EnviromentTiles.level_1 && temp.envTileID != TileEnums.EnviromentTiles.level_2 ||
                 temp.envTileID == TileEnums.EnviromentTiles.level_1 && tile.decID == TileEnums.Decorations.stairs)
             {
@@ -106,7 +107,7 @@ public static class PathUtils
         }
         if (tile.X >= 0 && tile.X < 20 && tile.Y - 1 >= 0 & tile.Y - 1 < 20)
         {
-            Tile temp = TileMap.GetTileWithIndex(tile.X, tile.Y - 1);
+            Tile temp = tileMap.GetTileWithIndex(tile.X, tile.Y - 1);
             if (temp.envTileID != TileEnums.EnviromentTiles.level_1 && temp.envTileID != TileEnums.EnviromentTiles.level_2 ||
                 temp.envTileID == TileEnums.EnviromentTiles.level_1 && tile.decID == TileEnums.Decorations.stairs)
             {
@@ -117,7 +118,7 @@ public static class PathUtils
         // extra four dimensions
         if (tile.X + 1>= 0 && tile.X + 1 < 20 && tile.Y + 1 >= 0 & tile.Y + 1 < 20)
         {
-            Tile temp = TileMap.GetTileWithIndex(tile.X + 1, tile.Y + 1);
+            Tile temp = tileMap.GetTileWithIndex(tile.X + 1, tile.Y + 1);
             if (temp.envTileID != TileEnums.EnviromentTiles.level_1 && temp.envTileID != TileEnums.EnviromentTiles.level_2 ||
                 temp.envTileID == TileEnums.EnviromentTiles.level_1 && tile.decID == TileEnums.Decorations.stairs)
             {
@@ -126,7 +127,7 @@ public static class PathUtils
         }
         if (tile.X + 1 >= 0 && tile.X + 1 < 20 && tile.Y - 1 >= 0 & tile.Y - 1 < 20)
         {
-            Tile temp = TileMap.GetTileWithIndex(tile.X + 1, tile.Y - 1);
+            Tile temp = tileMap.GetTileWithIndex(tile.X + 1, tile.Y - 1);
             if (temp.envTileID != TileEnums.EnviromentTiles.level_1 && temp.envTileID != TileEnums.EnviromentTiles.level_2 ||
                 temp.envTileID == TileEnums.EnviromentTiles.level_1 && tile.decID == TileEnums.Decorations.stairs)
             {
@@ -135,7 +136,7 @@ public static class PathUtils
         }
         if (tile.X - 1 >= 0 && tile.X - 1 < 20 && tile.Y + 1 >= 0 & tile.Y + 1 < 20)
         {
-            Tile temp = TileMap.GetTileWithIndex(tile.X - 1, tile.Y + 1);
+            Tile temp = tileMap.GetTileWithIndex(tile.X - 1, tile.Y + 1);
             if (temp.envTileID != TileEnums.EnviromentTiles.level_1 && temp.envTileID != TileEnums.EnviromentTiles.level_2 ||
                 temp.envTileID == TileEnums.EnviromentTiles.level_1 && tile.decID == TileEnums.Decorations.stairs)
             {
@@ -144,7 +145,7 @@ public static class PathUtils
         }
         if (tile.X - 1 >= 0 && tile.X - 1 < 20 && tile.Y - 1 >= 0 & tile.Y - 1 < 20)
         {
-            Tile temp = TileMap.GetTileWithIndex(tile.X - 1, tile.Y - 1);
+            Tile temp = tileMap.GetTileWithIndex(tile.X - 1, tile.Y - 1);
             if (temp.envTileID != TileEnums.EnviromentTiles.level_1 && temp.envTileID != TileEnums.EnviromentTiles.level_2 ||
                 temp.envTileID == TileEnums.EnviromentTiles.level_1 && tile.decID == TileEnums.Decorations.stairs)
             {

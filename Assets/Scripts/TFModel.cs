@@ -5,6 +5,7 @@ using Tensorflow;
 using static Tensorflow.Binding;
 using NumSharp;
 using static TileMapLogic.TileMap;
+using TileMapLogic;
 
 
 public class TFModel : MonoBehaviour
@@ -51,6 +52,7 @@ public class TFModel : MonoBehaviour
 
     public static float PredictKillRatio(NDArray map, NDArray weapons)
     {
+        map = ConcatCoverChannel(map);
         killRatioGraph.as_default();
         Tensor input_maps = killRatioGraph.OperationByName("input_layer");
         Tensor input_weapons = killRatioGraph.OperationByName("input_12");
@@ -135,9 +137,9 @@ public class TFModel : MonoBehaviour
         return input_weapons;
     }
 
-    public static NDArray GetInputMap()
+    public static NDArray GetInputMap(TileMap tileMap)
     {
-        var map = GetTileMapToString();
+        var map = tileMap.GetTileMapToString();
         var input_map = ArrayParsingUtils.ParseToChannelArray(map);
         input_map = np.expand_dims(input_map, 0);
         return input_map;

@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Threading;
 using UnityEngine.UI;
 using NumSharp;
-using static TileMapLogic.TileMap;
+using TileMapLogic;
 using static MLSuggestionsMng;
 using static TFModel;
 
@@ -14,13 +14,16 @@ public class AuthoringTool : MonoBehaviour
     private FPSClasses fpsClasses;
     public MetricsManager metricsMng;
     public MLSuggestionsMng suggestionsMng;
-    public TileMapView tileMapView;
+    public static TileMapView tileMapView;
+    public static TileMap tileMapMain;
 
     private NDArray input_map;
     private NDArray input_weapons;
 
     public Dropdown playerBlueDropdown;
     public Dropdown playerRedDropdown;
+    public static CharacterParams blueClass;
+    public static CharacterParams redClass;
     public Text arc_text;
 
 
@@ -28,41 +31,23 @@ public class AuthoringTool : MonoBehaviour
     void Start()
     {
         fpsClasses = GetComponentInChildren<FPSClasses>();
-        InitTileMap(tileMapView.gridRect.transform);
-        InitRegions();
-        PaintRegion(3, 0, 4);
-        PaintRegion(0, 3, 5);
+        SetClassParams();
+
+        tileMapMain = new TileMap();
+        tileMapView = GameObject.FindGameObjectWithTag("tileMapView").GetComponent<TileMapView>();
+        tileMapMain.InitTileMap(tileMapView.gridRect.transform);
+        tileMapMain.InitRegions();
+        tileMapMain.PaintRegion(3, 0, 4);
+        tileMapMain.PaintRegion(0, 3, 5);
 
         //InvokeRepeating("FindClassBalance", 2.0f, 5.0f);
+        //Invoke("GeneratePickUps", 6.0f);
     }
 
-    //private NDArray GetMapInput()
-    //{
-    //    var map = GetTileMapToString();
-    //    input_map = ArrayParsingUtils.ParseToChannelArray(map);
-    //    input_map = np.expand_dims(input_map, 0);
-    //    return input_map;
-    //}
-
-    // TODO : Make sure that team0 (red) is first in the array and then team1(blue).
-    private NDArray GetWeaponInputs()
+    public void SetClassParams()
     {
-        var teamBlue = new CharacterClass(fpsClasses.characters[playerBlueDropdown.value].class_params);
-        var teamRed = new CharacterClass(fpsClasses.characters[playerRedDropdown.value].class_params);
-
-        var blue = teamBlue.Class_params;
-        var red = teamRed.Class_params;
-
-        // concat two arrays (first red then blue)
-        var merged = new double[blue.Length + red.Length];
-        red.CopyTo(merged, 0);
-        blue.CopyTo(merged, blue.Length);
-
-        NDArray arr = new NDArray(merged);
-        input_weapons = np.array(arr);
-
-        input_weapons = np.expand_dims(input_weapons, 0);
-        return input_weapons;
+        blueClass = fpsClasses.characters[playerBlueDropdown.value];
+        redClass = fpsClasses.characters[playerRedDropdown.value];
     }
 
     public void DeathHeatmapButtonHandler()
@@ -84,7 +69,7 @@ public class AuthoringTool : MonoBehaviour
 
     private void SetModelInput()
     {
-        input_map = GetInputMap();
+        input_map = GetInputMap(tileMapMain);
         input_weapons = GetInputWeapons(fpsClasses.characters[playerBlueDropdown.value], 
             fpsClasses.characters[playerRedDropdown.value]);
     }
@@ -92,20 +77,23 @@ public class AuthoringTool : MonoBehaviour
     public void KillRatioButtonHandler()
     {
         SetModelInput();
-        input_map = ConcatCoverChannel(input_map);
         var results = PredictKillRatio(input_map, input_weapons);
         Debug.Log(results);
     }
 
     public async void FindClassBalance()
     {
-        var balanced_classes = await GetBalancedMatchup(fpsClasses.matchups, GetInputMap());
-        Debug.Log(balanced_classes[0] + ", " + balanced_classes[1]);
+        var balanced_classes = await GetBalancedMatchup(fpsClasses.matchups, GetInputMap(tileMapMain));
+        redClass = balanced_classes[0];
+        blueClass = balanced_classes[1];
+        Debug.Log("team red: " + redClass.name);
+        Debug.Log("team blue: " + blueClass.name);
     }
 
-    public async void GeneratePickUps()
+    public void GeneratePickUps()
     {
-
+        var map = SpawnBalancedPickUps(tileMapMain);
+        tileMapMain.SetTileMap(map);
     }
 
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TileMapLogic;
+using static AuthoringTool;
 
 public class PathManager : MonoBehaviour
 {
@@ -32,8 +33,8 @@ public class PathManager : MonoBehaviour
 
     public bool IsMapPlayable(Vector2 start, Vector2 goal)
     {
-       //return PathUtils.DFS_Iterative(TileMap.GetTileWithIndex((int)start.x, (int)start.y), TileMap.GetTileWithIndex((int)goal.x, (int)goal.y));
-       PathUtils.BFS(TileMap.GetTileWithIndex((int)start.x, (int)start.y), TileMap.GetTileWithIndex((int)goal.x, (int)goal.y));
+       PathUtils.BFS(tileMapMain.GetTileWithIndex((int)start.x, (int)start.y), 
+           tileMapMain.GetTileWithIndex((int)goal.x, (int)goal.y), tileMapMain);
        return true;
     }
 
@@ -43,7 +44,8 @@ public class PathManager : MonoBehaviour
         {
             UnhighlightPathBetweenPlayerBases();
         }
-        highlightedTiles = PathUtils.BFSGetShortestPath(TileMap.GetTileWithIndex((int)start.x, (int)start.y), TileMap.GetTileWithIndex((int)goal.x, (int)goal.y));
+        highlightedTiles = PathUtils.BFSGetShortestPath(tileMapMain.GetTileWithIndex((int)start.x, (int)start.y), 
+            tileMapMain.GetTileWithIndex((int)goal.x, (int)goal.y), tileMapMain);
         HighlightPathBetweenPlayerBases();
     }
 
