@@ -123,7 +123,7 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
 
             int index = Brush.Instance.currTileBrush;
 
-            tile.PaintTile(Brush.Instance.brushThemes[index]);
+            tile.PaintTile(Brush.Instance.brushThemes[index], tileMapMain);
             Debug.Log(tile.gameObj.name + "_" + tile.envTileID + " " + tile.decID);
         }
     }
@@ -138,7 +138,7 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
             // zero index is always the empty decoration, that's why we add plus one to current brush index.
             int index = Brush.Instance.currDecBrush;
 
-            tile.PaintDecoration(Brush.Instance.decorations[index]);
+            tile.PaintDecoration(Brush.Instance.decorations[index], tileMapMain);
             Debug.Log(tile.gameObj.name + "_" + tile.envTileID + " " + tile.decID);
         }
     }

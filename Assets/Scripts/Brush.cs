@@ -58,7 +58,7 @@ public class Brush : MonoBehaviour
         Tile tile = tileMapMain.GetTileWithIndex(posX, posY);
         if(tile.envTileID == old.envTileID)
         {
-            tile.PaintTile(fill);
+            tile.PaintTile(fill, tileMapMain);
             FillRegion(posX + 1, posY, fill, old);
             FillRegion(posX, posY + 1, fill, old);
             FillRegion(posX - 1, posY, fill, old);

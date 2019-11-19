@@ -45,7 +45,7 @@ public class MLSuggestionsMng : MonoBehaviour
         return resultIdx;
     }
 
-    // TODO : it has bugs with the tile painting.
+    // TODO : More than one tile are spawned inside the region.
     public static Tile[,] SpawnBalancedPickUps(TileMap tilemapMain)
     {
         TileMap map;
@@ -60,7 +60,6 @@ public class MLSuggestionsMng : MonoBehaviour
         for (int m = 0; m < 20; m++)
         {
             // this will erase all previous decorations on the main map.
-            // TODO : keep stairs.
             tileMapMain.RemoveDecorations();
             map = new TileMap(tileMapMain.GetTileMap());
             // iterate regions.

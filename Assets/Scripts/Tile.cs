@@ -17,33 +17,28 @@ public struct Tile
 
     public Tile(GameObject prefab, Transform parent, TileEnums.EnviromentTiles envTileID, TileEnums.Decorations decID ,int posX, int posY)
     {
-        this.X = posX;
-        this.Y = posY;
+        X = posX;
+        Y = posY;
         this.parent = parent;
-        this.gameObj = GameObject.Instantiate(prefab, parent);
+        gameObj = GameObject.Instantiate(prefab, parent);
         gameObj.name = "X: " + posX + " Y: " + posY;
         image = gameObj.GetComponent<Image>();
         this.envTileID = envTileID;
         this.decID = decID;
     }
 
-    public void PaintTile(TileThemes tileTheme)
+    public void PaintTile(TileThemes tileTheme, TileMap tileMap)
     {
         image.sprite = tileTheme.sprite;
         envTileID = tileTheme.envTileID;
-        tileMapMain.SetTileMapTile(this);
+        tileMap.SetTileMapTile(this);
     }
 
-    public void SetTile(Tile tile, TileMap tileMap)
+    public void SetTile(Tile tile)
     {
-        //this.X = tile.X;
-        //this.Y = tile.Y;
-        //this.gameObj = tile.gameObj;
         image.sprite = tile.image.sprite;
-        //PaintTile(Brush.Instance.brushThemes[(int)tile.envTileID]);
         envTileID = tile.envTileID;
-        PaintDecoration(Brush.Instance.decorations[(int) tile.decID]);
-        tileMap.SetTileMapTile(this);
+        decID = tile.decID;
     }
 
     public void PaintTile(Color color)
@@ -68,7 +63,7 @@ public struct Tile
         }
     }
 
-    public void PaintDecoration(Decoration dec)
+    public void PaintDecoration(Decoration dec, TileMap tileMap)
     {
         // case where tile is not decorated.
         if (dec.prefab != null && gameObj.transform.childCount == 0)
@@ -76,29 +71,29 @@ public struct Tile
             GameObject decorationObj = GameObject.Instantiate(dec.prefab, gameObj.transform);
             ResizeDecoration(decorationObj, 0.6f);
             decID = dec.decorationID;
-            tileMapMain.SetTileMapTile(this);
+            tileMap.SetTileMapTile(this);
         }
         // case where we change the tile sprite, no reason for instatiation.
         else if (dec.prefab != null && gameObj.transform.childCount > 0)
         {
             gameObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = dec.sprite;
             decID = dec.decorationID;
-            tileMapMain.SetTileMapTile(this);
+            tileMap.SetTileMapTile(this);
         }
         // this means we are using the eraser.
         else if(dec.prefab == null && gameObj.transform.childCount > 0)
         {
-            RemoveDecoration();
+            RemoveDecoration(tileMapMain);
         }
     }
 
-    public void RemoveDecoration()
+    public void RemoveDecoration(TileMap tileMap)
     {
         if (gameObj.transform.childCount > 0)
         {
             GameObject.Destroy(this.gameObj.transform.GetChild(0).gameObject);
             decID = TileEnums.Decorations.empty;
-            tileMapMain.SetTileMapTile(this);
+            tileMap.SetTileMapTile(this);
         }
     }
 

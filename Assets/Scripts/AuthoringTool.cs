@@ -94,6 +94,7 @@ public class AuthoringTool : MonoBehaviour
     {
         var map = SpawnBalancedPickUps(tileMapMain);
         tileMapMain.SetTileMap(map);
+        tileMapMain.RenderTileMap();
     }
 
 }
