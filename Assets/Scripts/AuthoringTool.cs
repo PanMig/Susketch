@@ -52,6 +52,7 @@ public class AuthoringTool : MonoBehaviour
 
     public void DeathHeatmapButtonHandler()
     {
+        Debug.Log("death heatmap");
         SetModelInput();
         var results = PredictDeathHeatmap(input_map, input_weapons);
         var heatmap = ArrayParsingUtils.Make2DArray(results, 4, 4);
@@ -72,6 +73,7 @@ public class AuthoringTool : MonoBehaviour
         input_map = GetInputMap(tileMapMain);
         input_weapons = GetInputWeapons(fpsClasses.characters[playerBlueDropdown.value], 
             fpsClasses.characters[playerRedDropdown.value]);
+        Debug.Log("Got input");
     }
 
     public void KillRatioButtonHandler()

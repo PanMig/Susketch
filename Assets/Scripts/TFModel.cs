@@ -17,9 +17,10 @@ public class TFModel : MonoBehaviour
 
     public void Start()
     {
-        heatmapGraph = InitGraph(heatmapGraph, "death_heatmap");
+        //heatmapGraph = InitGraph(heatmapGraph, "death_heatmap");
         killRatioGraph = InitGraph(heatmapGraph, "kill_ratio");
         dArcGraph = InitGraph(dArcGraph, "dramatic_arc");
+        Debug.Log("graphs loaded");
     }
 
     private Graph InitGraph(Graph graph, string pbFile)
@@ -32,10 +33,13 @@ public class TFModel : MonoBehaviour
 
     public static float[] PredictDeathHeatmap(NDArray map, NDArray weapons)
     {
-        heatmapGraph.as_default();
-        Tensor input_maps = heatmapGraph.OperationByName("input_layer");
-        Tensor input_weapons = heatmapGraph.OperationByName("input_1");
-        Tensor output = heatmapGraph.OperationByName("output_layer/BiasAdd");
+        var graph = new Graph();
+        var model_file = Resources.Load<TextAsset>("death_heatmap").bytes;
+        graph.Import(model_file);
+        graph.as_default();
+        Tensor input_maps = graph.OperationByName("input_layer");
+        Tensor input_weapons = graph.OperationByName("input_1");
+        Tensor output = graph.OperationByName("output_layer/BiasAdd");
 
         using (var sess = tf.Session())
         {
@@ -44,8 +48,10 @@ public class TFModel : MonoBehaviour
                 new FeedItem(input_maps, map),
                 new FeedItem(input_weapons, weapons)
             });
+            Debug.Log("session 2");
 
             var x = results.ToArray<float>();
+            Debug.Log("Model inference ok");
             return x;
         }
     }
