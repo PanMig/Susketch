@@ -38,7 +38,7 @@ MonoBehaviour:
   dropdownItemTextColor: {r: 1, g: 1, b: 1, a: 1}
   dropdownItemIconColor: {r: 255, g: 255, b: 255, a: 1}
   selectorFont: {fileID: 11400000, guid: 4bd810f1cbcb0f446a8f5a31453e243f, type: 2}
-  selectorColor: {r: 0.37254903, g: 0.40784314, b: 0.4509804, a: 1}
+  selectorColor: {r: 0.6, g: 0.6, b: 0.6, a: 1}
   selectorHighlightedColor: {r: 1, g: 1, b: 1, a: 1}
   hSelectorInvertAnimation: 0
   hSelectorLoopSelection: 0
@@ -84,10 +84,10 @@ MonoBehaviour:
   switchHandleOffColor: {r: 0.37254903, g: 0.41176474, b: 0.45098042, a: 1}
   toggleFont: {fileID: 11400000, guid: 4bd810f1cbcb0f446a8f5a31453e243f, type: 2}
   toggleThemeType: 0
-  toggleTextColor: {r: 0.37254903, g: 0.4117647, b: 0.4509804, a: 1}
-  toggleBorderColor: {r: 0.37254903, g: 0.4117647, b: 0.4509804, a: 1}
-  toggleBackgroundColor: {r: 0.37254903, g: 0.4117647, b: 0.4509804, a: 1}
-  toggleCheckColor: {r: 0.37254903, g: 0.4117647, b: 0.4509804, a: 1}
+  toggleTextColor: {r: 1, g: 1, b: 1, a: 1}
+  toggleBorderColor: {r: 1, g: 1, b: 1, a: 1}
+  toggleBackgroundColor: {r: 1, g: 1, b: 1, a: 1}
+  toggleCheckColor: {r: 1, g: 1, b: 1, a: 1}
   tooltipFont: {fileID: 11400000, guid: 84dd14695854bbc43a5faa24fcf93d0d, type: 2}
   tooltipTextColor: {r: 1, g: 1, b: 1, a: 1}
   tooltipBackgroundColor: {r: 0.37254903, g: 0.4117647, b: 0.4509804, a: 1}
