@@ -61,18 +61,6 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
-Assets/Plugins/Tensorflow.NET/Assemblies/Google.Protobuf.dll
-Assets/Plugins/Tensorflow.NET/Assemblies/Google.Protobuf.dll.meta
-Assets/Plugins/Tensorflow.NET/Assemblies/NumSharp.Core.dll
-Assets/Plugins/Tensorflow.NET/Assemblies/NumSharp.Core.dll.meta
-Assets/Plugins/Tensorflow.NET/Assemblies/System.Buffers.dll
-Assets/Plugins/Tensorflow.NET/Assemblies/System.Buffers.dll.meta
-Assets/Plugins/Tensorflow.NET/Assemblies/System.Memory.dll
-Assets/Plugins/Tensorflow.NET/Assemblies/System.Memory.dll.meta
-Assets/Plugins/Tensorflow.NET/Assemblies/System.Runtime.CompilerServices.Unsafe.dll
-Assets/Plugins/Tensorflow.NET/Assemblies/System.Runtime.CompilerServices.Unsafe.dll.meta
-Assets/Plugins/Tensorflow.NET/Assemblies/tensorflow.dll
-Assets/Plugins/Tensorflow.NET/Assemblies/tensorflow.dll.meta
-Assets/Plugins/Tensorflow.NET/Assemblies/TensorFlow.NET.dll
-Assets/Plugins/Tensorflow.NET/Assemblies/TensorFlow.NET.dll.meta
+Assets/Plugins/Tensorflow
+Assets/Plugins/Tensorflow.meta
 Packages/
