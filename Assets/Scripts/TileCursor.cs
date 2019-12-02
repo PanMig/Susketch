@@ -125,6 +125,7 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
 
             tile.PaintTile(Brush.Instance.brushThemes[index], tileMapMain);
             Debug.Log(tile.gameObj.name + "_" + tile.envTileID + " " + tile.decID);
+            EventManagerUI.onTileMapEdit();
         }
     }
 
@@ -140,6 +141,7 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
 
             tile.PaintDecoration(Brush.Instance.decorations[index], tileMapMain);
             Debug.Log(tile.gameObj.name + "_" + tile.envTileID + " " + tile.decID);
+            EventManagerUI.onTileMapEdit();
         }
     }
 

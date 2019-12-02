@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e2e8aa420c72754da64b48467523478, type: 3}
   m_Name: Sniper
   m_EditorClassIdentifier: 
+  className: Sniper
   class_params:
   - 0
   - 0.410714285714286

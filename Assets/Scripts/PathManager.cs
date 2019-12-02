@@ -4,10 +4,33 @@ using UnityEngine;
 using TileMapLogic;
 using static AuthoringTool;
 
+public class PlayerPathProperties
+{
+    public bool pathActive = false;
+    public List<Tile> highlightedTiles = new List<Tile>();
+    public PathManager.Targets target; 
+
+    public PlayerPathProperties()
+    {
+        
+    }
+
+    public void SetpathActive(bool value)
+    {
+        pathActive = value;
+    }
+}
+
+
 public class PathManager : MonoBehaviour
 {
     public static PathManager Instance { get; private set; }
-    private List<Tile> highlightedTiles = new List<Tile>();
+
+    private PlayerPathProperties pathBlueProps = new PlayerPathProperties();
+    private PlayerPathProperties pathRedProps = new PlayerPathProperties();
+
+    public enum Targets {health, armor, damage, enemyBase, stair };
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -20,15 +43,48 @@ public class PathManager : MonoBehaviour
         }
     }
 
-
-    private void Update()
+    private void Start()
     {
-        
+        EventManagerUI.onTileMapEdit += PathHighlightListener;
+        EventManagerUI.onTileMapEdit += UnHighlightPaths;
     }
 
-    public void PathHighlighterHandler()
+    public void SetBluePathActivation(bool value)
     {
-        HighlightShortestPath(new Vector2(19, 0), new Vector2(0, 19));
+        pathBlueProps.pathActive = value;
+    }
+
+    public void SetRedPathActivation(bool value)
+    {
+        pathRedProps.pathActive = value;
+    }
+
+    public void UnHighlightPaths()
+    {
+        Debug.Log("Unhighlight paths");
+        if (!pathBlueProps.pathActive)
+        {
+            UnhighlightPathBetweenPlayerBases(pathBlueProps);
+        }
+        if (!pathRedProps.pathActive)
+        {
+            UnhighlightPathBetweenPlayerBases(pathRedProps);
+        }
+    }
+
+    public void PathHighlightListener()
+    {
+        if (pathBlueProps.pathActive)
+        {
+            //HighlightShortestPath(new Vector2(19, 0), new Vector2(0, 19), pathBlueProps);
+            IPathFinding enemyPath = new EnemyBasePath();
+            enemyPath.FindShortestPath(new Vector2(19, 0), new Vector2(0, 19), pathBlueProps);
+
+        }
+        if (pathRedProps.pathActive)
+        {
+            HighlightShortestPath(new Vector2(0, 19), new Vector2(19, 0), pathRedProps);
+        }
     }
 
     public bool IsMapPlayable(Vector2 start, Vector2 goal)
@@ -38,28 +94,30 @@ public class PathManager : MonoBehaviour
        return true;
     }
 
-    public void HighlightShortestPath(Vector2 start, Vector2 goal)
+    public void HighlightShortestPath(Vector2 start, Vector2 goal, PlayerPathProperties playerProps)
     {
-        if(highlightedTiles.Count > 0)
+        if (playerProps.highlightedTiles.Count > 0)
         {
-            UnhighlightPathBetweenPlayerBases();
+            UnhighlightPathBetweenPlayerBases(playerProps);
         }
-        highlightedTiles = PathUtils.BFSGetShortestPath(tileMapMain.GetTileWithIndex((int)start.x, (int)start.y), 
+        playerProps.highlightedTiles = PathUtils.BFSGetShortestPath(tileMapMain.GetTileWithIndex((int)start.x, (int)start.y),
             tileMapMain.GetTileWithIndex((int)goal.x, (int)goal.y), tileMapMain);
-        HighlightPathBetweenPlayerBases();
+        HighlightPathBetweenPlayerBases(playerProps);
     }
 
-    private void HighlightPathBetweenPlayerBases()
+    public void HighlightPathBetweenPlayerBases(PlayerPathProperties playerProps)
     {
-        foreach (var tile in highlightedTiles)
+        var tiles = playerProps.highlightedTiles;
+        foreach (var tile in tiles)
         {
             tile.Highlight();
         }
     }
 
-    private void UnhighlightPathBetweenPlayerBases()
+    public void UnhighlightPathBetweenPlayerBases(PlayerPathProperties playerProps)
     {
-        foreach (var tile in highlightedTiles)
+        var tiles = playerProps.highlightedTiles;
+        foreach (var tile in tiles)
         {
             tile.Unhighlight();
         }

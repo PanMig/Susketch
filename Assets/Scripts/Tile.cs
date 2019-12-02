@@ -48,6 +48,7 @@ public struct Tile
 
     public void Highlight()
     {
+        Debug.Log("Highlight");
         GameObject decorationObj = GameObject.Instantiate(Brush.Instance.highlightPrefab, gameObj.transform);
         ResizeDecoration(decorationObj, 1.0f);
     }

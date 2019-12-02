@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class FPSClasses : MonoBehaviour
 {
-    public CharacterParams[] characters;
+    public CharacterParams[] characters; // TODO : characters should have the same order elements based on the dropdowns
     public CharacterParams scoutParams;
     public CharacterParams sniperParams;
     public CharacterParams soldierParams;

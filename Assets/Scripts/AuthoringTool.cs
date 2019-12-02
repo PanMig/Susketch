@@ -7,6 +7,7 @@ using NumSharp;
 using TileMapLogic;
 using static MLSuggestionsMng;
 using static TFModel;
+using Michsky.UI.ModernUIPack;
 
 // Change it with the TEMPLATE METHOD pattern.
 public class AuthoringTool : MonoBehaviour
@@ -20,8 +21,8 @@ public class AuthoringTool : MonoBehaviour
     private NDArray input_map;
     private NDArray input_weapons;
 
-    public Dropdown playerBlueDropdown;
-    public Dropdown playerRedDropdown;
+    public HorizontalSelector blueSelector;
+    public HorizontalSelector redSelector;
     public static CharacterParams blueClass;
     public static CharacterParams redClass;
     public Text arc_text;
@@ -44,10 +45,15 @@ public class AuthoringTool : MonoBehaviour
         //Invoke("GeneratePickUps", 6.0f);
     }
 
+    private void Update()
+    {
+        
+    }
+
     public void SetClassParams()
     {
-        blueClass = fpsClasses.characters[playerBlueDropdown.value];
-        redClass = fpsClasses.characters[playerRedDropdown.value];
+        blueClass = fpsClasses.characters[blueSelector.index];
+        redClass = fpsClasses.characters[redSelector.index];
     }
 
     public void DeathHeatmapButtonHandler()
@@ -68,19 +74,19 @@ public class AuthoringTool : MonoBehaviour
         else { arc_text.color = Color.red; }
     }
 
-    private void SetModelInput()
-    {
-        input_map = GetInputMap(tileMapMain);
-        input_weapons = GetInputWeapons(fpsClasses.characters[playerBlueDropdown.value], 
-            fpsClasses.characters[playerRedDropdown.value]);
-        Debug.Log("Got input");
-    }
-
     public void KillRatioButtonHandler()
     {
         SetModelInput();
         var results = PredictKillRatio(input_map, input_weapons);
         Debug.Log(results);
+    }
+
+    private void SetModelInput()
+    {
+        input_map = GetInputMap(tileMapMain);
+        input_weapons = GetInputWeapons(fpsClasses.characters[blueSelector.index], 
+            fpsClasses.characters[redSelector.index]);
+        Debug.Log("Got input");
     }
 
     public async void FindClassBalance()
