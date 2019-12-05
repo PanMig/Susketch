@@ -27,6 +27,10 @@ public class AuthoringTool : MonoBehaviour
     public static CharacterParams redClass;
     public Text arc_text;
 
+    private void OnEnable()
+    {
+
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -40,9 +44,15 @@ public class AuthoringTool : MonoBehaviour
         tileMapMain.InitRegions();
         tileMapMain.PaintRegion(3, 0, 4);
         tileMapMain.PaintRegion(0, 3, 5);
+        // Invoke methods
+        Invokes();
+    }
 
-        //InvokeRepeating("FindClassBalance", 2.0f, 5.0f);
-        //Invoke("GeneratePickUps", 6.0f);
+    private void Invokes()
+    {
+        InvokeRepeating("OnDeathHeatmap", 1.0f, 30.0f);
+        InvokeRepeating("DramaticArcButtonHandler", 1.0f, 15.0f);
+        InvokeRepeating("KillRatioButtonHandler", 1.0f, 15.0f);
     }
 
     private void Update()
@@ -58,7 +68,14 @@ public class AuthoringTool : MonoBehaviour
 
     public void DeathHeatmapButtonHandler()
     {
-        Debug.Log("death heatmap");
+        SetModelInput();
+        var results = PredictDeathHeatmap(input_map, input_weapons);
+        var heatmap = ArrayParsingUtils.Make2DArray(results, 4, 4);
+        metricsMng.DeathHeatmapButtonListener(heatmap);
+    }
+
+    public void OnDeathHeatmap()
+    {
         SetModelInput();
         var results = PredictDeathHeatmap(input_map, input_weapons);
         var heatmap = ArrayParsingUtils.Make2DArray(results, 4, 4);
@@ -69,16 +86,14 @@ public class AuthoringTool : MonoBehaviour
     {
         SetModelInput();
         var results = PredictDramaticArc(input_map, input_weapons);
-        arc_text.text = results.ToString();
-        if (results > 0) { arc_text.color = Color.blue; }
-        else { arc_text.color = Color.red; }
+        metricsMng.GenerateDramaticArcGraph(results);
     }
 
     public void KillRatioButtonHandler()
     {
         SetModelInput();
         var results = PredictKillRatio(input_map, input_weapons);
-        Debug.Log(results);
+        metricsMng.SetKillRatioProgressBar(results * 100);
     }
 
     private void SetModelInput()

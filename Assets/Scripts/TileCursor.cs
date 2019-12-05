@@ -124,8 +124,8 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
             int index = Brush.Instance.currTileBrush;
 
             tile.PaintTile(Brush.Instance.brushThemes[index], tileMapMain);
-            Debug.Log(tile.gameObj.name + "_" + tile.envTileID + " " + tile.decID);
-            EventManagerUI.onTileMapEdit();
+            //Debug.Log(tile.gameObj.name + "_" + tile.envTileID + " " + tile.decID);
+            EventManagerUI.onTileMapEdit?.Invoke();
         }
     }
 
@@ -140,8 +140,8 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
             int index = Brush.Instance.currDecBrush;
 
             tile.PaintDecoration(Brush.Instance.decorations[index], tileMapMain);
-            Debug.Log(tile.gameObj.name + "_" + tile.envTileID + " " + tile.decID);
-            EventManagerUI.onTileMapEdit();
+            //Debug.Log(tile.gameObj.name + "_" + tile.envTileID + " " + tile.decID);
+            EventManagerUI.onTileMapEdit?.Invoke();
         }
     }
 

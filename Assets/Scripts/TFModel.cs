@@ -77,7 +77,7 @@ public class TFModel : MonoBehaviour
         }
     }
 
-    public static float PredictDramaticArc(NDArray map, NDArray weapons)
+    public static float[] PredictDramaticArc(NDArray map, NDArray weapons)
     {
         dArcGraph.as_default();
         Tensor input_maps = dArcGraph.OperationByName("input_layer");
@@ -120,9 +120,15 @@ public class TFModel : MonoBehaviour
                 new FeedItem(input_weapons, weapons)
             });
 
-            var value = output_1 + output_2 + output_3 + output_4 + output_5;
-            var x = value.ToArray<float>()[0];
-            return x;
+            //var value = output_1 + output_2 + output_3 + output_4 + output_5;
+            //var x = value.ToArray<float>()[0];
+            float[] values = new float[5];
+            values[0] = output_1.ToArray<float>()[0];
+            values[1] = output_2.ToArray<float>()[0];
+            values[2] = output_3.ToArray<float>()[0];
+            values[3] = output_4.ToArray<float>()[0];
+            values[4] = output_5.ToArray<float>()[0];
+            return values;
         }
     }
 

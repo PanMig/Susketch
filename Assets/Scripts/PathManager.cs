@@ -6,13 +6,14 @@ using static AuthoringTool;
 
 public class PlayerPathProperties
 {
+    public int team; // red = 0, blue = 1
     public bool pathActive = false;
     public List<Tile> highlightedTiles = new List<Tile>();
     public PathManager.Targets target; 
 
-    public PlayerPathProperties()
+    public PlayerPathProperties(int team)
     {
-        
+        this.team = team;
     }
 
     public void SetpathActive(bool value)
@@ -26,8 +27,8 @@ public class PathManager : MonoBehaviour
 {
     public static PathManager Instance { get; private set; }
 
-    private PlayerPathProperties pathBlueProps = new PlayerPathProperties();
-    private PlayerPathProperties pathRedProps = new PlayerPathProperties();
+    private PlayerPathProperties pathBlueProps = new PlayerPathProperties(1);
+    private PlayerPathProperties pathRedProps = new PlayerPathProperties(0);
 
     public enum Targets {health, armor, damage, enemyBase, stair };
 
@@ -110,7 +111,7 @@ public class PathManager : MonoBehaviour
         var tiles = playerProps.highlightedTiles;
         foreach (var tile in tiles)
         {
-            tile.Highlight();
+            tile.Highlight(playerProps.team);
         }
     }
 

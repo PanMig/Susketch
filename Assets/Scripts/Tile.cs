@@ -46,18 +46,27 @@ public struct Tile
         image.color = color;
     }
 
-    public void Highlight()
+    public void Highlight(int team)
     {
-        Debug.Log("Highlight");
-        GameObject decorationObj = GameObject.Instantiate(Brush.Instance.highlightPrefab, gameObj.transform);
-        ResizeDecoration(decorationObj, 1.0f);
+        if(team == 0)
+        {
+            GameObject decorationObj = GameObject.Instantiate(Brush.Instance.highlightPrefabRed, gameObj.transform);
+            ResizeDecoration(decorationObj, 1.0f);
+        }
+        else
+        {
+            GameObject decorationObj = GameObject.Instantiate(Brush.Instance.highlightPrefabBlue, gameObj.transform);
+            ResizeDecoration(decorationObj, 1.0f);
+        }
+
     }
 
     public void Unhighlight()
     {
         for (int i = 0; i < gameObj.transform.childCount; i++)
         {
-            if(gameObj.transform.GetChild(i).gameObject.name == Brush.Instance.highlightPrefab.gameObject.name + "(Clone)")
+            if(gameObj.transform.GetChild(i).gameObject.name == Brush.Instance.highlightPrefabRed.gameObject.name + "(Clone)" ||
+               gameObj.transform.GetChild(i).gameObject.name == Brush.Instance.highlightPrefabBlue.gameObject.name + "(Clone)")
             {
                 GameObject.Destroy(gameObj.transform.GetChild(i).gameObject);
             }

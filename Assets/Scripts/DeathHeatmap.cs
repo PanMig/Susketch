@@ -7,36 +7,23 @@ using TileMapLogic;
 //TODO : there is a lot of repeat code from TileMapview needs fix
 public class DeathHeatmap : MonoBehaviour
 {
-    private Tile[,] heatmap = new Tile[4, 4];
     private RectTransform gridRect;
     private GridLayoutGroup gridLayoutGroup;
     public GameObject prefab;
-
+    private Tile[,] heatmap;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        InitView(); 
+        Init(); 
     }
 
-    public void InitView()
+    public void Init()
     {
         gridRect = GetComponent<RectTransform>();
         gridLayoutGroup = GetComponent<GridLayoutGroup>();
-        CreateHeatmap();
-        gameObject.SetActive(false);
-    }
-
-
-    private void CreateHeatmap()
-    {
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 4; j++)
-            {
-                heatmap[i, j] = new Tile(prefab, this.transform, 0, 0, 0, 0);
-            }
-        }
+        CreateDeathHeatmap();
+        DisableHeatmap();
     }
 
     public void SetGridLayoutGroup(int rows, int cols)
@@ -49,18 +36,38 @@ public class DeathHeatmap : MonoBehaviour
         }
     }
 
-    public void DisplayDeathHeatmap(float[,] values)
+    public void CreateDeathHeatmap()
+    {
+        heatmap = new Tile[4, 4];
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                heatmap[i, j] = new Tile(prefab, this.transform, 0, 0, 0, 0);
+            }
+        }
+    }
+
+    public void UpdateDeathHeatmap(float[,] values)
     {
         SetGridLayoutGroup(4, 4);
-
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
             {
                 var normalized = values[i, j] * 10.0f;
-                heatmap[i, j].PaintTile(new Color(normalized, 0 , 0, 1.0f));
+                heatmap[i, j].PaintTile(new Color(normalized, 0, 0, 1.0f));
             }
         }
+    }
+
+    public void EnableHeatmap()
+    {
         gameObject.SetActive(true);
+    }
+
+    public void DisableHeatmap()
+    {
+        gameObject.SetActive(false);
     }
 }

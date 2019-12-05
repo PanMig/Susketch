@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3400604539612006861}
   - component: {fileID: 3400604539612006860}
   m_Layer: 0
-  m_Name: Highlight
+  m_Name: Highlight Blue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -58,14 +58,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.20334375, g: 1, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 0fb56fcd28bb80e40bb13d13e0eb01b1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b4f4655b6155ed44fba1e81fd5560a15, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
