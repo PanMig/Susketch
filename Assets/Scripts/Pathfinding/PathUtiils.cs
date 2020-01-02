@@ -22,7 +22,6 @@ public static class PathUtils
                 {
                     return true;
                 }
-                //v.SetTile(Brush.Instance.brushThemes[3]);
                 List<Tile> neighbours = GetNeighbours(v, tileMap);
                 foreach (var neighbour in neighbours)
                 {

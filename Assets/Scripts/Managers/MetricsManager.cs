@@ -46,7 +46,20 @@ public class MetricsManager : MonoBehaviour
 
     public void SetKillRatioProgressBar(float percent)
     {
-        Debug.Log("Kill ratio " + percent);
         killRatioBar.currentPercent = percent;
+        var child = killRatioBar.transform.GetChild(0);
+        var loadingBar = child.GetChild(0).GetComponent<Image>();
+        if(percent > 60.0f)
+        {
+            loadingBar.color = Color.red;
+        }
+        else if(percent < 40.0f)
+        {
+            loadingBar.color = Color.blue;
+        }
+        else
+        {
+            loadingBar.color = new Color32(255,133,0,255);
+        }
     }
 }

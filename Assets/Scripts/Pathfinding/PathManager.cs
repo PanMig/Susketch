@@ -25,7 +25,7 @@ public class PlayerPathProperties
 
 public class PathManager : MonoBehaviour
 {
-    public static PathManager Instance { get; private set; }
+    public static PathManager Instance;
 
     private PlayerPathProperties pathBlueProps = new PlayerPathProperties(1);
     private PlayerPathProperties pathRedProps = new PlayerPathProperties(0);
@@ -88,11 +88,14 @@ public class PathManager : MonoBehaviour
         }
     }
 
-    public bool IsMapPlayable(Vector2 start, Vector2 goal)
+    public bool IsPath(Vector2 start, Vector2 goal)
     {
-       PathUtils.BFS(tileMapMain.GetTileWithIndex((int)start.x, (int)start.y), 
-           tileMapMain.GetTileWithIndex((int)goal.x, (int)goal.y), tileMapMain);
-       return true;
+        if (PathUtils.DFS_Iterative(tileMapMain.GetTileWithIndex((int)start.x, (int)start.y),
+             tileMapMain.GetTileWithIndex((int)goal.x, (int)goal.y), tileMapMain))
+        {
+            return true;
+        }
+        return false;
     }
 
     public void HighlightShortestPath(Vector2 start, Vector2 goal, PlayerPathProperties playerProps)
