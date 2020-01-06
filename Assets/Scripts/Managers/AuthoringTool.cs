@@ -47,9 +47,29 @@ public class AuthoringTool : MonoBehaviour
         //tileMapMain.PaintRegion(0, 3, 5);
         //tileMapMain.PaintRegion(0, 0, 2);
 
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < 2; i++)
         {
-            tileMapMain.GetTileWithIndex(11, i).PaintTile(Brush.Instance.brushThemes[1], tileMapMain);
+            tileMapMain.GetTileWithIndex(0, i).PaintTile(Brush.Instance.brushThemes[1], tileMapMain);
+        }
+        for (int i = 0; i < 2; i++)
+        {
+            tileMapMain.GetTileWithIndex(1, i).PaintTile(Brush.Instance.brushThemes[1], tileMapMain);
+        }
+        for (int i = 3; i < 5; i++)
+        {
+            tileMapMain.GetTileWithIndex(4, i).PaintTile(Brush.Instance.brushThemes[1], tileMapMain);
+        }
+        for (int i = 3; i < 5; i++)
+        {
+            tileMapMain.GetTileWithIndex(8, i).PaintTile(Brush.Instance.brushThemes[1], tileMapMain);
+        }
+        for (int i = 3; i < 5; i++)
+        {
+            tileMapMain.GetTileWithIndex(9, i).PaintTile(Brush.Instance.brushThemes[1], tileMapMain);
+        }
+        for (int i = 3; i < 5; i++)
+        {
+            tileMapMain.GetTileWithIndex(10, i).PaintTile(Brush.Instance.brushThemes[1], tileMapMain);
         }
         //for (int i = 10; i <15; i++)
         //{
@@ -87,7 +107,7 @@ public class AuthoringTool : MonoBehaviour
         //InvokeRepeating("OnDeathHeatmap", 1.0f, 10.0f);
         //InvokeRepeating("DramaticArcButtonHandler", 1.0f, 10.0f);
         //InvokeRepeating("KillRatioButtonHandler", 1.0f, 5.0f);
-        InvokeRepeating("tEST", 1.0f, 2.0f);
+        InvokeRepeating("tEST", 2.0f, 2.0f);
     }
 
     private void Update()

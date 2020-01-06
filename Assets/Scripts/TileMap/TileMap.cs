@@ -222,5 +222,76 @@ namespace TileMapLogic
                 }
             }
         }
+
+        public Dictionary<string, List<Vector2>> GetDecorations()
+        {
+            Dictionary<string, List<Vector2>> decorDict = new Dictionary<string, List<Vector2>>();
+            var healthPacks = new List<Vector2>();
+            var armorPacks = new List<Vector2>();
+            var damagePacks = new List<Vector2>();
+
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    var currTile = tileMap[i, j];
+                    if (currTile.decID == TileEnums.Decorations.healthPack)
+                    {
+                        healthPacks.Add(new Vector2(currTile.X, currTile.Y));
+                    }
+                    else if(currTile.decID == TileEnums.Decorations.armorVest)
+                    {
+                        armorPacks.Add(new Vector2(currTile.X, currTile.Y));
+                    }
+                    else if(currTile.decID == TileEnums.Decorations.damageBoost)
+                    {
+                        damagePacks.Add(new Vector2(currTile.X, currTile.Y));
+                    }
+                }
+            }
+            decorDict.Add(TileEnums.Decorations.healthPack.ToString(), healthPacks);
+            decorDict.Add(TileEnums.Decorations.armorVest.ToString(), armorPacks);
+            decorDict.Add(TileEnums.Decorations.damageBoost.ToString(), damagePacks);
+            return decorDict;
+        }
+
+        public List<Tile> GetDecoration(TileEnums.Decorations decID)
+        {
+            List<Tile> decorTiles = new List<Tile>();
+            for (int i = 0; i < rows ; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    Tile tile = GetTileWithIndex(i, j);
+                    if (tile.decID == decID)
+                    {
+                        decorTiles.Add(tile);
+                    }
+                }
+            }
+            return decorTiles;
+        }
+
+        public List<List<Tile>> GetFirstFloorPlatforms()
+        {
+            var platformsList = new List<List<Tile>>();
+            var tileList = new List<Tile>();
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    var tile = GetTileWithIndex(i, j);
+                    
+                    if (!tileList.Contains(tile) && tile.envTileID == TileEnums.EnviromentTiles.level_1)
+                    {
+                        var list = new List<Tile>();
+                        list = PathUtils.RecursiveFloodFill(i, j, Brush.Instance.brushThemes[1], list);
+                        tileList.AddRange(list);
+                        platformsList.Add(list);
+                    }
+                }
+            }
+            return platformsList;
+        }
     }
 }

@@ -62,7 +62,6 @@ public class PathManager : MonoBehaviour
 
     public void UnHighlightPaths()
     {
-        Debug.Log("Unhighlight paths");
         if (!pathBlueProps.pathActive)
         {
             UnhighlightPathBetweenPlayerBases(pathBlueProps);
@@ -77,14 +76,14 @@ public class PathManager : MonoBehaviour
     {
         if (pathBlueProps.pathActive)
         {
-            //HighlightShortestPath(new Vector2(19, 0), new Vector2(0, 19), pathBlueProps);
             IPathFinding enemyPath = new EnemyBasePath();
             enemyPath.FindShortestPath(new Vector2(19, 0), new Vector2(0, 19), pathBlueProps);
 
         }
         if (pathRedProps.pathActive)
         {
-            HighlightShortestPath(new Vector2(0, 19), new Vector2(19, 0), pathRedProps);
+            IPathFinding enemyPath = new EnemyBasePath();
+            enemyPath.FindShortestPath(new Vector2(0, 19), new Vector2(19, 0), pathRedProps);
         }
     }
 
