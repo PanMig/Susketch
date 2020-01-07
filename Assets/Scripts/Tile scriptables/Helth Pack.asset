@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Helth Pack
   m_EditorClassIdentifier: 
   prefab: {fileID: 5431582249001786066, guid: 9a2ebd9edc569ab4096282b334421299, type: 3}
-  sprite: {fileID: 21300000, guid: eef275a849c5c104ba671a5b69957df1, type: 3}
+  sprite: {fileID: 21300050, guid: 5163ae49a0de665458bba61cd20c99b1, type: 3}
   decorationID: 1
