@@ -34,6 +34,12 @@ public struct Tile
         tileMap.SetTileMapTile(this);
     }
 
+    public void FormatTileSprite(TileMap tileMap, Sprite sprite)
+    {
+        image.sprite = sprite;
+        tileMap.SetTileMapTile(this);
+    }
+
     public void SetTile(Tile tile)
     {
         image.sprite = tile.image.sprite;

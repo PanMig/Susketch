@@ -6,7 +6,7 @@ using System;
 
 namespace TileMapLogic
 {
-    public class TileMap
+    public partial class TileMap
     {
         public static readonly int rows = 20;
         public static readonly int columns = 20;

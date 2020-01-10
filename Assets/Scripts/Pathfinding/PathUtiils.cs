@@ -136,22 +136,25 @@ public static class PathUtils
     public static List<Tile> GetNeighboursCross(Tile tile, TileMap tileMap)
     {
         List<Tile> neighbours = new List<Tile>();
-
+        //down
         if (tile.X + 1 >= 0 && tile.X + 1 < 20 && tile.Y >= 0 & tile.Y < 20)
         {
             Tile temp = tileMap.GetTileWithIndex(tile.X + 1, tile.Y);
             neighbours.Add(temp);
         }
+        //up
         if (tile.X - 1 >= 0 && tile.X - 1 < 20 && tile.Y >= 0 & tile.Y < 20)
         {
             Tile temp = tileMap.GetTileWithIndex(tile.X - 1, tile.Y);
             neighbours.Add(temp);
         }
+        //right
         if (tile.X >= 0 && tile.X < 20 && tile.Y + 1 >= 0 & tile.Y + 1 < 20)
         {
             Tile temp = tileMap.GetTileWithIndex(tile.X, tile.Y + 1);
             neighbours.Add(temp);
         }
+        //left
         if (tile.X >= 0 && tile.X < 20 && tile.Y - 1 >= 0 & tile.Y - 1 < 20)
         {
             Tile temp = tileMap.GetTileWithIndex(tile.X, tile.Y - 1);
