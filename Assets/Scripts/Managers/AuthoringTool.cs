@@ -107,7 +107,7 @@ public class AuthoringTool : MonoBehaviour
         //InvokeRepeating("OnDeathHeatmap", 1.0f, 10.0f);
         //InvokeRepeating("DramaticArcButtonHandler", 1.0f, 10.0f);
         //InvokeRepeating("KillRatioButtonHandler", 1.0f, 5.0f);
-        //InvokeRepeating("tEST", 2.0f, 2.0f);
+        InvokeRepeating("tEST", 5.0f, 5.0f);
     }
 
     private void Update()

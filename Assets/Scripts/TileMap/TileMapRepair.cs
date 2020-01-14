@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TileMapLogic;
 using static AuthoringTool;
+using static TileEnums;
 
 public class TileMapRepair
 {
@@ -67,10 +68,33 @@ public class TileMapRepair
         }
 
         // 4: Make sure player can get out of first floor rounded areas (a stair exists)
-        /*
-         * locate rounded first floor areas
-         * flood fill to find if inside neighbors have at least one stair
-         */
+        var boundaries = tileMapMain.GetBoundaries();
+        var map = tileMapMain.GetTileMapToInt();
+        var visited = new HashSet<Tile>();
+        foreach (var bound in boundaries)
+        {
+            if (bound.envTileID == EnviromentTiles.ground)
+            {
+                PathUtils.FloodFill(bound.X, bound.Y, 0, -1, map);
+                visited.Add(bound);
+            }
+            else if(bound.envTileID == EnviromentTiles.level_1)
+            {
+                PathUtils.FloodFill(bound.X, bound.Y, 1, -2, map);
+                visited.Add(bound);
+            }
+        }
+
+        for (int i = 0; i < 20; i++)
+        {
+            for (int j = 0; j < 20; j++)
+            {
+                if(map[i,j] == 0)
+                {
+                    Debug.Log("yey");
+                }
+            }
+        }
 
         // 5: A stair should always lead to first floor tiles
         var stairs = tileMapMain.GetDecoration(TileEnums.Decorations.stairs);

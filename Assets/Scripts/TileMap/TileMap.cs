@@ -13,7 +13,7 @@ namespace TileMapLogic
         private static readonly int CELL_PER_REGION = 5;
         private Tile[,] tileMap;
         private Region[,] regions = new Region[4, 4];
-        
+
 
         public TileMap()
         {
@@ -39,7 +39,7 @@ namespace TileMapLogic
                     //ground tile and empty decoration.
                     tileTheme = Brush.Instance.brushThemes[UnityEngine.Random.Range(0, 1)];
                     dec = Brush.Instance.decorations[0];
-                    tileMap[row, col] = new Tile(tileTheme.prefab, GridTransformParent, 
+                    tileMap[row, col] = new Tile(tileTheme.prefab, GridTransformParent,
                         tileTheme.envTileID, dec.decorationID, row, col);
                 }
             }
@@ -102,8 +102,8 @@ namespace TileMapLogic
                 for (int j = 0; j < columns; j++)
                 {
                     Tile tile = tileMap[i, j];
-                    tile.PaintTile(Brush.Instance.brushThemes[(int) tile.envTileID], this);
-                    tile.PaintDecoration(Brush.Instance.decorations[(int) tile.decID], this);
+                    tile.PaintTile(Brush.Instance.brushThemes[(int)tile.envTileID], this);
+                    tile.PaintDecoration(Brush.Instance.decorations[(int)tile.decID], this);
                 }
             }
         }
@@ -173,6 +173,31 @@ namespace TileMapLogic
             return stringMap;
         }
 
+        public int[,] GetTileMapToInt()
+        {
+            int[,] intMap = new int[rows, columns];
+
+            for (int row = 0; row < rows; row++)
+            {
+                for (int col = 0; col < columns; col++)
+                {
+                    if (tileMap[row, col].envTileID == TileEnums.EnviromentTiles.ground)
+                    {
+                        intMap[row, col] = 0;
+                    }
+                    else if (tileMap[row, col].envTileID == TileEnums.EnviromentTiles.level_1)
+                    {
+                        intMap[row, col] = 1;
+                    }
+                    else if (tileMap[row, col].envTileID == TileEnums.EnviromentTiles.level_2)
+                    {
+                        intMap[row, col] = 2;
+                    }
+                }
+            }
+            return intMap;
+        }
+
         //TODO load tilemap from csv file.
         public void LoadtileMapFromFile(string fileName)
         {
@@ -215,7 +240,7 @@ namespace TileMapLogic
             {
                 for (int j = 0; j < columns; j++)
                 {
-                    if(tileMap[i,j].decID != TileEnums.Decorations.stairs)
+                    if (tileMap[i, j].decID != TileEnums.Decorations.stairs)
                     {
                         tileMap[i, j].RemoveDecoration(this);
                     }
@@ -239,11 +264,11 @@ namespace TileMapLogic
                     {
                         healthPacks.Add(new Vector2(currTile.X, currTile.Y));
                     }
-                    else if(currTile.decID == TileEnums.Decorations.armorVest)
+                    else if (currTile.decID == TileEnums.Decorations.armorVest)
                     {
                         armorPacks.Add(new Vector2(currTile.X, currTile.Y));
                     }
-                    else if(currTile.decID == TileEnums.Decorations.damageBoost)
+                    else if (currTile.decID == TileEnums.Decorations.damageBoost)
                     {
                         damagePacks.Add(new Vector2(currTile.X, currTile.Y));
                     }
@@ -258,7 +283,7 @@ namespace TileMapLogic
         public List<Tile> GetDecoration(TileEnums.Decorations decID)
         {
             List<Tile> decorTiles = new List<Tile>();
-            for (int i = 0; i < rows ; i++)
+            for (int i = 0; i < rows; i++)
             {
                 for (int j = 0; j < columns; j++)
                 {
@@ -281,7 +306,7 @@ namespace TileMapLogic
                 for (int j = 0; j < columns; j++)
                 {
                     var tile = GetTileWithIndex(i, j);
-                    
+
                     if (!tileList.Contains(tile) && tile.envTileID == TileEnums.EnviromentTiles.level_1)
                     {
                         var list = new List<Tile>();
@@ -292,6 +317,48 @@ namespace TileMapLogic
                 }
             }
             return platformsList;
+        }
+
+        public List<Tile> GetEnviromentTiles(TileEnums.EnviromentTiles tileID)
+        {
+            var tileList = new List<Tile>();
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    var tile = GetTileWithIndex(i, j);
+
+                    if (tile.envTileID == tileID)
+                    {
+                        tileList.Add(tile);
+                    }
+                }
+            }
+            return tileList;
+        }
+
+        public List<Tile> GetBoundaries()
+        {
+            var list = new List<Tile>();
+            // rows
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    list.Add(GetTileWithIndex(i, j));
+                }
+            }
+
+            // columns
+            for (int j = 0; j < 2; j++)
+            {
+                for (int i = 0; i < rows; i++)
+                {
+                    list.Add(GetTileWithIndex(i, j));
+                }
+            }
+
+            return list;
         }
     }
 }

@@ -29,7 +29,6 @@ public static class PathUtils
                 }
             }
         }
-
         return false;
     }
 
@@ -44,7 +43,6 @@ public static class PathUtils
         while (frontier.Count > 0)
         {
             var current = frontier.Dequeue();
-
             List<Tile> neighbours = GetNeighbours(current, tileMap);
             foreach (var next in neighbours)
             {
@@ -182,5 +180,27 @@ public static class PathUtils
             RecursiveFloodFill(posX, posY - 1, tileID, tileList);
         }
         return tileList;
+    }
+
+    public static void FloodFill(int x, int y, int targetColor, int replaceColor, int[,] map)
+    {
+        if (x < 0 || x >= TileMap.rows
+             || y < 0 || y >= TileMap.columns)
+        {
+            return;
+        }
+        else if (map[x, y] == replaceColor)
+        {
+            return;
+        }
+
+        if (map[x, y] == targetColor)
+        {
+            map[x, y] = replaceColor;
+            FloodFill(x + 1, y, targetColor, replaceColor, map);
+            FloodFill(x, y + 1, targetColor, replaceColor, map);
+            FloodFill(x - 1, y, targetColor, replaceColor, map);
+            FloodFill(x, y - 1, targetColor, replaceColor, map);
+        }
     }
 }
