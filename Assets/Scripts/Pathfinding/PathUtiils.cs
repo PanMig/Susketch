@@ -97,26 +97,26 @@ public static class PathUtils
         }
 
         // extra four dimensions
-        if (tile.X + 1 >= 0 && tile.X + 1 < 20 && tile.Y + 1 >= 0 & tile.Y + 1 < 20)
-        {
-            Tile temp = tileMap.GetTileWithIndex(tile.X + 1, tile.Y + 1);
-            AddNeighbour(tile, neighbours, temp);
-        }
-        if (tile.X + 1 >= 0 && tile.X + 1 < 20 && tile.Y - 1 >= 0 & tile.Y - 1 < 20)
-        {
-            Tile temp = tileMap.GetTileWithIndex(tile.X + 1, tile.Y - 1);
-            AddNeighbour(tile, neighbours, temp);
-        }
-        if (tile.X - 1 >= 0 && tile.X - 1 < 20 && tile.Y + 1 >= 0 & tile.Y + 1 < 20)
-        {
-            Tile temp = tileMap.GetTileWithIndex(tile.X - 1, tile.Y + 1);
-            AddNeighbour(tile, neighbours, temp);
-        }
-        if (tile.X - 1 >= 0 && tile.X - 1 < 20 && tile.Y - 1 >= 0 & tile.Y - 1 < 20)
-        {
-            Tile temp = tileMap.GetTileWithIndex(tile.X - 1, tile.Y - 1);
-            AddNeighbour(tile, neighbours, temp);
-        }
+        //if (tile.X + 1 >= 0 && tile.X + 1 < 20 && tile.Y + 1 >= 0 & tile.Y + 1 < 20)
+        //{
+        //    Tile temp = tileMap.GetTileWithIndex(tile.X + 1, tile.Y + 1);
+        //    AddNeighbour(tile, neighbours, temp);
+        //}
+        //if (tile.X + 1 >= 0 && tile.X + 1 < 20 && tile.Y - 1 >= 0 & tile.Y - 1 < 20)
+        //{
+        //    Tile temp = tileMap.GetTileWithIndex(tile.X + 1, tile.Y - 1);
+        //    AddNeighbour(tile, neighbours, temp);
+        //}
+        //if (tile.X - 1 >= 0 && tile.X - 1 < 20 && tile.Y + 1 >= 0 & tile.Y + 1 < 20)
+        //{
+        //    Tile temp = tileMap.GetTileWithIndex(tile.X - 1, tile.Y + 1);
+        //    AddNeighbour(tile, neighbours, temp);
+        //}
+        //if (tile.X - 1 >= 0 && tile.X - 1 < 20 && tile.Y - 1 >= 0 & tile.Y - 1 < 20)
+        //{
+        //    Tile temp = tileMap.GetTileWithIndex(tile.X - 1, tile.Y - 1);
+        //    AddNeighbour(tile, neighbours, temp);
+        //}
 
         return neighbours;
     }

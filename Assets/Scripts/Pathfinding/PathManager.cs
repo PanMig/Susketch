@@ -9,6 +9,7 @@ public class PlayerPathProperties
     public int team; // red = 0, blue = 1
     public bool pathActive = false;
     public List<Tile> highlightedTiles = new List<Tile>();
+    public int movementSteps = 0;
     //public PathManager.Targets target; 
 
     public PlayerPathProperties(int team)
@@ -27,8 +28,8 @@ public class PathManager : MonoBehaviour
 {
     public static PathManager Instance;
 
-    private PlayerPathProperties pathBlueProps = new PlayerPathProperties(1);
-    private PlayerPathProperties pathRedProps = new PlayerPathProperties(0);
+    public PlayerPathProperties pathBlueProps = new PlayerPathProperties(1);
+    public PlayerPathProperties pathRedProps = new PlayerPathProperties(0);
 
     public enum Targets {health, armor, damage, stair, enemyBase};
     public int pathTargetBlue;

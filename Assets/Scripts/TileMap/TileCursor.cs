@@ -9,6 +9,7 @@ using static AuthoringTool;
 
 public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
+    private Color startcolor;
 
     public enum CursorType
     {
@@ -51,14 +52,18 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (currentCursorType == CursorType.tile || currentCursorType == CursorType.decoration)
-        {
-            
-        }
+        
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (eventData.pointerCurrentRaycast.gameObject != null)
+        {
+            int index_row, index_col;
+            GetIndexFromCoordinates(eventData, out index_row, out index_col);
+            var tile = tileMapMain.GetTileWithIndex(index_row, index_col);
+            tile.image.color = startcolor;
+        }
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -67,6 +72,12 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
 
     public void OnEndDrag(PointerEventData eventData)
     {
+    }
+
+    void OnMouseOver()
+    {
+        //If your mouse hovers over the GameObject with the script attached, output this message
+        Debug.Log("Mouse is over GameObject.");
     }
 
     #endregion
@@ -169,9 +180,8 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
     // Update is called once per frame
     void Update()
     {
-        
-    }
 
+    }
 
     //void OnGUI()
     //{

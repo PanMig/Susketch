@@ -131,7 +131,8 @@ public class TileMapRepair
         {
             var neighbours = PathUtils.GetNeighboursCross(stairs[i], tileMapMain);
             int lev1Count = 0;
-            if(stairs[i].envTileID == TileEnums.EnviromentTiles.level_1 || stairs[i].envTileID == TileEnums.EnviromentTiles.level_2)
+            if(stairs[i].envTileID == TileEnums.EnviromentTiles.level_1 || 
+                stairs[i].envTileID == TileEnums.EnviromentTiles.level_2)
             {
                 return false;
             }

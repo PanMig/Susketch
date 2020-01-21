@@ -19,6 +19,7 @@ public class EnemyBasePath : IPathFinding
             tileMapMain.GetTileWithIndex((int)goal.x, (int)goal.y), tileMapMain);
 
         PathManager.Instance.HighlightPath(playerProps);
+        playerProps.movementSteps = playerProps.highlightedTiles.Count;
     }
 }
 
@@ -31,15 +32,17 @@ public class HealthPath : IPathFinding
             PathManager.Instance.UnhighlightPath(playerProps);
             playerProps.highlightedTiles.Clear();
         }
-
+        int count = 0;
         var healthDict = tileMapMain.GetDecoration(TileEnums.Decorations.healthPack);
         foreach (var healthPack in healthDict)
         {
             var tilePath = PathUtils.BFSGetShortestPath(tileMapMain.GetTileWithIndex((int)start.x, (int)start.y),
             tileMapMain.GetTileWithIndex(healthPack.X, healthPack.Y), tileMapMain);
             playerProps.highlightedTiles.AddRange(tilePath);
+            count++;
         }
         PathManager.Instance.HighlightPath(playerProps);
+        playerProps.movementSteps = count > 0 ? playerProps.highlightedTiles.Count / count : 0;
     }
 }
 
@@ -53,14 +56,16 @@ public class ArmorPath : IPathFinding
             PathManager.Instance.UnhighlightPath(playerProps);
             playerProps.highlightedTiles.Clear();
         }
-
+        int count = 0;
         var armorDict = tileMapMain.GetDecoration(TileEnums.Decorations.armorVest);
         foreach (var armorPack in armorDict)
         {
             var tilePath = PathUtils.BFSGetShortestPath(tileMapMain.GetTileWithIndex((int)start.x, (int)start.y),
             tileMapMain.GetTileWithIndex(armorPack.X, armorPack.Y), tileMapMain);
             playerProps.highlightedTiles.AddRange(tilePath);
+            count ++;
         }
         PathManager.Instance.HighlightPath(playerProps);
+        playerProps.movementSteps = count > 0 ? playerProps.highlightedTiles.Count / count : 0;
     }
 }
