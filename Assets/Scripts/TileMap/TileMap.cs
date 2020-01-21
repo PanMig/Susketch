@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System;
+using System.IO;
+using System.Linq;
 
 namespace TileMapLogic
 {
@@ -26,7 +28,7 @@ namespace TileMapLogic
             SetTileMap(map);
         }
 
-        public void InitTileMap(Transform GridTransformParent)
+        public void InitTileMap(Transform gridTransformParent)
         {
             tileMap = new Tile[rows, columns];
             TileThemes tileTheme;
@@ -39,7 +41,7 @@ namespace TileMapLogic
                     //ground tile and empty decoration.
                     tileTheme = Brush.Instance.brushThemes[UnityEngine.Random.Range(0, 1)];
                     dec = Brush.Instance.decorations[0];
-                    tileMap[row, col] = new Tile(tileTheme.prefab, GridTransformParent,
+                    tileMap[row, col] = new Tile(tileTheme.prefab, gridTransformParent,
                         tileTheme.envTileID, dec.decorationID, row, col);
                 }
             }
@@ -103,7 +105,14 @@ namespace TileMapLogic
                 {
                     Tile tile = tileMap[i, j];
                     tile.PaintTile(Brush.Instance.brushThemes[(int)tile.envTileID], this);
-                    tile.PaintDecoration(Brush.Instance.decorations[(int)tile.decID], this);
+                    if(tile.decID != TileEnums.Decorations.empty)
+                    {
+                        tile.PaintDecoration(Brush.Instance.decorations[(int)tile.decID], this);
+                    }
+                    else
+                    {
+                        tile.PaintDecoration(Brush.Instance.decorations[0], this);
+                    }
                 }
             }
         }
@@ -357,8 +366,97 @@ namespace TileMapLogic
                     list.Add(GetTileWithIndex(i, j));
                 }
             }
-
             return list;
         }
+
+        public void ReadCSVToTileMap(string fileName)
+        {
+            //Tile[,] map = new Tile[20, 20];
+            TextAsset datafile = Resources.Load<TextAsset>(fileName);
+            using (var sr = new StreamReader(new MemoryStream(datafile.bytes)))
+            {
+                for (var i = 0; i < rows; i++)
+                {
+                    string line;
+                    if ((line = sr.ReadLine()) != null)
+                    {
+                        var splitted = line.Split(',','|');
+                        for (var j = 0; j < columns; j++)
+                        {
+                            //map[i, j] = splitted[j];
+                            switch (splitted[j])
+                            {
+                                case "0":
+                                    Tile tile = this.GetTileWithIndex(i, j);
+                                    tile.envTileID = TileEnums.EnviromentTiles.ground;
+                                    tile.decID = TileEnums.Decorations.empty;
+                                    this.SetTileMapTile(tile);
+                                    break;
+                                case "1":
+                                    tile = this.GetTileWithIndex(i, j);
+                                    tile.envTileID = TileEnums.EnviromentTiles.level_1;
+                                    tile.decID = TileEnums.Decorations.empty;
+                                    this.SetTileMapTile(tile);
+                                    break;
+                                case "2":
+                                    tile = this.GetTileWithIndex(i, j);
+                                    tile.envTileID = TileEnums.EnviromentTiles.level_2;
+                                    tile.decID = TileEnums.Decorations.empty;
+                                    this.SetTileMapTile(tile);
+                                    break;
+                                case "0H":
+                                    tile = this.GetTileWithIndex(i, j);
+                                    tile.envTileID = TileEnums.EnviromentTiles.ground;
+                                    tile.decID = TileEnums.Decorations.healthPack;
+                                    this.SetTileMapTile(tile);
+                                    break;
+                                case "0A":
+                                    tile = this.GetTileWithIndex(i, j);
+                                    tile.envTileID = TileEnums.EnviromentTiles.ground;
+                                    tile.decID = TileEnums.Decorations.armorVest;
+                                    this.SetTileMapTile(tile);
+                                    break;
+                                case "0D":
+                                    tile = this.GetTileWithIndex(i, j);
+                                    tile.envTileID = TileEnums.EnviromentTiles.ground;
+                                    tile.decID = TileEnums.Decorations.damageBoost;
+                                    this.SetTileMapTile(tile);
+                                    break;
+                                case "0S":
+                                    tile = this.GetTileWithIndex(i, j);
+                                    tile.envTileID = TileEnums.EnviromentTiles.ground;
+                                    tile.decID = TileEnums.Decorations.stairs;
+                                    this.SetTileMapTile(tile);
+                                    break;
+                                case "1H":
+                                    tile = this.GetTileWithIndex(i, j);
+                                    tile.envTileID = TileEnums.EnviromentTiles.level_1;
+                                    tile.decID = TileEnums.Decorations.healthPack;
+                                    this.SetTileMapTile(tile);
+                                    break;
+                                case "1A":
+                                    tile = this.GetTileWithIndex(i, j);
+                                    tile.envTileID = TileEnums.EnviromentTiles.level_1;
+                                    tile.decID = TileEnums.Decorations.armorVest;
+                                    this.SetTileMapTile(tile);
+                                    break;
+                                case "1D":
+                                    tile = this.GetTileWithIndex(i, j);
+                                    tile.envTileID = TileEnums.EnviromentTiles.level_1;
+                                    tile.decID = TileEnums.Decorations.damageBoost;
+                                    this.SetTileMapTile(tile);
+                                    break;
+                                case "1S":
+                                    Debug.LogError("stair on top of first level tile");
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
 }

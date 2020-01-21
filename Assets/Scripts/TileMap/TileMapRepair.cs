@@ -15,10 +15,15 @@ public class TileMapRepair
 
     public static string errorMsg;
 
+    public delegate void OnMapPlayable();
+    public static event OnMapPlayable onPlayableMap;
+
+    public delegate void OnNotPlayableMap();
+    public static event OnNotPlayableMap onUnPlayableMap;
+
     private static void SetErrorMsg(string msg)
     {
         errorMsg = msg;
-        Debug.Log(errorMsg);
     }
 
     private static bool IsTraversable()
@@ -49,7 +54,6 @@ public class TileMapRepair
                     &&
                     !PathManager.Instance.IsPath(red_base, decorDict[decorKeys[i]][j]))
                 {
-                    Debug.Log("Not all power ups are available to players");
                     return false;
                 }
             }
@@ -60,7 +64,6 @@ public class TileMapRepair
     private static bool ArePlatformsConnectedToStairs()
     {
         var platforms = tileMapMain.GetFirstFloorPlatforms();
-        Debug.Log("platforms: " + platforms.Count);
         for (int i = 0; i < platforms.Count; i++)
         {
             int stairCount = 0;
@@ -72,7 +75,7 @@ public class TileMapRepair
                     if (neighbours[n].decID == TileEnums.Decorations.stairs) { stairCount++; }
                 }
             }
-            if (stairCount < 1)
+            if (stairCount == 0)
             {
                 return false;
             }
@@ -117,8 +120,6 @@ public class TileMapRepair
             }
         }
 
-        Debug.Log("number of holes:" + holesCount);
-        Debug.Log("number of stairs inside holes:" + stairCount);
         return true;
     }
 
@@ -130,11 +131,14 @@ public class TileMapRepair
         {
             var neighbours = PathUtils.GetNeighboursCross(stairs[i], tileMapMain);
             int lev1Count = 0;
+            if(stairs[i].envTileID == TileEnums.EnviromentTiles.level_1 || stairs[i].envTileID == TileEnums.EnviromentTiles.level_2)
+            {
+                return false;
+            }
             for (int j = 0; j < neighbours.Count; j++)
             {
                 if (neighbours[j].envTileID == TileEnums.EnviromentTiles.level_2)
                 {
-                    Debug.Log("Stairs leads to level 2");
                     return false;
                 }
                 else if (neighbours[j].envTileID == TileEnums.EnviromentTiles.level_1)
@@ -144,12 +148,10 @@ public class TileMapRepair
             }
             if (lev1Count > 1)
             {
-                Debug.Log("Stairs are cornered by two or more level1 tiles");
                 return false;
             }
             else if (lev1Count < 1)
             {
-                Debug.Log("Stairs do not lead to first level floor");
                 return false;
             }
         }
@@ -162,24 +164,32 @@ public class TileMapRepair
         if (!IsTraversable())
         {
             SetErrorMsg("Bases are not traversable");
+            onUnPlayableMap?.Invoke();
+            return false;
         }
 
         // 2: Every player must reach all power ups.
         if (!HasAccesiblePowerUps())
         {
             SetErrorMsg("Not all power ups are available to players");
+            onUnPlayableMap?.Invoke();
+            return false;
         }
 
         // 3: First floor platform should always be connected to a stair
         if (!ArePlatformsConnectedToStairs())
         {
             SetErrorMsg("Platform not connected to a stair");
+            onUnPlayableMap?.Invoke();
+            return false;
         }
 
         // 4: Make sure player can get out of first floor closed areas (a stair exists inside hole)
         if (!HasExitFromClosedPlatform())
         {
             SetErrorMsg("There is not exit from first floor region");
+            onUnPlayableMap?.Invoke();
+            return false;
         }
 
         // 5: A stair should always lead to first floor tiles
@@ -187,7 +197,11 @@ public class TileMapRepair
         {
             SetErrorMsg("Stair is wrongly connected. It either leads to a wall, is cornered by two or more level1 tiles, " +
                 "or does not lead to first level floor");
+            onUnPlayableMap?.Invoke();
+            return false;
         }
+
+        onPlayableMap?.Invoke();
         return true;
     }
 }

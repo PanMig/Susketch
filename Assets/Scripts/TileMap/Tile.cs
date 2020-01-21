@@ -84,6 +84,7 @@ public struct Tile
         // case where tile is not decorated.
         if (dec.prefab != null && gameObj.transform.childCount == 0)
         {
+            Debug.Log("instantiation case");
             GameObject decorationObj = GameObject.Instantiate(dec.prefab, gameObj.transform);
             ResizeDecoration(decorationObj, 0.6f);
             decID = dec.decorationID;
@@ -92,6 +93,8 @@ public struct Tile
         // case where we change the tile sprite, no reason for instatiation.
         else if (dec.prefab != null && gameObj.transform.childCount > 0)
         {
+            //RemoveDecoration(tileMap);
+            Debug.Log("non instantiation case");
             gameObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = dec.sprite;
             decID = dec.decorationID;
             tileMap.SetTileMapTile(this);
@@ -99,6 +102,7 @@ public struct Tile
         // this means we are using the eraser.
         else if(dec.prefab == null && gameObj.transform.childCount > 0)
         {
+            Debug.Log("remove case");
             RemoveDecoration(tileMapMain);
         }
     }

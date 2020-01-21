@@ -29,7 +29,8 @@ public class AuthoringTool : MonoBehaviour
 
     private void OnEnable()
     {
-
+        EventManagerUI.onTileMapEdit += PaintTeamRegions;
+        EventManagerUI.onTileMapEdit += CheckTileMap;
     }
 
     // Start is called before the first frame update
@@ -42,78 +43,53 @@ public class AuthoringTool : MonoBehaviour
         tileMapView = GameObject.FindGameObjectWithTag("tileMapView").GetComponent<TileMapView>();
         tileMapMain.InitTileMap(tileMapView.gridRect.transform);
         tileMapMain.InitRegions();
-
-        //tileMapMain.PaintRegion(3, 0, 4);
-        //tileMapMain.PaintRegion(0, 3, 5);
-        //tileMapMain.PaintRegion(0, 0, 2);
-
-        //for (int i = 0; i < 2; i++)
-        //{
-        //    tileMapMain.GetTileWithIndex(0, i).PaintTile(Brush.Instance.brushThemes[1], tileMapMain);
-        //}
-        //for (int i = 0; i < 2; i++)
-        //{
-        //    tileMapMain.GetTileWithIndex(1, i).PaintTile(Brush.Instance.brushThemes[1], tileMapMain);
-        //}
-        //for (int i = 3; i < 5; i++)
-        //{
-        //    tileMapMain.GetTileWithIndex(4, i).PaintTile(Brush.Instance.brushThemes[1], tileMapMain);
-        //}
-        //for (int i = 3; i < 5; i++)
-        //{
-        //    tileMapMain.GetTileWithIndex(8, i).PaintTile(Brush.Instance.brushThemes[1], tileMapMain);
-        //}
-        //for (int i = 3; i < 5; i++)
-        //{
-        //    tileMapMain.GetTileWithIndex(9, i).PaintTile(Brush.Instance.brushThemes[1], tileMapMain);
-        //}
-        //for (int i = 3; i < 5; i++)
-        //{
-        //    tileMapMain.GetTileWithIndex(10, i).PaintTile(Brush.Instance.brushThemes[1], tileMapMain);
-        //}
-        //for (int i = 10; i <15; i++)
-        //{
-        //    tileMapMain.GetTileWithIndex(7, i).PaintTile(Brush.Instance.brushThemes[1], tileMapMain);
-        //}
-        //for (int i = 0; i < 7; i++)
-        //{
-        //    tileMapMain.GetTileWithIndex(15, i).PaintTile(Brush.Instance.brushThemes[1], tileMapMain);
-        //}
-        //for (int i = 7; i < 14; i++)
-        //{
-        //    tileMapMain.GetTileWithIndex(4, i).PaintTile(Brush.Instance.brushThemes[1], tileMapMain);
-        //}
-        //for (int i = 0; i < 3; i++)
-        //{
-        //    tileMapMain.GetTileWithIndex(0, i).PaintTile(Brush.Instance.brushThemes[2], tileMapMain);
-        //}
-        //for (int i = 10; i < 14; i++)
-        //{
-        //    tileMapMain.GetTileWithIndex(10, i).PaintTile(Brush.Instance.brushThemes[2], tileMapMain);
-        //}
-        // Invoke methods
+        PaintTeamRegions();
         Invokes();
-        
+        TileMapRepair.CheckTileMap();
     }
 
-    private void tEST()
+    private static void PaintTeamRegions()
     {
-        var x = TileMapRepair.CheckTileMap();
-        Debug.Log(x);
+        // Color the team regions
+        Color blueColor = new Color(0, 0, 255, 0.6f);
+        Color redColor = new Color(255, 0, 0, 0.6f);
+        tileMapMain.PaintRegion(3, 0, blueColor);
+        tileMapMain.PaintRegion(0, 3, redColor);
+    }
+
+    private void CheckTileMap()
+    {
+        TileMapRepair.CheckTileMap();
+    }
+
+    public void LoadMap()
+    {
+        // create a temp parent to save all instantiated tiles
+        GameObject tempView = new GameObject("TempView");
+        var randomMap = new TileMap();
+        randomMap.InitTileMap(tempView.transform);
+
+        int index = Random.Range(1, 10);
+        randomMap.ReadCSVToTileMap("Map Files/mapFile" + index);
+        Debug.Log(index);
+        tileMapMain.SetTileMap(randomMap.GetTileMap());
+        randomMap = null;
+        Destroy(tempView);
+        tileMapMain.RenderTileMap();
+        TileMapRepair.CheckTileMap();
     }
 
     private void Invokes()
     {
-        //InvokeRepeating("OnDeathHeatmap", 1.0f, 10.0f);
-        //InvokeRepeating("DramaticArcButtonHandler", 1.0f, 10.0f);
-        //InvokeRepeating("KillRatioButtonHandler", 1.0f, 5.0f);
-        InvokeRepeating("tEST", 5.0f, 5.0f);
+        InvokeRepeating("OnDeathHeatmap", 1.0f, 60.0f);
+        InvokeRepeating("DramaticArcButtonHandler", 1.0f, 60.0f);
+        InvokeRepeating("KillRatioButtonHandler", 1.0f, 60.0f);
     }
 
     private void Update()
     {
-        tileMapMain.PaintRegion(3, 0, 4);
-        tileMapMain.PaintRegion(0, 3, 5);
+        //tileMapMain.PaintRegion(3, 0, 4);
+        //tileMapMain.PaintRegion(0, 3, 5);
     }
 
     public void SetClassParams()
@@ -175,5 +151,4 @@ public class AuthoringTool : MonoBehaviour
         tileMapMain.SetTileMap(map);
         tileMapMain.RenderTileMap();
     }
-
 }

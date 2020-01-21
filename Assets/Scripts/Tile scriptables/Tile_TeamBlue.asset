@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Tile_TeamBlue
   m_EditorClassIdentifier: 
   envTileID: 0
-  prefab: {fileID: 1523735924629090923, guid: 16a127c2c50ab814490ee6708a03e238, type: 3}
-  sprite: {fileID: 21300000, guid: cdf6fff07c0809a4487f69a742334aa7, type: 3}
+  prefab: {fileID: 1523735924629090923, guid: a4a67ec48ab40414394377b36c9f651d, type: 3}
+  sprite: {fileID: 21300000, guid: 5ce262a38be1713448633db06c5360f5, type: 3}
