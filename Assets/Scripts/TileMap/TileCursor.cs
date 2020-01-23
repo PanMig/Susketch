@@ -10,6 +10,7 @@ using static AuthoringTool;
 public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     private Color startcolor;
+    private Tile selectedTile;
 
     public enum CursorType
     {
@@ -52,18 +53,15 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (eventData.pointerCurrentRaycast.gameObject != null)
-        {
-            int index_row, index_col;
-            GetIndexFromCoordinates(eventData, out index_row, out index_col);
-            var tile = tileMapMain.GetTileWithIndex(index_row, index_col);
-            tile.image.color = startcolor;
-        }
+    }
+
+    private void UnHighlightHoveredTile()
+    {
+        selectedTile.PaintTile(startcolor);
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -72,12 +70,6 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
 
     public void OnEndDrag(PointerEventData eventData)
     {
-    }
-
-    void OnMouseOver()
-    {
-        //If your mouse hovers over the GameObject with the script attached, output this message
-        Debug.Log("Mouse is over GameObject.");
     }
 
     #endregion
@@ -101,8 +93,17 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
         float y = Mathf.Abs(eventData.pointerCurrentRaycast.gameObject.transform.localPosition.y);
 
         // Add some extra padding for accurate results.
-        index_row = (int)Mathf.Floor(y / 47);
+        index_row = (int)Mathf.Floor(y / 50);
         index_col = (int)Mathf.Floor(x / 52);
+    }
+
+    private void HighlightHoveredTile(PointerEventData eventData)
+    {
+            int index_row, index_col;
+            GetIndexFromCoordinates(eventData, out index_row, out index_col);
+            selectedTile = tileMapMain.GetTileWithIndex(index_row, index_col);
+            startcolor = selectedTile.image.color;
+            selectedTile.PaintTile(Color.red);
     }
 
     private void DrawTile(PointerEventData eventData)
@@ -180,8 +181,9 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
     // Update is called once per frame
     void Update()
     {
-
     }
+
+
 
     //void OnGUI()
     //{

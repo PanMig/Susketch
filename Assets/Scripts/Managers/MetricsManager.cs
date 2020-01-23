@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Michsky.UI.ModernUIPack;
+using System.Linq;
 
 public class MetricsManager : MonoBehaviour
 {
@@ -36,6 +37,10 @@ public class MetricsManager : MonoBehaviour
 
     public void GenerateDramaticArcGraph(float[] dramatic_arc)
     {
+        for (int i = 0; i < dramatic_arc.Length; i++)
+        {
+            dramatic_arc[i] = -dramatic_arc[i];
+        }
         daChart.SetChartData(dramatic_arc);
     }
 

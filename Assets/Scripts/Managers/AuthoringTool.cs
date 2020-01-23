@@ -44,7 +44,7 @@ public class AuthoringTool : MonoBehaviour
         tileMapMain.InitTileMap(tileMapView.gridRect.transform);
         tileMapMain.InitRegions();
         PaintTeamRegions();
-        Invokes();
+        //Invokes();
         TileMapRepair.CheckTileMap();
     }
 
