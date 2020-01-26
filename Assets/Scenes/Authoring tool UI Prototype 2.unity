@@ -755,7 +755,7 @@ RectTransform:
   m_Children:
   - {fileID: 1730829851}
   m_Father: {fileID: 1336096972}
-  m_RootOrder: 3
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -1909,7 +1909,7 @@ RectTransform:
   m_Children:
   - {fileID: 1999389356}
   m_Father: {fileID: 1336096972}
-  m_RootOrder: 5
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -4354,7 +4354,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Load Map
+  m_text: Empty Map
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 84dd14695854bbc43a5faa24fcf93d0d, type: 2}
   m_sharedMaterial: {fileID: 21261991626553910, guid: 84dd14695854bbc43a5faa24fcf93d0d,
@@ -4424,7 +4424,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 403804986}
-    characterCount: 8
+    characterCount: 9
     spriteCount: 0
     spaceCount: 1
     wordCount: 2
@@ -15684,7 +15684,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2018068464}
-        m_MethodName: LoadMap
+        m_MethodName: EmptyMapListener
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -20619,9 +20619,9 @@ RectTransform:
   - {fileID: 231397813}
   - {fileID: 1856888759}
   - {fileID: 1594228095}
-  - {fileID: 43478875}
-  - {fileID: 1573777769}
   - {fileID: 149151594}
+  - {fileID: 1573777769}
+  - {fileID: 43478875}
   m_Father: {fileID: 2109520850}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -20912,7 +20912,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Load Map
+  m_text: Empty Map
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 84dd14695854bbc43a5faa24fcf93d0d, type: 2}
   m_sharedMaterial: {fileID: 21261991626553910, guid: 84dd14695854bbc43a5faa24fcf93d0d,
@@ -20982,7 +20982,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 1344086485}
-    characterCount: 8
+    characterCount: 9
     spriteCount: 0
     spaceCount: 1
     wordCount: 2
@@ -31546,7 +31546,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Generate Random Map
+  m_text: Generate Predifined Map
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 84dd14695854bbc43a5faa24fcf93d0d, type: 2}
   m_sharedMaterial: {fileID: 21261991626553910, guid: 84dd14695854bbc43a5faa24fcf93d0d,
@@ -31616,7 +31616,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 2033723041}
-    characterCount: 19
+    characterCount: 23
     spriteCount: 0
     spaceCount: 2
     wordCount: 3
@@ -35617,7 +35617,7 @@ PrefabInstance:
     - target: {fileID: 3592835195357670329, guid: 6428c0cecf155c442a5da65e668b380d,
         type: 3}
       propertyPath: itemList.Array.data[0].onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3592835195357670329, guid: 6428c0cecf155c442a5da65e668b380d,
         type: 3}
@@ -35632,7 +35632,7 @@ PrefabInstance:
     - target: {fileID: 3592835195357670329, guid: 6428c0cecf155c442a5da65e668b380d,
         type: 3}
       propertyPath: itemList.Array.data[0].onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: SetPathTargetBlue
+      value: PathHighlightListener
       objectReference: {fileID: 0}
     - target: {fileID: 3592835195357670329, guid: 6428c0cecf155c442a5da65e668b380d,
         type: 3}

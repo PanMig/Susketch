@@ -69,3 +69,49 @@ public class ArmorPath : IPathFinding
         playerProps.movementSteps = count > 0 ? playerProps.highlightedTiles.Count / count : 0;
     }
 }
+
+public class DamagePath : IPathFinding
+{
+    public void FindShortestPath(Vector2 start, Vector2 goal, PlayerPathProperties playerProps)
+    {
+        if (playerProps.highlightedTiles.Count > 0)
+        {
+            PathManager.Instance.UnhighlightPath(playerProps);
+            playerProps.highlightedTiles.Clear();
+        }
+        int count = 0;
+        var armorDict = tileMapMain.GetDecoration(TileEnums.Decorations.damageBoost);
+        foreach (var armorPack in armorDict)
+        {
+            var tilePath = PathUtils.BFSGetShortestPath(tileMapMain.GetTileWithIndex((int)start.x, (int)start.y),
+            tileMapMain.GetTileWithIndex(armorPack.X, armorPack.Y), tileMapMain);
+            playerProps.highlightedTiles.AddRange(tilePath);
+            count++;
+        }
+        PathManager.Instance.HighlightPath(playerProps);
+        playerProps.movementSteps = count > 0 ? playerProps.highlightedTiles.Count / count : 0;
+    }
+}
+
+public class StairsPath : IPathFinding
+{
+    public void FindShortestPath(Vector2 start, Vector2 goal, PlayerPathProperties playerProps)
+    {
+        if (playerProps.highlightedTiles.Count > 0)
+        {
+            PathManager.Instance.UnhighlightPath(playerProps);
+            playerProps.highlightedTiles.Clear();
+        }
+        int count = 0;
+        var armorDict = tileMapMain.GetDecoration(TileEnums.Decorations.stairs);
+        foreach (var armorPack in armorDict)
+        {
+            var tilePath = PathUtils.BFSGetShortestPath(tileMapMain.GetTileWithIndex((int)start.x, (int)start.y),
+            tileMapMain.GetTileWithIndex(armorPack.X, armorPack.Y), tileMapMain);
+            playerProps.highlightedTiles.AddRange(tilePath);
+            count++;
+        }
+        PathManager.Instance.HighlightPath(playerProps);
+        playerProps.movementSteps = count > 0 ? playerProps.highlightedTiles.Count / count : 0;
+    }
+}

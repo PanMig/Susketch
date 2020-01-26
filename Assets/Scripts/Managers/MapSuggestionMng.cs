@@ -9,10 +9,11 @@ using static TFModel;
 using TileMapLogic;
 using static AuthoringTool;
 
-public class MLSuggestionsMng : MonoBehaviour
+public class MapSuggestionMng : MonoBehaviour
 {
     private enum pickups { none, health, armor, damage };
 
+    /*
     public static Task<CharacterParams[]> GetBalancedMatchup(List<CharacterParams[]> classMatchups, NDArray input_map)
     {
         return Task.Run(() =>
@@ -36,6 +37,36 @@ public class MLSuggestionsMng : MonoBehaviour
 
             return classes;
         });
+    } */
+
+    public static async Task<CharacterParams[]> GetBalancedMatchUpAsychronus(List<CharacterParams[]> classMatchups, NDArray input_map)
+    {
+        Debug.Log("starting balance thread");
+        var characterClasses = await CalculateClassBalance(classMatchups, input_map);
+        Debug.Log("ending balance thread");
+        return characterClasses;
+    }
+
+    private static async Task<CharacterParams[]> CalculateClassBalance(List<CharacterParams[]> classMatchups, NDArray input_map)
+    {
+         var classes = new CharacterParams[2];
+            var thresshold = 0.5f;
+            float score = 0;
+            var scores = new List<float>();
+            foreach (var matchup in classMatchups)
+            {
+                var input_weapons = GetInputWeapons(matchup[0], matchup[1]);
+                score = TFModel.PredictKillRatio(input_map, input_weapons);
+                scores.Add(score);
+                await new WaitForEndOfFrame();
+            }
+
+            int resultIdx = GetClosestIdxToThresshold(thresshold, scores);
+
+            classes[0] = classMatchups[resultIdx][0]; // red team.
+            classes[1] = classMatchups[resultIdx][1]; // blue team.
+
+            return classes;
     }
 
     private static int GetClosestIdxToThresshold(float thresshold, List<float> scores)
@@ -45,8 +76,16 @@ public class MLSuggestionsMng : MonoBehaviour
         return resultIdx;
     }
 
+    public static async Task<Tile[,]> SpawnPickupsAsychronus(TileMap tilemapMain)
+    {
+        Debug.Log("Pickups thread starting");
+        var map = await SpawnBalancedPickUps(tilemapMain);
+        Debug.Log("Pickups thread ending");
+        return map;
+    }
+
     // TODO : More than one tile are spawned inside the region.
-    public static Tile[,] SpawnBalancedPickUps(TileMap tilemapMain)
+    public static async Task<Tile[,]> SpawnBalancedPickUps(TileMap tilemapMain)
     {
         TileMap map;
         Dictionary<TileMap, float> mapsDict = new Dictionary<TileMap, float>();
@@ -56,7 +95,6 @@ public class MLSuggestionsMng : MonoBehaviour
         System.Random RNG = new System.Random();
 
         // randomly select a region to spawn a pickups
-
         for (int m = 0; m < 40; m++)
         {
             // this will erase all previous decorations on the main map.
@@ -92,8 +130,9 @@ public class MLSuggestionsMng : MonoBehaviour
                         fillTile.decID = TileEnums.Decorations.empty;
                         map.SetTileMapTile(fillTile);
                     }
-
+                    
                 }
+                await new WaitForEndOfFrame();
             }
             score = PredictKillRatio(GetInputMap(map), GetInputWeapons(blueClass, redClass));
             mapsDict.Add(map, score);

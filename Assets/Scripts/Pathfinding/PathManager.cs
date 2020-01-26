@@ -100,21 +100,28 @@ public class PathManager : MonoBehaviour
             switch (pathTargetBlue)
             {
                 case (int)Targets.enemyBase:
-                    Debug.Log("base");
                     IPathFinding enemyPath = new EnemyBasePath();
                     enemyPath.FindShortestPath(new Vector2(19, 0), new Vector2(0, 19), pathBlueProps);
                     break;
                 case (int)Targets.health:
-                    Debug.Log("health");
                     IPathFinding healthPath = new HealthPath();
-                    // zero parameter stands for empty, goal is handled by the class implementation.
+                    // second parameter stands for empty, goal is handled by the class implementation.
                     healthPath.FindShortestPath(new Vector2(19, 0), new Vector2(0, 19), pathBlueProps);
                     break;
                 case (int)Targets.armor:
-                    Debug.Log("armor");
                     IPathFinding armorPath = new ArmorPath();
-                    // zero parameter stands for empty, goal is handled by the class implementation.
+                    // second parameter stands for empty, goal is handled by the class implementation.
                     armorPath.FindShortestPath(new Vector2(19, 0), new Vector2(0, 19), pathBlueProps);
+                    break;
+                case (int)Targets.damage:
+                    IPathFinding damagePath = new DamagePath();
+                    // second parameter stands for empty, goal is handled by the class implementation.
+                    damagePath.FindShortestPath(new Vector2(19, 0), new Vector2(0, 19), pathBlueProps);
+                    break;
+                case (int)Targets.stair:
+                    IPathFinding stairsPath = new StairsPath();
+                    // second parameter stands for empty, goal is handled by the class implementation.
+                    stairsPath.FindShortestPath(new Vector2(19, 0), new Vector2(0, 19), pathBlueProps);
                     break;
                 default:
                     break;
@@ -137,6 +144,16 @@ public class PathManager : MonoBehaviour
                     IPathFinding armorPath = new ArmorPath();
                     // zero parameter stands for empty, goal is handled by the class implementation.
                     armorPath.FindShortestPath(new Vector2(0, 19), new Vector2(0, 19), pathRedProps);
+                    break;
+                case (int)Targets.damage:
+                    IPathFinding damagePath = new DamagePath();
+                    // second parameter stands for empty, goal is handled by the class implementation.
+                    damagePath.FindShortestPath(new Vector2(19, 0), new Vector2(0, 19), pathRedProps);
+                    break;
+                case (int)Targets.stair:
+                    IPathFinding stairsPath = new StairsPath();
+                    // second parameter stands for empty, goal is handled by the class implementation.
+                    stairsPath.FindShortestPath(new Vector2(19, 0), new Vector2(0, 19), pathRedProps);
                     break;
                 default:
                     break;

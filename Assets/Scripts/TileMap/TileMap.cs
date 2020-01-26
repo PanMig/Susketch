@@ -131,6 +131,23 @@ namespace TileMapLogic
             }
         }
 
+        public void SetDefaultMap(int envIndex, int decorIndex)
+        {
+            TileThemes tileTheme;
+            Decoration decor;
+
+            for (int row = 0; row < rows; row++)
+            {
+                for (int col = 0; col < columns; col++)
+                {
+                    tileTheme = Brush.Instance.brushThemes[envIndex];
+                    decor = Brush.Instance.decorations[decorIndex];
+                    tileMap[row, col].PaintTile(tileTheme, this);
+                    tileMap[row, col].PaintDecoration(decor, this);
+                }
+            }
+        }
+
         public Tile GetTileWithIndex(int row, int col)
         {
             return tileMap[row, col];

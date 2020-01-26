@@ -5,7 +5,7 @@ using System.Threading;
 using UnityEngine.UI;
 using NumSharp;
 using TileMapLogic;
-using static MLSuggestionsMng;
+using static MapSuggestionMng;
 using static TFModel;
 using Michsky.UI.ModernUIPack;
 
@@ -14,7 +14,7 @@ public class AuthoringTool : MonoBehaviour
 {
     private FPSClasses fpsClasses;
     public MetricsManager metricsMng;
-    public MLSuggestionsMng suggestionsMng;
+    public MapSuggestionMng suggestionsMng;
     public static TileMapView tileMapView;
     public static TileMap tileMapMain;
 
@@ -71,12 +71,16 @@ public class AuthoringTool : MonoBehaviour
 
         int index = Random.Range(1, 10);
         randomMap.ReadCSVToTileMap("Map Files/mapFile" + index);
-        Debug.Log(index);
         tileMapMain.SetTileMap(randomMap.GetTileMap());
         randomMap = null;
         Destroy(tempView);
         tileMapMain.RenderTileMap();
         TileMapRepair.CheckTileMap();
+    }
+
+    public void EmptyMapListener()
+    {
+        tileMapMain.SetDefaultMap(0,0);
     }
 
     private void Invokes()
@@ -138,16 +142,17 @@ public class AuthoringTool : MonoBehaviour
 
     public async void FindClassBalance()
     {
-        var balanced_classes = await GetBalancedMatchup(fpsClasses.matchups, GetInputMap(tileMapMain));
+        var balanced_classes = await GetBalancedMatchUpAsychronus(fpsClasses.matchups, GetInputMap(tileMapMain));
         redClass = balanced_classes[0];
         blueClass = balanced_classes[1];
+        Debug.Log($"blue: {blueClass}" + $"red: {redClass}");
         blueSelector.index = 3;
         blueSelector.index = 0;
     }
 
-    public void GeneratePickUps()
+    public async void GeneratePickUps()
     {
-        var map = SpawnBalancedPickUps(tileMapMain);
+        var map = await SpawnPickupsAsychronus(tileMapMain);
         tileMapMain.SetTileMap(map);
         tileMapMain.RenderTileMap();
     }
