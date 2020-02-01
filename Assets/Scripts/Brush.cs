@@ -25,7 +25,6 @@ public class Brush : MonoBehaviour
         damageBoost
     }
 
-
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -46,7 +45,6 @@ public class Brush : MonoBehaviour
     public void SetDecorationBrush(int type)
     {
         Instance.currDecBrush = type;
-
     }
 
     // Bucket like paint tool that uses recursive flood fill algorithm.

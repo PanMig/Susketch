@@ -236,10 +236,8 @@ namespace TileMapLogic
             int xRange = regionNumX * 5;
             int yRange = regionNumY * 5;
 
-            //int row = RNG.Next(xRange - 5, xRange - 1);
-            //int column = RNG.Next(yRange - 5, yRange - 1);
-            int row = UnityEngine.Random.Range(xRange - 5, xRange - 1);
-            int column = UnityEngine.Random.Range(yRange - 5, yRange - 1);
+            int row = RNG.Next(xRange);
+            int column = RNG.Next(yRange);
 
             return GetTileWithIndex(row, column);
         }

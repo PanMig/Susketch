@@ -26,11 +26,22 @@ public class AuthoringTool : MonoBehaviour
     public static CharacterParams blueClass;
     public static CharacterParams redClass;
     public Text arc_text;
+    private CharacterParams[] balanced_classes;
+    private Tile[,] generatedMap;
 
     private void OnEnable()
     {
         EventManagerUI.onTileMapEdit += PaintTeamRegions;
         EventManagerUI.onTileMapEdit += CheckTileMap;
+        //EventManagerUI.onTileMapEdit += CalculateClassBalanceAsync;
+        EventManagerUI.onTileMapEdit += CalculateBalancedPickUpsAsync;
+    }
+
+    private void OnDisable()
+    {
+        EventManagerUI.onTileMapEdit -= PaintTeamRegions;
+        EventManagerUI.onTileMapEdit -= CheckTileMap;
+        //EventManagerUI.onTileMapEdit -= CalculateClassBalanceAsync;
     }
 
     // Start is called before the first frame update
@@ -140,9 +151,26 @@ public class AuthoringTool : MonoBehaviour
         Debug.Log("Got input");
     }
 
-    public async void FindClassBalance()
+    public async void CalculateClassBalanceAsync()
     {
-        var balanced_classes = await GetBalancedMatchUpAsychronus(fpsClasses.matchups, GetInputMap(tileMapMain));
+        //balanced_classes = await GetBalancedMatchUpAsynchronous(fpsClasses.matchups, GetInputMap(tileMapMain));
+        balanced_classes = await GetBalancedMatchUpAsynchronous(fpsClasses.matchups, GetInputMap(tileMapMain));
+    }
+
+    public async void CalculateBalancedPickUpsAsync()
+    {
+        if(x == false)
+        {
+            generatedMap = await SpawnPickupsAsynchronous(tileMapMain);
+        }
+        else
+        {
+            Debug.Log("wait for thread");
+        }
+    }
+
+    public void FindClassBalance()
+    {
         redClass = balanced_classes[0];
         blueClass = balanced_classes[1];
         Debug.Log($"blue: {blueClass}" + $"red: {redClass}");
@@ -150,10 +178,9 @@ public class AuthoringTool : MonoBehaviour
         blueSelector.index = 0;
     }
 
-    public async void GeneratePickUps()
+    public void GeneratePickUps()
     {
-        var map = await SpawnPickupsAsychronus(tileMapMain);
-        tileMapMain.SetTileMap(map);
+        tileMapMain.SetTileMap(generatedMap);
         tileMapMain.RenderTileMap();
     }
 }

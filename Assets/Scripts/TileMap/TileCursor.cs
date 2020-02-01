@@ -19,7 +19,7 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
         fill,
     }
 
-    public CursorType currentCursorType;
+    public static CursorType currentCursorType;
 
     #region interface implementations
 
