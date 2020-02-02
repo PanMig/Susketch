@@ -132,9 +132,7 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
         {
             // column, row.
             Tile tile = tileMapMain.GetTileWithIndex(index_row, index_col);
-
             int index = Brush.Instance.currTileBrush;
-
             tile.PaintTile(Brush.Instance.brushThemes[index], tileMapMain);
             //if(tile.envTileID == TileEnums.EnviromentTiles.level_1)
             //{
@@ -151,12 +149,9 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
         {
             // column, row.
             Tile tile = tileMapMain.GetTileWithIndex(index_row, index_col);
-
             // zero index is always the empty decoration, that's why we add plus one to current brush index.
             int index = Brush.Instance.currDecBrush;
-
             tile.PaintDecoration(Brush.Instance.decorations[index], tileMapMain);
-            //Debug.Log(tile.gameObj.name + "_" + tile.envTileID + " " + tile.decID);
             EventManagerUI.onTileMapEdit?.Invoke();
         }
     }

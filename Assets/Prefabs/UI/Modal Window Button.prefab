@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: 8799230173846203814}
   - component: {fileID: 8799230173846203817}
   - component: {fileID: 644113896475309548}
+  - component: {fileID: 5642385451985184758}
+  - component: {fileID: 26179114114836945}
   m_Layer: 5
   m_Name: Modal Window Button
   m_TagString: Untagged
@@ -243,6 +245,38 @@ MonoBehaviour:
   roundedOutlineFilled: {fileID: 0}
   roundedOutlineText: {fileID: 0}
   roundedOutlineTextHighligted: {fileID: 0}
+--- !u!95 &5642385451985184758
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8799230173846203819}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 565a9345b4d7e2d49a24ff64df2c454d, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &26179114114836945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8799230173846203819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc8a32a65d1eae6458c98c37092973ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  replacementType: 0
 --- !u!1 &8799230174521365275
 GameObject:
   m_ObjectHideFlags: 0
@@ -353,7 +387,7 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: -1
+  m_firstOverflowCharacterIndex: 0
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0
@@ -382,7 +416,7 @@ MonoBehaviour:
     spaceCount: 3
     wordCount: 4
     linkCount: 0
-    lineCount: 1
+    lineCount: 22
     pageCount: 1
     materialCount: 2
   m_isUsingLegacyAnimationComponent: 0

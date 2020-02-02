@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using Michsky.UI.ModernUIPack;
 using System.Linq;
 using static MapSuggestionMng;
+using System;
 
 public class MetricsManager : MonoBehaviour
 {
@@ -18,14 +19,14 @@ public class MetricsManager : MonoBehaviour
 
     private void OnEnable()
     {
-        OnBalancedCharacters += EnableClassBalanceBtn;
-        OnGeneratedPickUps += EnablePickupsBtn;
+        OnBalancedCharacters += SetClassBalanceBtn;
+        OnGeneratedPickUps += SetPickupsBtn;
     }
 
     private void OnDisable()
     {
-        OnBalancedCharacters -= EnableClassBalanceBtn;
-        OnGeneratedPickUps -= EnablePickupsBtn;
+        OnBalancedCharacters -= SetClassBalanceBtn;
+        OnGeneratedPickUps -= SetPickupsBtn;
     }
 
     public void Start()
@@ -89,18 +90,13 @@ public class MetricsManager : MonoBehaviour
         }
     }
 
-    public void EnablePickupsBtn()
+    public void SetPickupsBtn(bool value)
     {
-        pickUpsBalanceBtn.interactable = true;
+        pickUpsBalanceBtn.interactable = value;
     }
 
-    public void EnableClassBalanceBtn()
+    public void SetClassBalanceBtn(bool value)
     {
-        classBalanceBtn.interactable = true;
-    }
-
-    public void SetGeneratedPickUps()
-    {
-
+        classBalanceBtn.interactable = value;
     }
 }

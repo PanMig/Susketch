@@ -15,12 +15,18 @@ public class MapSuggestionMng : MonoBehaviour
     private enum pickups { none, health, armor, damage };
     public static bool x;
 
-    public delegate void OnCharactersBalanced();
+    #region events
+
+    public delegate void OnCharactersBalanced(bool value);
     public static event OnCharactersBalanced OnBalancedCharacters;
 
-    public delegate void OnPickUpsGenerated();
+    public delegate void OnPickUpsGenerated(bool value);
     public static event OnPickUpsGenerated OnGeneratedPickUps;
 
+    public delegate void OnPickUpsCalculating(bool value);
+    public static event OnPickUpsCalculating OnCalculatingPickUps;
+
+    #endregion
 
     // Old implementation with the Task System.
     public static Task<CharacterParams[]> GetBalancedMatchup(List<CharacterParams[]> classMatchups, NDArray input_map)
@@ -51,31 +57,9 @@ public class MapSuggestionMng : MonoBehaviour
     {
         Debug.Log("Balanced classes started");
         var characterClasses = await GetBalancedMatchup(classMatchups, input_map).ConfigureAwait(false);
-        OnBalancedCharacters?.Invoke();
         Debug.Log("Balanced classes ended");
+        OnBalancedCharacters?.Invoke(true);
         return characterClasses;
-    }
-
-    public static async Task<CharacterParams[]> CalculateClassBalance(List<CharacterParams[]> classMatchups, NDArray input_map)
-    {
-        var classes = new CharacterParams[2];
-        var thresshold = 0.5f;
-        float score = 0;
-        var scores = new List<float>();
-        foreach (var matchup in classMatchups)
-        {
-            var input_weapons = GetInputWeapons(matchup[0], matchup[1]);
-            score = TFModel.PredictKillRatio(input_map, input_weapons);
-            scores.Add(score);
-            await new WaitForEndOfFrame();
-        }
-
-        int resultIdx = GetClosestIdxToThresshold(thresshold, scores);
-
-        classes[0] = classMatchups[resultIdx][0]; // red team.
-        classes[1] = classMatchups[resultIdx][1]; // blue team.
-        OnBalancedCharacters?.Invoke();
-        return classes;
     }
 
     private static int GetClosestIdxToThresshold(float thresshold, List<float> scores)
@@ -87,17 +71,15 @@ public class MapSuggestionMng : MonoBehaviour
 
     public static async Task<Tile[,]> SpawnPickupsAsynchronous(TileMap tilemapMain)
     {
-        if (OnGeneratedPickUps.GetInvocationList().Length == 1)
-        {
-            x = true;
-            Debug.Log("Spawn Pickups started");
-            var map = await SpawnBalancedPickUps(tilemapMain);
-            OnGeneratedPickUps?.Invoke();
-            Debug.Log("Spawn Pickups ended");
-            x = false;
-            return map;
-        }
-        return tileMapMain.GetTileMap();
+
+        x = true;
+        Debug.Log("Spawn Pickups started");
+        OnGeneratedPickUps?.Invoke(false);
+        var map = await SpawnBalancedPickUps(tilemapMain);
+        Debug.Log("Spawn Pickups ended");
+        OnGeneratedPickUps?.Invoke(true);
+        x = false;
+        return map;
     }
 
     // TODO : More than one tile are spawned inside the region.
@@ -130,7 +112,6 @@ public class MapSuggestionMng : MonoBehaviour
         var balancedMap = mapsDict.FirstOrDefault(x => x.Value == bestMatch);
         Destroy(tempView);
         return balancedMap.Key.GetTileMap();
-
     }
 
     private static Task<TileMap> SetPickUpsLocations(TileMap map, System.Random RNG)

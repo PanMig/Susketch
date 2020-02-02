@@ -33,7 +33,6 @@ public class AuthoringTool : MonoBehaviour
     {
         EventManagerUI.onTileMapEdit += PaintTeamRegions;
         EventManagerUI.onTileMapEdit += CheckTileMap;
-        //EventManagerUI.onTileMapEdit += CalculateClassBalanceAsync;
         EventManagerUI.onTileMapEdit += CalculateBalancedPickUpsAsync;
     }
 
@@ -41,7 +40,8 @@ public class AuthoringTool : MonoBehaviour
     {
         EventManagerUI.onTileMapEdit -= PaintTeamRegions;
         EventManagerUI.onTileMapEdit -= CheckTileMap;
-        //EventManagerUI.onTileMapEdit -= CalculateClassBalanceAsync;
+        EventManagerUI.onTileMapEdit -= CalculateBalancedPickUpsAsync;
+
     }
 
     // Start is called before the first frame update
