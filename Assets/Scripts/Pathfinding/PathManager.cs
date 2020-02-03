@@ -161,9 +161,9 @@ public class PathManager : MonoBehaviour
         }
     }
 
-    public bool IsPath(Vector2 start, Vector2 goal)
+    public bool IsPath(Vector2 start, Vector2 goal, TileMap map)
     {
-        if (PathUtils.DFS_Iterative(tileMapMain.GetTileWithIndex((int)start.x, (int)start.y),
+        if (PathUtils.DFS_Iterative(map.GetTileWithIndex((int)start.x, (int)start.y),
              tileMapMain.GetTileWithIndex((int)goal.x, (int)goal.y), tileMapMain))
         {
             return true;

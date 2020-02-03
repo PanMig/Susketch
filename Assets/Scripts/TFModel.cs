@@ -14,6 +14,7 @@ public class TFModel : MonoBehaviour
     private static Graph dArcGraph;
     private static Graph combatPaceGraph;
     private static Graph killRatioGraph;
+    private static Graph gameDurationGraph;
 
     public void Start()
     {
@@ -77,6 +78,27 @@ public class TFModel : MonoBehaviour
         }
     }
 
+    public static float PredictGameDuration(NDArray map, NDArray weapons)
+    {
+        map = ConcatCoverChannel(map);
+        killRatioGraph.as_default();
+        Tensor input_maps = killRatioGraph.OperationByName("input_layer");
+        Tensor input_weapons = killRatioGraph.OperationByName("input_8");
+        Tensor output = killRatioGraph.OperationByName("output_layer/BiasAdd");
+
+        using (var sess = tf.Session())
+        {
+            var results = sess.run(output, new FeedItem[]
+            {
+                new FeedItem(input_maps, map),
+                new FeedItem(input_weapons, weapons)
+            });
+
+            var x = results.ToArray<float>();
+            return x[0];
+        }
+    }
+
     public static float[] PredictDramaticArc(NDArray map, NDArray weapons)
     {
         dArcGraph.as_default();
@@ -120,8 +142,6 @@ public class TFModel : MonoBehaviour
                 new FeedItem(input_weapons, weapons)
             });
 
-            //var value = output_1 + output_2 + output_3 + output_4 + output_5;
-            //var x = value.ToArray<float>()[0];
             float[] values = new float[5];
             values[0] = output_1.ToArray<float>()[0];
             values[1] = output_2.ToArray<float>()[0];

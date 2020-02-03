@@ -55,8 +55,7 @@ public class AuthoringTool : MonoBehaviour
         tileMapMain.InitTileMap(tileMapView.gridRect.transform);
         tileMapMain.InitRegions();
         PaintTeamRegions();
-        //Invokes();
-        TileMapRepair.CheckTileMap();
+        CheckTileMap();
     }
 
     private static void PaintTeamRegions()
@@ -68,9 +67,14 @@ public class AuthoringTool : MonoBehaviour
         tileMapMain.PaintRegion(0, 3, redColor);
     }
 
-    private void CheckTileMap()
+    public static void CheckTileMap()
     {
-        TileMapRepair.CheckTileMap();
+        if (TileMapRepair.CheckTileMap(tileMapMain))
+        {
+            TileMapRepair.onPlayableMap?.Invoke();
+            return;
+        }
+        TileMapRepair.onUnPlayableMap?.Invoke();
     }
 
     public void LoadMap()
@@ -86,7 +90,7 @@ public class AuthoringTool : MonoBehaviour
         randomMap = null;
         Destroy(tempView);
         tileMapMain.RenderTileMap();
-        TileMapRepair.CheckTileMap();
+        CheckTileMap();
     }
 
     public void EmptyMapListener()
@@ -141,6 +145,13 @@ public class AuthoringTool : MonoBehaviour
         SetModelInput();
         var results = PredictKillRatio(input_map, input_weapons);
         metricsMng.SetKillRatioProgressBar(results * 100);
+    }
+
+    public void GameDurationButtonHandler()
+    {
+        SetModelInput();
+        var results = PredictKillRatio(input_map, input_weapons);
+        metricsMng.SetGameDurationText(results);
     }
 
     private void SetModelInput()

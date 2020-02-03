@@ -230,14 +230,13 @@ namespace TileMapLogic
 
         }
 
-        public Tile GetRandomRegionCell(int regionNumX, int regionNumY)
+        public Tile GetRandomRegionCell(int regionNumX, int regionNumY, System.Random RNG)
         {
-            System.Random RNG = new System.Random();
             int xRange = regionNumX * 5;
             int yRange = regionNumY * 5;
 
-            int row = RNG.Next(xRange);
-            int column = RNG.Next(yRange);
+            int row = RNG.Next(xRange - 5, xRange - 1);
+            int column = RNG.Next(yRange - 5, yRange - 1);
 
             return GetTileWithIndex(row, column);
         }
@@ -264,7 +263,7 @@ namespace TileMapLogic
             {
                 for (int j = 0; j < columns; j++)
                 {
-                    if (tileMap[i, j].decID != TileEnums.Decorations.stairs)
+                    if (tileMap[i, j].decID != TileEnums.Decorations.stairs && tileMap[i, j].decID != TileEnums.Decorations.empty)
                     {
                         tileMap[i, j].RemoveDecoration(this);
                     }

@@ -16,29 +16,29 @@ public class TileMapRepair
     public static string errorMsg;
 
     public delegate void OnMapPlayable();
-    public static event OnMapPlayable onPlayableMap;
+    public static OnMapPlayable onPlayableMap;
 
     public delegate void OnNotPlayableMap();
-    public static event OnNotPlayableMap onUnPlayableMap;
+    public static OnNotPlayableMap onUnPlayableMap;
 
     private static void SetErrorMsg(string msg)
     {
         errorMsg = msg;
     }
 
-    private static bool IsTraversable()
+    private static bool IsTraversable(TileMap map)
     {
-        if (!PathManager.Instance.IsPath(blue_base, blue_goal)
-            || !PathManager.Instance.IsPath(red_base, red_goal))
+        if (!PathManager.Instance.IsPath(blue_base, blue_goal, map)
+            || !PathManager.Instance.IsPath(red_base, red_goal, map))
         {
             return false;
         }
         return true;
     }
 
-    private static bool HasAccesiblePowerUps()
+    public static bool HasAccesiblePowerUps(TileMap map)
     {
-        var decorDict = tileMapMain.GetDecorations();
+        var decorDict = map.GetDecorations();
         List<string> decorKeys = new List<string>
         {
             TileEnums.Decorations.healthPack.ToString(),
@@ -50,9 +50,9 @@ public class TileMapRepair
         {
             for (int j = 0; j < decorDict[decorKeys[i]].Count; j++)
             {
-                if (!PathManager.Instance.IsPath(blue_base, decorDict[decorKeys[i]][j])
+                if (!PathManager.Instance.IsPath(blue_base, decorDict[decorKeys[i]][j], map)
                     &&
-                    !PathManager.Instance.IsPath(red_base, decorDict[decorKeys[i]][j]))
+                    !PathManager.Instance.IsPath(red_base, decorDict[decorKeys[i]][j], map))
                 {
                     return false;
                 }
@@ -61,15 +61,15 @@ public class TileMapRepair
         return true;
     }
 
-    private static bool ArePlatformsConnectedToStairs()
+    private static bool ArePlatformsConnectedToStairs(TileMap map)
     {
-        var platforms = tileMapMain.GetFirstFloorPlatforms();
+        var platforms = map.GetFirstFloorPlatforms();
         for (int i = 0; i < platforms.Count; i++)
         {
             int stairCount = 0;
             for (int j = 0; j < platforms[i].Count; j++)
             {
-                var neighbours = PathUtils.GetNeighboursCross(platforms[i][j], tileMapMain);
+                var neighbours = PathUtils.GetNeighboursCross(platforms[i][j], map);
                 for (int n = 0; n < neighbours.Count; n++)
                 {
                     if (neighbours[n].decID == TileEnums.Decorations.stairs) { stairCount++; }
@@ -83,19 +83,19 @@ public class TileMapRepair
         return true;
     }
 
-    private static bool HasExitFromClosedPlatform()
+    private static bool HasExitFromClosedPlatform(TileMap map)
     {
-        var boundaries = tileMapMain.GetBoundaries();
-        var map = tileMapMain.GetTileMapToInt();
+        var boundaries = map.GetBoundaries();
+        var tempMap = map.GetTileMapToInt();
         foreach (var bound in boundaries)
         {
             if (bound.envTileID == EnviromentTiles.ground)
             {
-                PathUtils.FloodFill(bound.X, bound.Y, 0, -1, map);
+                PathUtils.FloodFill(bound.X, bound.Y, 0, -1, tempMap);
             }
             else if (bound.envTileID == EnviromentTiles.level_1)
             {
-                PathUtils.FloodFill(bound.X, bound.Y, 1, -2, map);
+                PathUtils.FloodFill(bound.X, bound.Y, 1, -2, tempMap);
             }
         }
 
@@ -107,12 +107,12 @@ public class TileMapRepair
             for (int j = 0; j < TileMap.columns; j++)
             {
                 Vector2 v = new Vector2(i, j);
-                if (map[i, j] == 0 && !tilesVisited.Contains(v))
+                if (tempMap[i, j] == 0 && !tilesVisited.Contains(v))
                 {
-                    PathUtils.FloodFill(i, j, 0, 3, map);
+                    PathUtils.FloodFill(i, j, 0, 3, tempMap);
                     tilesVisited.Add(v);
                     holesCount++;
-                    if (tileMapMain.GetTileWithIndex(i, j).decID == Decorations.stairs)
+                    if (map.GetTileWithIndex(i, j).decID == Decorations.stairs)
                     {
                         stairCount++;
                     }
@@ -123,13 +123,13 @@ public class TileMapRepair
         return true;
     }
 
-    private static bool AreStairsConnectedToFirstFloor()
+    private static bool AreStairsConnectedToFirstFloor(TileMap map)
     {
-        var stairs = tileMapMain.GetDecoration(TileEnums.Decorations.stairs);
+        var stairs = map.GetDecoration(TileEnums.Decorations.stairs);
 
         for (int i = 0; i < stairs.Count; i++)
         {
-            var neighbours = PathUtils.GetNeighboursCross(stairs[i], tileMapMain);
+            var neighbours = PathUtils.GetNeighboursCross(stairs[i], map);
             int lev1Count = 0;
             if(stairs[i].envTileID == TileEnums.EnviromentTiles.level_1 || 
                 stairs[i].envTileID == TileEnums.EnviromentTiles.level_2)
@@ -159,50 +159,44 @@ public class TileMapRepair
         return true;
     }
 
-    public static bool CheckTileMap()
+    public static bool CheckTileMap(TileMap map)
     {
         // 1: Bases should be traversable.
-        if (!IsTraversable())
+        if (!IsTraversable(map))
         {
             SetErrorMsg("Bases are not traversable");
-            onUnPlayableMap?.Invoke();
             return false;
         }
 
         // 2: Every player must reach all power ups.
-        if (!HasAccesiblePowerUps())
+        if (!HasAccesiblePowerUps(map))
         {
             SetErrorMsg("Not all power ups are available to players");
-            onUnPlayableMap?.Invoke();
             return false;
         }
 
         // 3: First floor platform should always be connected to a stair
-        if (!ArePlatformsConnectedToStairs())
+        if (!ArePlatformsConnectedToStairs(map))
         {
             SetErrorMsg("Platform not connected to a stair");
-            onUnPlayableMap?.Invoke();
             return false;
         }
 
         // 4: Make sure player can get out of first floor closed areas (a stair exists inside hole)
-        if (!HasExitFromClosedPlatform())
+        if (!HasExitFromClosedPlatform(map))
         {
             SetErrorMsg("There is not exit from first floor region");
-            onUnPlayableMap?.Invoke();
             return false;
         }
 
         // 5: A stair should always lead to first floor tiles
-        if (!AreStairsConnectedToFirstFloor())
+        if (!AreStairsConnectedToFirstFloor(map))
         {
             SetErrorMsg("Stair is wrongly connected. It either leads to a wall, is cornered by two or more level1 tiles, " +
                 "or does not lead to first level floor");
-            onUnPlayableMap?.Invoke();
             return false;
         }
 
-        onPlayableMap?.Invoke();
         return true;
     }
 }

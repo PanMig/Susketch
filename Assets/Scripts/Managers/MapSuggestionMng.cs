@@ -23,9 +23,6 @@ public class MapSuggestionMng : MonoBehaviour
     public delegate void OnPickUpsGenerated(bool value);
     public static event OnPickUpsGenerated OnGeneratedPickUps;
 
-    public delegate void OnPickUpsCalculating(bool value);
-    public static event OnPickUpsCalculating OnCalculatingPickUps;
-
     #endregion
 
     // Old implementation with the Task System.
@@ -90,20 +87,21 @@ public class MapSuggestionMng : MonoBehaviour
         Dictionary<TileMap, float> mapsDict = new Dictionary<TileMap, float>();
         float thresshold = 0.5f;
         float score = 0.0f;
-        int diceRoll;
         System.Random RNG = new System.Random();
 
         // randomly select a region to spawn a pickups
-        for (int m = 0; m < 40; m++)
+        for (int m = 0; m < 50; m++)
         {
             // this will erase all previous decorations on the main map.
             map = new TileMap();
             map.InitTileMap(tempView.transform);
             map.SetTileMap(tilemapMain.GetTileMap());
-            map.RemoveDecorations();
             map = await SetPickUpsLocations(map, RNG).ConfigureAwait(false);
             score = PredictKillRatio(GetInputMap(map), GetInputWeapons(blueClass, redClass));
-            mapsDict.Add(map, score);
+            if (TileMapRepair.HasAccesiblePowerUps(map))
+            {
+                mapsDict.Add(map, score);
+            }
             await new WaitForEndOfFrame();
         }
 
@@ -127,27 +125,40 @@ public class MapSuggestionMng : MonoBehaviour
                     diceRoll = RNG.Next(1, 5);
                     if (diceRoll == (int)pickups.health)
                     {
-                        Tile fillTile = map.GetRandomRegionCell(i, j);
-                        fillTile.decID = TileEnums.Decorations.healthPack;
-                        map.SetTileMapTile(fillTile);
+                        Tile fillTile = map.GetRandomRegionCell(i, j, RNG);
+                        if(fillTile.envTileID != TileEnums.EnviromentTiles.level_2)
+                        {
+                            fillTile.decID = TileEnums.Decorations.healthPack;
+                            map.SetTileMapTile(fillTile);
+                        }
                     }
                     else if (diceRoll == (int)pickups.armor)
                     {
-                        Tile fillTile = map.GetRandomRegionCell(i, j);
-                        fillTile.decID = TileEnums.Decorations.armorVest;
-                        map.SetTileMapTile(fillTile);
+                        Tile fillTile = map.GetRandomRegionCell(i, j, RNG);
+                        if (fillTile.envTileID != TileEnums.EnviromentTiles.level_2)
+                        {
+                            fillTile.decID = TileEnums.Decorations.armorVest;
+                            map.SetTileMapTile(fillTile);
+                        }
                     }
                     else if (diceRoll == (int)pickups.damage)
                     {
-                        Tile fillTile = map.GetRandomRegionCell(i, j);
-                        fillTile.decID = TileEnums.Decorations.damageBoost;
-                        map.SetTileMapTile(fillTile);
+                        Tile fillTile = map.GetRandomRegionCell(i, j, RNG);
+                        if (fillTile.envTileID != TileEnums.EnviromentTiles.level_2)
+                        {
+                            fillTile.decID = TileEnums.Decorations.damageBoost;
+                            map.SetTileMapTile(fillTile);
+                        }
                     }
                     else
                     {
-                        Tile fillTile = map.GetRandomRegionCell(i, j);
-                        fillTile.decID = TileEnums.Decorations.empty;
-                        map.SetTileMapTile(fillTile);
+                        Tile fillTile = map.GetRandomRegionCell(i, j, RNG);
+                        if (fillTile.envTileID != TileEnums.EnviromentTiles.level_2)
+                        {
+                            fillTile.decID = TileEnums.Decorations.empty;
+                            map.SetTileMapTile(fillTile);
+                        }
+                            
                     }
                 }
             }

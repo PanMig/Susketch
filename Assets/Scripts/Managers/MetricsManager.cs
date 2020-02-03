@@ -6,6 +6,7 @@ using Michsky.UI.ModernUIPack;
 using System.Linq;
 using static MapSuggestionMng;
 using System;
+using TMPro;
 
 public class MetricsManager : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class MetricsManager : MonoBehaviour
     public LineChartCtrl daChart;
     public LineChartCtrl cpChart;
     public ProgressBar killRatioBar;
+    public TextMeshProUGUI GameDurationText;
     public Button classBalanceBtn;
     public Button pickUpsBalanceBtn;
 
@@ -87,6 +89,22 @@ public class MetricsManager : MonoBehaviour
         else
         {
             loadingBar.color = new Color32(255,133,0,255);
+        }
+    }
+
+    public void SetGameDurationText(float value)
+    {
+        if (value < 0.28f)
+        {
+            GameDurationText.text = "Short";
+        }
+        else if (value >= 0.28f && value < 0.43f)
+        {
+            GameDurationText.text = "Medium";
+        }
+        else
+        {
+            GameDurationText.text = "Long";
         }
     }
 
