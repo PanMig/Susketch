@@ -70,7 +70,7 @@ public class MetricsManager : MonoBehaviour
 
     public void GenerateCombatPaceGraph(float[] combat_pace)
     {
-
+        cpChart.SetChartData(combat_pace);
     }
 
     public void SetKillRatioProgressBar(float percent)

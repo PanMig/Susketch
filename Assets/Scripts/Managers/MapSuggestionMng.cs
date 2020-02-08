@@ -82,6 +82,7 @@ public class MapSuggestionMng : MonoBehaviour
     // TODO : More than one tile are spawned inside the region.
     public static async Task<Tile[,]> SpawnBalancedPickUps(TileMap tilemapMain)
     {
+        var tempMap = tilemapMain.GetTileMap();
         TileMap map;
         GameObject tempView = new GameObject("TempView");
         Dictionary<TileMap, float> mapsDict = new Dictionary<TileMap, float>();
@@ -90,12 +91,13 @@ public class MapSuggestionMng : MonoBehaviour
         System.Random RNG = new System.Random();
 
         // randomly select a region to spawn a pickups
-        for (int m = 0; m < 50; m++)
+        for (int m = 0; m < 20; m++)
         {
             // this will erase all previous decorations on the main map.
             map = new TileMap();
             map.InitTileMap(tempView.transform);
-            map.SetTileMap(tilemapMain.GetTileMap());
+            map.SetTileMap(tempMap);
+            map.RemoveDecorations();
             map = await SetPickUpsLocations(map, RNG).ConfigureAwait(false);
             score = PredictKillRatio(GetInputMap(map), GetInputWeapons(blueClass, redClass));
             if (TileMapRepair.HasAccesiblePowerUps(map))

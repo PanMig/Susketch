@@ -21,6 +21,8 @@ public class TFModel : MonoBehaviour
         //heatmapGraph = InitGraph(heatmapGraph, "death_heatmap");
         killRatioGraph = InitGraph(heatmapGraph, "kill_ratio");
         dArcGraph = InitGraph(dArcGraph, "dramatic_arc");
+        gameDurationGraph = InitGraph(gameDurationGraph, "game_duration");
+        combatPaceGraph = InitGraph(combatPaceGraph, "combat_pace");
         Debug.Log("graphs loaded");
     }
 
@@ -49,10 +51,8 @@ public class TFModel : MonoBehaviour
                 new FeedItem(input_maps, map),
                 new FeedItem(input_weapons, weapons)
             });
-            Debug.Log("session 2");
 
             var x = results.ToArray<float>();
-            Debug.Log("Model inference ok");
             return x;
         }
     }
@@ -81,10 +81,10 @@ public class TFModel : MonoBehaviour
     public static float PredictGameDuration(NDArray map, NDArray weapons)
     {
         map = ConcatCoverChannel(map);
-        killRatioGraph.as_default();
-        Tensor input_maps = killRatioGraph.OperationByName("input_layer");
-        Tensor input_weapons = killRatioGraph.OperationByName("input_8");
-        Tensor output = killRatioGraph.OperationByName("output_layer/BiasAdd");
+        gameDurationGraph.as_default();
+        Tensor input_maps = gameDurationGraph.OperationByName("input_layer");
+        Tensor input_weapons = gameDurationGraph.OperationByName("input_8");
+        Tensor output = gameDurationGraph.OperationByName("output_layer/BiasAdd");
 
         using (var sess = tf.Session())
         {
@@ -95,6 +95,7 @@ public class TFModel : MonoBehaviour
             });
 
             var x = results.ToArray<float>();
+            Debug.Log(x[0]);
             return x[0];
         }
     }
@@ -148,6 +149,63 @@ public class TFModel : MonoBehaviour
             values[2] = output_3.ToArray<float>()[0];
             values[3] = output_4.ToArray<float>()[0];
             values[4] = output_5.ToArray<float>()[0];
+            return values;
+        }
+    }
+
+    public static float[] PredictCombatPace(NDArray map, NDArray weapons)
+    {
+        combatPaceGraph.as_default();
+        Tensor input_maps = combatPaceGraph.OperationByName("input_layer");
+        Tensor input_weapons = combatPaceGraph.OperationByName("input_1");
+        Tensor output = combatPaceGraph.OperationByName("output_0/BiasAdd");
+        Tensor output2 = combatPaceGraph.OperationByName("output_1/BiasAdd");
+        Tensor output3 = combatPaceGraph.OperationByName("output_2/BiasAdd");
+        Tensor output4 = combatPaceGraph.OperationByName("output_3/BiasAdd");
+        Tensor output5 = combatPaceGraph.OperationByName("output_4/BiasAdd");
+
+        using (var sess = tf.Session())
+        {
+            var output_1 = sess.run(output, new FeedItem[]
+            {
+                new FeedItem(input_maps, map),
+                new FeedItem(input_weapons, weapons)
+            });
+
+            var output_2 = sess.run(output2, new FeedItem[]
+            {
+                new FeedItem(input_maps, map),
+                new FeedItem(input_weapons, weapons)
+            });
+
+            var output_3 = sess.run(output3, new FeedItem[]
+            {
+                new FeedItem(input_maps, map),
+                new FeedItem(input_weapons, weapons)
+            });
+
+            var output_4 = sess.run(output4, new FeedItem[]
+            {
+                new FeedItem(input_maps, map),
+                new FeedItem(input_weapons, weapons)
+            });
+
+            var output_5 = sess.run(output5, new FeedItem[]
+            {
+                new FeedItem(input_maps, map),
+                new FeedItem(input_weapons, weapons)
+            });
+
+            float[] values = new float[5];
+            values[0] = output_1.ToArray<float>()[0];
+            values[1] = output_2.ToArray<float>()[0];
+            values[2] = output_3.ToArray<float>()[0];
+            values[3] = output_4.ToArray<float>()[0];
+            values[4] = output_5.ToArray<float>()[0];
+            foreach (var item in values)
+            {
+                Debug.Log(item);
+            }
             return values;
         }
     }

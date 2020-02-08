@@ -55,6 +55,7 @@ public class AuthoringTool : MonoBehaviour
         tileMapMain.InitTileMap(tileMapView.gridRect.transform);
         tileMapMain.InitRegions();
         PaintTeamRegions();
+        OnDeathHeatmap();
         CheckTileMap();
     }
 
@@ -123,6 +124,7 @@ public class AuthoringTool : MonoBehaviour
         var results = PredictDeathHeatmap(input_map, input_weapons);
         var heatmap = ArrayParsingUtils.Make2DArray(results, 4, 4);
         metricsMng.DeathHeatmapButtonListener(heatmap);
+        metricsMng.GenerateDeathHeatmap(heatmap);
     }
 
     public void OnDeathHeatmap()
@@ -140,6 +142,13 @@ public class AuthoringTool : MonoBehaviour
         metricsMng.GenerateDramaticArcGraph(results);
     }
 
+    public void CombatPaceButtonHandler()
+    {
+        SetModelInput();
+        var results = PredictCombatPace(input_map, input_weapons);
+        metricsMng.GenerateCombatPaceGraph(results);
+    }
+
     public void KillRatioButtonHandler()
     {
         SetModelInput();
@@ -150,7 +159,7 @@ public class AuthoringTool : MonoBehaviour
     public void GameDurationButtonHandler()
     {
         SetModelInput();
-        var results = PredictKillRatio(input_map, input_weapons);
+        var results = PredictGameDuration(input_map, input_weapons);
         metricsMng.SetGameDurationText(results);
     }
 
@@ -173,10 +182,7 @@ public class AuthoringTool : MonoBehaviour
         if(x == false)
         {
             generatedMap = await SpawnPickupsAsynchronous(tileMapMain);
-        }
-        else
-        {
-            Debug.Log("wait for thread");
+
         }
     }
 
@@ -191,6 +197,7 @@ public class AuthoringTool : MonoBehaviour
 
     public void GeneratePickUps()
     {
+        tileMapMain.RemoveDecorations();
         tileMapMain.SetTileMap(generatedMap);
         tileMapMain.RenderTileMap();
     }

@@ -163,8 +163,6 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
         else if (type == 2) currentCursorType = CursorType.fill;
     }
 
-
-
     #region MonoBehaviour callbacks
 
     // Start is called before the first frame update

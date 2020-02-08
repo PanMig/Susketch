@@ -43,6 +43,7 @@ public static class PathUtils
         while (frontier.Count > 0)
         {
             var current = frontier.Dequeue();
+            if(current.gameObj == goal.gameObj) { break; }
             List<Tile> neighbours = GetNeighbours(current, tileMap);
             foreach (var next in neighbours)
             {
