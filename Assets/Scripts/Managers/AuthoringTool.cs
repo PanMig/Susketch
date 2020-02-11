@@ -97,6 +97,7 @@ public class AuthoringTool : MonoBehaviour
     public void EmptyMapListener()
     {
         tileMapMain.SetDefaultMap(0,0);
+        CheckTileMap();
     }
 
     private void Invokes()
@@ -146,14 +147,19 @@ public class AuthoringTool : MonoBehaviour
     {
         SetModelInput();
         var results = PredictCombatPace(input_map, input_weapons);
+        for (int i = 0; i < results.Length; i++)
+        {
+            results[i] = results[i] * 20.0f;
+        }
         metricsMng.GenerateCombatPaceGraph(results);
     }
 
     public void KillRatioButtonHandler()
     {
         SetModelInput();
+        //result returns the kills of player one (red) divided by the total kills.
         var results = PredictKillRatio(input_map, input_weapons);
-        metricsMng.SetKillRatioProgressBar(results * 100);
+        metricsMng.SetKillRatioProgressBar(results);
     }
 
     public void GameDurationButtonHandler()
@@ -166,6 +172,7 @@ public class AuthoringTool : MonoBehaviour
     private void SetModelInput()
     {
         input_map = GetInputMap(tileMapMain);
+        // red player is player 1.
         input_weapons = GetInputWeapons(fpsClasses.characters[blueSelector.index], 
             fpsClasses.characters[redSelector.index]);
         Debug.Log("Got input");

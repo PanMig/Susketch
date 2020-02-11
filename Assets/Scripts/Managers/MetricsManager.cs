@@ -14,8 +14,11 @@ public class MetricsManager : MonoBehaviour
     public DeathHeatmap heatmapUI;
     public LineChartCtrl daChart;
     public LineChartCtrl cpChart;
-    public ProgressBar killRatioBar;
+    public GameObject killRatioBar;
+    public TextMeshProUGUI killRatioTextBlue;
+    public TextMeshProUGUI killRatioTextRed;
     public TextMeshProUGUI GameDurationText;
+    public Image GameDurationRadialBar;
     public Button classBalanceBtn;
     public Button pickUpsBalanceBtn;
 
@@ -75,37 +78,33 @@ public class MetricsManager : MonoBehaviour
 
     public void SetKillRatioProgressBar(float percent)
     {
-        killRatioBar.currentPercent = percent;
-        var child = killRatioBar.transform.GetChild(0);
-        var loadingBar = child.GetChild(0).GetComponent<Image>();
-        if(percent > 60.0f)
-        {
-            loadingBar.color = Color.red;
-        }
-        else if(percent < 40.0f)
-        {
-            loadingBar.color = Color.blue;
-        }
-        else
-        {
-            loadingBar.color = new Color32(255,133,0,255);
-        }
+        var fillAmountBlue = killRatioBar.transform.GetChild(0).GetComponent<Image>();
+        var fillAmountRed = killRatioBar.transform.GetChild(1).GetComponent<Image>();
+        float blueAmount = 1 - percent;
+        float redAmount = percent;
+        fillAmountBlue.fillAmount = blueAmount;
+        fillAmountRed.fillAmount = redAmount;
+        killRatioTextBlue.text = Mathf.Floor(blueAmount * 100).ToString() + "%";
+        killRatioTextRed.text =  Mathf.Floor(redAmount * 100).ToString()  + "%";
     }
 
     public void SetGameDurationText(float value)
     {
+        //reverse min max normalized value.
+        float timeSecs = (value * 450) + 150; 
         if (value < 0.28f)
         {
-            GameDurationText.text = "Short";
+            GameDurationText.text = (Mathf.Floor(timeSecs) / 60.0f).ToString("F1") + " / 10 min \n (Short)";
         }
         else if (value >= 0.28f && value < 0.43f)
         {
-            GameDurationText.text = "Medium";
+            GameDurationText.text = (Mathf.Floor(timeSecs) / 60.0f).ToString("F1") + "/ 10 min \n (Medioum)";
         }
         else
         {
-            GameDurationText.text = "Long";
+            GameDurationText.text = (Mathf.Floor(timeSecs) / 60.0f).ToString("F1") + "/ 10 min \n (Long)";
         }
+        GameDurationRadialBar.fillAmount = timeSecs / 600.0f;
     }
 
     public void SetPickupsBtn(bool value)
