@@ -26,28 +26,28 @@ public class MapSuggestionMng : MonoBehaviour
     #endregion
 
     // Old implementation with the Task System.
-    public static Task<CharacterParams[]> GetBalancedMatchup(List<CharacterParams[]> classMatchups, NDArray input_map)
+    public async static Task<CharacterParams[]> GetBalancedMatchup(List<CharacterParams[]> classMatchups, NDArray input_map)
     {
-        return Task.Run(() =>
-        {
-            var classes = new CharacterParams[2];
-            var thresshold = 0.5f;
-            float score = 0;
-            var scores = new List<float>();
-            foreach (var matchup in classMatchups)
-            {
-                var input_weapons = GetInputWeapons(matchup[0], matchup[1]);
-                score = TFModel.PredictKillRatio(input_map, input_weapons);
-                scores.Add(score);
-            }
+        return await Task.Run(async () =>
+         {
+             var classes = new CharacterParams[2];
+             var thresshold = 0.5f;
+             float score = 0;
+             var scores = new List<float>();
+             foreach (var matchup in classMatchups)
+             {
+                 var input_weapons = GetInputWeapons(matchup[0], matchup[1]);
+                 score = await PredictKillRatio(input_map, input_weapons);
+                 scores.Add(score);
+             }
 
-            int resultIdx = GetClosestIdxToThresshold(thresshold, scores);
+             int resultIdx = GetClosestIdxToThresshold(thresshold, scores);
 
-            classes[0] = classMatchups[resultIdx][0]; // red team.
+             classes[0] = classMatchups[resultIdx][0]; // red team.
             classes[1] = classMatchups[resultIdx][1]; // blue team.
 
             return classes;
-        });
+         });
     }
 
     public static async Task<CharacterParams[]> GetBalancedMatchUpAsynchronous(List<CharacterParams[]> classMatchups, NDArray input_map)
@@ -99,7 +99,7 @@ public class MapSuggestionMng : MonoBehaviour
             map.SetTileMap(tempMap);
             map.RemoveDecorations();
             map = await SetPickUpsLocations(map, RNG).ConfigureAwait(false);
-            score = PredictKillRatio(GetInputMap(map), GetInputWeapons(blueClass, redClass));
+            score = await PredictKillRatio(GetInputMap(map), GetInputWeapons(blueClass, redClass));
             if (TileMapRepair.HasAccesiblePowerUps(map))
             {
                 mapsDict.Add(map, score);

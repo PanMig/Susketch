@@ -31,16 +31,25 @@ public class AuthoringTool : MonoBehaviour
 
     private void OnEnable()
     {
+        //onTileMapEdit is fired when a tile or decoration is added to the map.
         EventManagerUI.onTileMapEdit += PaintTeamRegions;
         EventManagerUI.onTileMapEdit += CheckTileMap;
-        EventManagerUI.onTileMapEdit += CalculateBalancedPickUpsAsync;
+        //onMapReadyForPrediction is fired on End of drag and pointer up.
+        EventManagerUI.onMapReadyForPrediction += DeathHeatmapListenerSmall;
+        EventManagerUI.onMapReadyForPrediction += KillRatioListener;
+        EventManagerUI.onMapReadyForPrediction += GameDurationListener;
+        //EventManagerUI.onTileMapEdit += CalculateBalancedPickUpsAsync;
+
     }
 
     private void OnDisable()
     {
         EventManagerUI.onTileMapEdit -= PaintTeamRegions;
         EventManagerUI.onTileMapEdit -= CheckTileMap;
-        EventManagerUI.onTileMapEdit -= CalculateBalancedPickUpsAsync;
+        EventManagerUI.onMapReadyForPrediction -= DeathHeatmapListenerSmall;
+        EventManagerUI.onMapReadyForPrediction -= DeathHeatmapListenerSmall;
+        EventManagerUI.onMapReadyForPrediction -= GameDurationListener;
+        //EventManagerUI.onTileMapEdit -= CalculateBalancedPickUpsAsync;
 
     }
 
@@ -55,7 +64,7 @@ public class AuthoringTool : MonoBehaviour
         tileMapMain.InitTileMap(tileMapView.gridRect.transform);
         tileMapMain.InitRegions();
         PaintTeamRegions();
-        OnDeathHeatmap();
+        DeathHeatmapListenerSmall();
         CheckTileMap();
     }
 
@@ -119,31 +128,32 @@ public class AuthoringTool : MonoBehaviour
         redClass = fpsClasses.characters[redSelector.index];
     }
 
-    public void DeathHeatmapButtonHandler()
+    public async void DeathHeatmapListenerOverlay()
     {
         SetModelInput();
-        var results = PredictDeathHeatmap(input_map, input_weapons);
+        var results = await PredictDeathHeatmap(input_map, input_weapons);
         var heatmap = ArrayParsingUtils.Make2DArray(results, 4, 4);
         metricsMng.DeathHeatmapButtonListener(heatmap);
         metricsMng.GenerateDeathHeatmap(heatmap);
     }
 
-    public void OnDeathHeatmap()
+    public async void DeathHeatmapListenerSmall()
     {
+        Debug.Log("Death heatmap prediction");
         SetModelInput();
-        var results = PredictDeathHeatmap(input_map, input_weapons);
+        var results = await PredictDeathHeatmap(input_map, input_weapons);
         var heatmap = ArrayParsingUtils.Make2DArray(results, 4, 4);
         metricsMng.GenerateDeathHeatmap(heatmap);
     }
 
-    public void DramaticArcButtonHandler()
+    public void DramaticArcListener()
     {
         SetModelInput();
         var results = PredictDramaticArc(input_map, input_weapons);
         metricsMng.GenerateDramaticArcGraph(results);
     }
 
-    public void CombatPaceButtonHandler()
+    public void CombatPaceListener()
     {
         SetModelInput();
         var results = PredictCombatPace(input_map, input_weapons);
@@ -154,18 +164,18 @@ public class AuthoringTool : MonoBehaviour
         metricsMng.GenerateCombatPaceGraph(results);
     }
 
-    public void KillRatioButtonHandler()
+    public async void KillRatioListener()
     {
         SetModelInput();
         //result returns the kills of player one (red) divided by the total kills.
-        var results = PredictKillRatio(input_map, input_weapons);
+        var results = await PredictKillRatio(input_map, input_weapons);
         metricsMng.SetKillRatioProgressBar(results);
     }
 
-    public void GameDurationButtonHandler()
+    public async void GameDurationListener()
     {
         SetModelInput();
-        var results = PredictGameDuration(input_map, input_weapons);
+        var results = await PredictGameDuration(input_map, input_weapons);
         metricsMng.SetGameDurationText(results);
     }
 

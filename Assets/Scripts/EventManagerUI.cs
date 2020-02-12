@@ -9,4 +9,7 @@ public class EventManagerUI
 
     public delegate void OnMapPlayable();
     public static OnTileMapEdit onPlayableMap;
+
+    public delegate void OnMapReadyForPrediction();
+    public static OnMapReadyForPrediction onMapReadyForPrediction;
 }

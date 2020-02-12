@@ -7,10 +7,11 @@ using UnityEngine.EventSystems;
 using TileMapLogic;
 using static AuthoringTool;
 
-public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
+public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler
 {
     private Color startcolor;
     private Tile selectedTile;
+    private bool dragging = false;
 
     public enum CursorType
     {
@@ -25,6 +26,10 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
         if (currentCursorType == CursorType.tile)
         {
             DrawTile(eventData);
@@ -37,6 +42,8 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
         {
             FillBoundedArea(eventData);
         }
+        // fire predictions event.
+        if(dragging == false) { EventManagerUI.onMapReadyForPrediction?.Invoke(); }
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -66,10 +73,13 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        dragging = true;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        dragging = false;
+        EventManagerUI.onMapReadyForPrediction?.Invoke();
     }
 
     #endregion
@@ -113,6 +123,7 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
             int index_row, index_col;
             GetIndexFromCoordinates(eventData, out index_row, out index_col);
             SetSingleTile(index_row, index_col);
+            Debug.Log("Tile drawn");
         }
     }
 
@@ -175,8 +186,6 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
     void Update()
     {
     }
-
-
 
     //void OnGUI()
     //{
