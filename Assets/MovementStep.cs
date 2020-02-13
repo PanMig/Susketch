@@ -27,11 +27,11 @@ public class MovementStep : MonoBehaviour
 
     public void SetText()
     {
-        if (team == 0 && PathManager.Instance.pathRedProps.pathActive)
+        if (team == 0)
         {
             textNumber.text = PathManager.Instance.pathRedProps.movementSteps.ToString();
         }
-        else if(team == 1 && PathManager.Instance.pathBlueProps.pathActive)
+        else if(team == 1)
         {
             textNumber.text = PathManager.Instance.pathBlueProps.movementSteps.ToString();
         }

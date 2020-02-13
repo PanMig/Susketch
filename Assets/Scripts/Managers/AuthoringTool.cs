@@ -139,9 +139,9 @@ public class AuthoringTool : MonoBehaviour
 
     public async void DeathHeatmapListenerSmall()
     {
-        Debug.Log("Death heatmap prediction");
         SetModelInput();
         var results = await PredictDeathHeatmap(input_map, input_weapons);
+        Debug.Log("Death heatmap prediction");
         var heatmap = ArrayParsingUtils.Make2DArray(results, 4, 4);
         metricsMng.GenerateDeathHeatmap(heatmap);
     }
@@ -150,6 +150,7 @@ public class AuthoringTool : MonoBehaviour
     {
         SetModelInput();
         var results = PredictDramaticArc(input_map, input_weapons);
+        Debug.Log("Dramatic arc prediction");
         metricsMng.GenerateDramaticArcGraph(results);
     }
 
@@ -161,6 +162,7 @@ public class AuthoringTool : MonoBehaviour
         {
             results[i] = results[i] * 20.0f;
         }
+        Debug.Log("Combat pace prediction");
         metricsMng.GenerateCombatPaceGraph(results);
     }
 
@@ -170,6 +172,7 @@ public class AuthoringTool : MonoBehaviour
         //result returns the kills of player one (red) divided by the total kills.
         var results = await PredictKillRatio(input_map, input_weapons);
         metricsMng.SetKillRatioProgressBar(results);
+        Debug.Log("Kill ratio prediction");
     }
 
     public async void GameDurationListener()
@@ -177,6 +180,7 @@ public class AuthoringTool : MonoBehaviour
         SetModelInput();
         var results = await PredictGameDuration(input_map, input_weapons);
         metricsMng.SetGameDurationText(results);
+        Debug.Log("Game duration prediction");
     }
 
     private void SetModelInput()

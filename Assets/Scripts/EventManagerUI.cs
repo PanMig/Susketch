@@ -12,4 +12,5 @@ public class EventManagerUI
 
     public delegate void OnMapReadyForPrediction();
     public static OnMapReadyForPrediction onMapReadyForPrediction;
+
 }
