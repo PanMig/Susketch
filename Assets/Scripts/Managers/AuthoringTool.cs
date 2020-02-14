@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System.Threading;
-using UnityEngine.UI;
+﻿using UnityEngine;
 using NumSharp;
 using TileMapLogic;
 using static MapSuggestionMng;
@@ -12,22 +8,23 @@ using Michsky.UI.ModernUIPack;
 // Change it with the TEMPLATE METHOD pattern.
 public class AuthoringTool : MonoBehaviour
 {
-    private FPSClasses fpsClasses;
+    // Managers
     public MetricsManager metricsMng;
     public MapSuggestionMng suggestionsMng;
+    // Tilemap
     public static TileMapView tileMapView;
     public static TileMap tileMapMain;
-
+    private Tile[,] generatedMap;
+    // Network input
     private NDArray input_map;
     private NDArray input_weapons;
-
-    public HorizontalSelector blueSelector;
-    public HorizontalSelector redSelector;
+    // Character classes
     public static CharacterParams blueClass;
     public static CharacterParams redClass;
-    public Text arc_text;
     private CharacterParams[] balanced_classes;
-    private Tile[,] generatedMap;
+    //Events
+    public delegate void OnMapInitEnded();
+    public static event OnMapInitEnded onMapInitEnded;
 
     private void OnEnable()
     {
@@ -35,9 +32,8 @@ public class AuthoringTool : MonoBehaviour
         EventManagerUI.onTileMapEdit += PaintTeamRegions;
         EventManagerUI.onTileMapEdit += CheckTileMap;
         //onMapReadyForPrediction is fired on End of drag and pointer up.
-        EventManagerUI.onMapReadyForPrediction += DeathHeatmapListenerSmall;
-        EventManagerUI.onMapReadyForPrediction += KillRatioListener;
-        EventManagerUI.onMapReadyForPrediction += GameDurationListener;
+        EventManagerUI.onMapReadyForPrediction += InvokeMetrics;
+        CharacterClassMng.onClassSelectorEdit += InvokeMetrics;
         //EventManagerUI.onTileMapEdit += CalculateBalancedPickUpsAsync;
 
     }
@@ -46,9 +42,8 @@ public class AuthoringTool : MonoBehaviour
     {
         EventManagerUI.onTileMapEdit -= PaintTeamRegions;
         EventManagerUI.onTileMapEdit -= CheckTileMap;
-        EventManagerUI.onMapReadyForPrediction -= DeathHeatmapListenerSmall;
-        EventManagerUI.onMapReadyForPrediction -= DeathHeatmapListenerSmall;
-        EventManagerUI.onMapReadyForPrediction -= GameDurationListener;
+        EventManagerUI.onMapReadyForPrediction -= InvokeMetrics;
+        CharacterClassMng.onClassSelectorEdit -= InvokeMetrics;
         //EventManagerUI.onTileMapEdit -= CalculateBalancedPickUpsAsync;
 
     }
@@ -56,9 +51,6 @@ public class AuthoringTool : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        fpsClasses = GetComponentInChildren<FPSClasses>();
-        SetClassParams();
-
         tileMapMain = new TileMap();
         tileMapView = GameObject.FindGameObjectWithTag("tileMapView").GetComponent<TileMapView>();
         tileMapMain.InitTileMap(tileMapView.gridRect.transform);
@@ -66,6 +58,9 @@ public class AuthoringTool : MonoBehaviour
         PaintTeamRegions();
         DeathHeatmapListenerSmall();
         CheckTileMap();
+
+        //Fire event for ready map.
+        onMapInitEnded?.Invoke();
     }
 
     private static void PaintTeamRegions()
@@ -109,23 +104,13 @@ public class AuthoringTool : MonoBehaviour
         CheckTileMap();
     }
 
-    private void Invokes()
+    private void InvokeMetrics()
     {
-        InvokeRepeating("OnDeathHeatmap", 1.0f, 60.0f);
-        InvokeRepeating("DramaticArcButtonHandler", 1.0f, 60.0f);
-        InvokeRepeating("KillRatioButtonHandler", 1.0f, 60.0f);
-    }
-
-    private void Update()
-    {
-        //tileMapMain.PaintRegion(3, 0, 4);
-        //tileMapMain.PaintRegion(0, 3, 5);
-    }
-
-    public void SetClassParams()
-    {
-        blueClass = fpsClasses.characters[blueSelector.index];
-        redClass = fpsClasses.characters[redSelector.index];
+        DeathHeatmapListenerSmall();
+        DramaticArcListener();
+        CombatPaceListener();
+        KillRatioListener();
+        GameDurationListener();
     }
 
     public async void DeathHeatmapListenerOverlay()
@@ -146,18 +131,18 @@ public class AuthoringTool : MonoBehaviour
         metricsMng.GenerateDeathHeatmap(heatmap);
     }
 
-    public void DramaticArcListener()
+    public async void DramaticArcListener()
     {
         SetModelInput();
-        var results = PredictDramaticArc(input_map, input_weapons);
+        var results = await PredictDramaticArc(input_map, input_weapons);
         Debug.Log("Dramatic arc prediction");
         metricsMng.GenerateDramaticArcGraph(results);
     }
 
-    public void CombatPaceListener()
+    public async void CombatPaceListener()
     {
         SetModelInput();
-        var results = PredictCombatPace(input_map, input_weapons);
+        var results = await PredictCombatPace(input_map, input_weapons);
         for (int i = 0; i < results.Length; i++)
         {
             results[i] = results[i] * 20.0f;
@@ -187,15 +172,13 @@ public class AuthoringTool : MonoBehaviour
     {
         input_map = GetInputMap(tileMapMain);
         // red player is player 1.
-        input_weapons = GetInputWeapons(fpsClasses.characters[blueSelector.index], 
-            fpsClasses.characters[redSelector.index]);
+        input_weapons = GetInputWeapons(blueClass, redClass);
         Debug.Log("Got input");
     }
 
     public async void CalculateClassBalanceAsync()
     {
-        //balanced_classes = await GetBalancedMatchUpAsynchronous(fpsClasses.matchups, GetInputMap(tileMapMain));
-        balanced_classes = await GetBalancedMatchUpAsynchronous(fpsClasses.matchups, GetInputMap(tileMapMain));
+        balanced_classes = await GetBalancedMatchUpAsynchronous(FPSClasses.matchups, GetInputMap(tileMapMain));
     }
 
     public async void CalculateBalancedPickUpsAsync()
@@ -212,8 +195,6 @@ public class AuthoringTool : MonoBehaviour
         redClass = balanced_classes[0];
         blueClass = balanced_classes[1];
         Debug.Log($"blue: {blueClass}" + $"red: {redClass}");
-        blueSelector.index = 3;
-        blueSelector.index = 0;
     }
 
     public void GeneratePickUps()

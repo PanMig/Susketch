@@ -12,7 +12,7 @@ public class FPSClasses : MonoBehaviour
     public CharacterParams heavyParams;
     public CharacterParams demoManParams;
 
-    public List<CharacterParams[]> matchups = new List<CharacterParams[]>();
+    public static List<CharacterParams[]> matchups = new List<CharacterParams[]>();
 
     public void Awake()
     {
