@@ -27,10 +27,11 @@ public struct Tile
         this.decID = decID;
     }
 
-    public void PaintTile(TileThemes tileTheme, TileMap tileMap)
+    public void PaintTile(TileThemes tileTheme, TileMap tileMap, Transform tileParent)
     {
         image.sprite = tileTheme.sprite;
         envTileID = tileTheme.envTileID;
+        parent = tileParent;
         tileMap.SetTileMapTile(this);
     }
 
@@ -40,11 +41,12 @@ public struct Tile
         tileMap.SetTileMapTile(this);
     }
 
-    public void SetTile(Tile tile)
+    public void SetTile(Tile tile, Transform tileParent)
     {
         image.sprite = tile.image.sprite;
         envTileID = tile.envTileID;
         decID = tile.decID;
+        parent = tileParent;
     }
 
     public void PaintTile(Color color)
@@ -79,22 +81,20 @@ public struct Tile
         }
     }
 
-    public void PaintDecoration(Decoration dec, TileMap tileMap)
+    public void PaintDecoration(Decoration dec, TileMap tileMap, Transform tileParent)
     {
         // case where tile is not decorated.
         if (dec.prefab != null && gameObj.transform.childCount == 0)
         {
-            Debug.Log("instantiation case");
             GameObject decorationObj = GameObject.Instantiate(dec.prefab, gameObj.transform);
             ResizeDecoration(decorationObj, 0.6f);
             decID = dec.decorationID;
+            parent = tileParent;
             tileMap.SetTileMapTile(this);
         }
         // case where we change the tile sprite, no reason for instatiation.
         else if (dec.prefab != null && gameObj.transform.childCount > 0)
         {
-            //RemoveDecoration(tileMap);
-            Debug.Log("non instantiation case");
             gameObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = dec.sprite;
             decID = dec.decorationID;
             tileMap.SetTileMapTile(this);
@@ -102,19 +102,18 @@ public struct Tile
         // this means we are using the eraser.
         else if(dec.prefab == null && gameObj.transform.childCount > 0)
         {
-            Debug.Log("remove case");
             RemoveDecoration(tileMapMain);
         }
     }
 
     public void RemoveDecoration(TileMap tileMap)
     {
-        if (gameObj.transform.childCount > 0)
+        if(gameObj.transform.childCount > 0)
         {
-            GameObject.Destroy(this.gameObj.transform.GetChild(0).gameObject);
-            decID = TileEnums.Decorations.empty;
-            tileMap.SetTileMapTile(this);
+            GameObject.DestroyImmediate(this.gameObj.transform.GetChild(0).gameObject);
         }
+        decID = TileEnums.Decorations.empty;
+        tileMap.SetTileMapTile(this);
     }
 
     private void ResizeDecoration(GameObject decoration, float removePercent)

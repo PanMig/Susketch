@@ -35,15 +35,11 @@ public class CharacterClassMng : MonoBehaviour
     public void OnEnable()
     {
         AuthoringTool.onMapInitEnded += InitClassSprite;
-        onClassSelectorEdit += SetClassParams;
-        onClassSelectorEdit += SetClassSprites;
     }
 
     public void OnDisable()
     {
         AuthoringTool.onMapInitEnded -= InitClassSprite;
-        onClassSelectorEdit -= SetClassParams;
-        onClassSelectorEdit -= SetClassSprites;
     }
 
     public void Start()
@@ -60,6 +56,8 @@ public class CharacterClassMng : MonoBehaviour
 
     public void ClassSelectorListener()
     {
+        SetClassParams();
+        SetClassSprites();
         onClassSelectorEdit?.Invoke();
     }
 
@@ -74,14 +72,14 @@ public class CharacterClassMng : MonoBehaviour
     {
         yield return new WaitForEndOfFrame();
         redSpawnPoint = AuthoringTool.tileMapMain.GetTileWithIndex(2, 17).gameObj.GetComponent<RectTransform>();
-        redClassImage = GameObject.Instantiate(imagePrefab, redSpawnPoint.position, Quaternion.identity, AuthoringTool.tileMapView.transform).GetComponent<Image>();
+        redClassImage = GameObject.Instantiate(imagePrefab, redSpawnPoint.position, Quaternion.identity, AuthoringTool.tileMapViewMain.transform).GetComponent<Image>();
         redSpawnPoint.GetComponent<RectTransform>().position = redSpawnPoint.localPosition;
         redClassImage.sprite = sprites[redSelector.index];
         redClassImage.preserveAspect = true;
 
         //same process for blue. Dublicate code I know.
         blueSpawnPoint = AuthoringTool.tileMapMain.GetTileWithIndex(17, 2).gameObj.GetComponent<RectTransform>();
-        blueClassImage = GameObject.Instantiate(imagePrefab, blueSpawnPoint.position, Quaternion.identity, AuthoringTool.tileMapView.transform).GetComponent<Image>();
+        blueClassImage = GameObject.Instantiate(imagePrefab, blueSpawnPoint.position, Quaternion.identity, AuthoringTool.tileMapViewMain.transform).GetComponent<Image>();
         blueSpawnPoint.GetComponent<RectTransform>().position = blueSpawnPoint.localPosition;
         blueClassImage.sprite = sprites[blueSelector.index];
         blueClassImage.preserveAspect = true;

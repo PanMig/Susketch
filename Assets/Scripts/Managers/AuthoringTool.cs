@@ -12,9 +12,9 @@ public class AuthoringTool : MonoBehaviour
     public MetricsManager metricsMng;
     public MapSuggestionMng suggestionsMng;
     // Tilemap
-    public static TileMapView tileMapView;
+    public static TileMapView tileMapViewMain;
     public static TileMap tileMapMain;
-    private Tile[,] generatedMap;
+    private Tile[,] generatedMap = null;
     // Network input
     private NDArray input_map;
     private NDArray input_weapons;
@@ -26,38 +26,50 @@ public class AuthoringTool : MonoBehaviour
     public delegate void OnMapInitEnded();
     public static event OnMapInitEnded onMapInitEnded;
 
+    public delegate void OnMapSuggestionsReady(Tile[,] tileMap);
+    public static event OnMapSuggestionsReady onMapSuggestionsReady;
+    // Task shedulers
+    public bool heatmapTaskBusy = false;
+
+
     private void OnEnable()
     {
         //onTileMapEdit is fired when a tile or decoration is added to the map.
         EventManagerUI.onTileMapEdit += PaintTeamRegions;
-        EventManagerUI.onTileMapEdit += CheckTileMap;
+        EventManagerUI.onTileMapEdit += CheckTileMapListener;
+        
         //onMapReadyForPrediction is fired on End of drag and pointer up.
-        EventManagerUI.onMapReadyForPrediction += InvokeMetrics;
-        CharacterClassMng.onClassSelectorEdit += InvokeMetrics;
-        //EventManagerUI.onTileMapEdit += CalculateBalancedPickUpsAsync;
+        //EventManagerUI.onMapReadyForPrediction += InvokeMetrics;
+        EventManagerUI.onMapReadyForPrediction += CalculateBalancedPickUpsAsync;
 
+        /* 
+         * MapSuggestionManager events run on the background and are
+         * fired when their processes have ended.
+        */
+        //onMapSuggestionsReady += GeneratePickUps;
+
+        // CharacterClassMng is fired when the class selector is edited.
+        CharacterClassMng.onClassSelectorEdit += InvokeMetrics;
     }
 
     private void OnDisable()
     {
         EventManagerUI.onTileMapEdit -= PaintTeamRegions;
-        EventManagerUI.onTileMapEdit -= CheckTileMap;
+        EventManagerUI.onTileMapEdit -= CheckTileMapListener;
         EventManagerUI.onMapReadyForPrediction -= InvokeMetrics;
+        EventManagerUI.onMapReadyForPrediction -= CalculateBalancedPickUpsAsync;
         CharacterClassMng.onClassSelectorEdit -= InvokeMetrics;
-        //EventManagerUI.onTileMapEdit -= CalculateBalancedPickUpsAsync;
-
     }
 
     // Start is called before the first frame update
     void Start()
     {
         tileMapMain = new TileMap();
-        tileMapView = GameObject.FindGameObjectWithTag("tileMapView").GetComponent<TileMapView>();
-        tileMapMain.InitTileMap(tileMapView.gridRect.transform);
+        tileMapViewMain = GameObject.FindGameObjectWithTag("tileMapViewMain").GetComponent<TileMapView>();
+        tileMapMain.InitTileMap(tileMapViewMain.gridRect.transform);
         tileMapMain.InitRegions();
         PaintTeamRegions();
-        DeathHeatmapListenerSmall();
-        CheckTileMap();
+        CheckTileMapListener();
 
         //Fire event for ready map.
         onMapInitEnded?.Invoke();
@@ -72,7 +84,7 @@ public class AuthoringTool : MonoBehaviour
         tileMapMain.PaintRegion(0, 3, redColor);
     }
 
-    public static void CheckTileMap()
+    public static void CheckTileMapListener()
     {
         if (TileMapRepair.CheckTileMap(tileMapMain))
         {
@@ -80,6 +92,15 @@ public class AuthoringTool : MonoBehaviour
             return;
         }
         TileMapRepair.onUnPlayableMap?.Invoke();
+    }
+
+    public bool TileMapPlayable()
+    {
+        if (TileMapRepair.CheckTileMap(tileMapMain))
+        {
+            return true;
+        }
+        return false;
     }
 
     public void LoadMap()
@@ -91,26 +112,26 @@ public class AuthoringTool : MonoBehaviour
 
         int index = Random.Range(1, 10);
         randomMap.ReadCSVToTileMap("Map Files/mapFile" + index);
-        tileMapMain.SetTileMap(randomMap.GetTileMap());
+        tileMapMain.SetTileMap(randomMap.GetTileMap(),tileMapViewMain.gridRect.transform);
         randomMap = null;
         Destroy(tempView);
-        tileMapMain.RenderTileMap();
-        CheckTileMap();
+        tileMapMain.RenderTileMap(tileMapViewMain.gridRect.transform);
+        CheckTileMapListener();
     }
 
     public void EmptyMapListener()
     {
-        tileMapMain.SetDefaultMap(0,0);
-        CheckTileMap();
+        tileMapMain.SetDefaultMap(0,0, tileMapViewMain.gridRect.transform);
+        CheckTileMapListener();
     }
 
     private void InvokeMetrics()
     {
         DeathHeatmapListenerSmall();
-        DramaticArcListener();
-        CombatPaceListener();
-        KillRatioListener();
-        GameDurationListener();
+        //DramaticArcListener();
+        //CombatPaceListener();
+        //KillRatioListener();
+        //GameDurationListener();
     }
 
     public async void DeathHeatmapListenerOverlay()
@@ -124,11 +145,16 @@ public class AuthoringTool : MonoBehaviour
 
     public async void DeathHeatmapListenerSmall()
     {
-        SetModelInput();
-        var results = await PredictDeathHeatmap(input_map, input_weapons);
-        Debug.Log("Death heatmap prediction");
-        var heatmap = ArrayParsingUtils.Make2DArray(results, 4, 4);
-        metricsMng.GenerateDeathHeatmap(heatmap);
+        if (!heatmapTaskBusy && TileMapPlayable())
+        {
+            heatmapTaskBusy = true;
+            SetModelInput();
+            var results = await PredictDeathHeatmap(input_map, input_weapons);
+            Debug.Log("Death heatmap prediction");
+            var heatmap = ArrayParsingUtils.Make2DArray(results, 4, 4);
+            metricsMng.GenerateDeathHeatmap(heatmap);
+            heatmapTaskBusy = false;
+        }
     }
 
     public async void DramaticArcListener()
@@ -173,7 +199,6 @@ public class AuthoringTool : MonoBehaviour
         input_map = GetInputMap(tileMapMain);
         // red player is player 1.
         input_weapons = GetInputWeapons(blueClass, redClass);
-        Debug.Log("Got input");
     }
 
     public async void CalculateClassBalanceAsync()
@@ -183,11 +208,13 @@ public class AuthoringTool : MonoBehaviour
 
     public async void CalculateBalancedPickUpsAsync()
     {
-        if(x == false)
+        if (!MapSuggestionMng.pickUpsTaskBusy && TileMapPlayable())
         {
-            generatedMap = await SpawnPickupsAsynchronous(tileMapMain);
-
+            Debug.Log("Spawn pick ups called");
+            var generatedMap = await SpawnPickupsAsynchronous(tileMapMain);
+            onMapSuggestionsReady?.Invoke(generatedMap);
         }
+
     }
 
     public void FindClassBalance()
@@ -195,12 +222,5 @@ public class AuthoringTool : MonoBehaviour
         redClass = balanced_classes[0];
         blueClass = balanced_classes[1];
         Debug.Log($"blue: {blueClass}" + $"red: {redClass}");
-    }
-
-    public void GeneratePickUps()
-    {
-        tileMapMain.RemoveDecorations();
-        tileMapMain.SetTileMap(generatedMap);
-        tileMapMain.RenderTileMap();
     }
 }

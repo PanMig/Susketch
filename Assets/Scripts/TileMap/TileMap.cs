@@ -25,7 +25,7 @@ namespace TileMapLogic
         public TileMap(Tile[,] map)
         {
             InitTileMap(null);
-            SetTileMap(map);
+            SetTileMap(map, null);
         }
 
         public void InitTileMap(Transform gridTransformParent)
@@ -75,13 +75,13 @@ namespace TileMapLogic
             return tileSet;
         }
 
-        public void PaintRegion(int row, int column, int brushIndex)
+        public void PaintRegion(int row, int column, int brushIndex, Transform parent)
         {
             for (int i = 0; i < CELL_PER_REGION; i++)
             {
                 for (int j = 0; j < CELL_PER_REGION; j++)
                 {
-                    regions[row, column].tileSet[i, j].PaintTile(Brush.Instance.brushThemes[brushIndex], this);
+                    regions[row, column].tileSet[i, j].PaintTile(Brush.Instance.brushThemes[brushIndex], this, parent);
                 }
             }
         }
@@ -97,41 +97,27 @@ namespace TileMapLogic
             }
         }
 
-        public void RenderTileMap()
+        public void RenderTileMap(Transform parent)
         {
             for (int i = 0; i < rows; i++)
             {
                 for (int j = 0; j < columns; j++)
                 {
                     Tile tile = tileMap[i, j];
-                    tile.PaintTile(Brush.Instance.brushThemes[(int)tile.envTileID], this);
+                    tile.PaintTile(Brush.Instance.brushThemes[(int)tile.envTileID], this, parent);
                     if(tile.decID != TileEnums.Decorations.empty)
                     {
-                        tile.PaintDecoration(Brush.Instance.decorations[(int)tile.decID], this);
+                        tile.PaintDecoration(Brush.Instance.decorations[(int)tile.decID], this, parent);
                     }
                     else
                     {
-                        tile.PaintDecoration(Brush.Instance.decorations[0], this);
+                        tile.PaintDecoration(Brush.Instance.decorations[0], this, parent);
                     }
                 }
             }
         }
 
-        public void FillTileMap()
-        {
-            TileThemes tileTheme;
-
-            for (int row = 0; row < rows; row++)
-            {
-                for (int col = 0; col < columns; col++)
-                {
-                    tileTheme = Brush.Instance.brushThemes[UnityEngine.Random.Range(0, 3)];
-                    tileMap[row, col].PaintTile(tileTheme, this);
-                }
-            }
-        }
-
-        public void SetDefaultMap(int envIndex, int decorIndex)
+        public void SetDefaultMap(int envIndex, int decorIndex, Transform parent)
         {
             TileThemes tileTheme;
             Decoration decor;
@@ -142,8 +128,8 @@ namespace TileMapLogic
                 {
                     tileTheme = Brush.Instance.brushThemes[envIndex];
                     decor = Brush.Instance.decorations[decorIndex];
-                    tileMap[row, col].PaintTile(tileTheme, this);
-                    tileMap[row, col].PaintDecoration(decor, this);
+                    tileMap[row, col].PaintTile(tileTheme, this, parent);
+                    tileMap[row, col].PaintDecoration(decor, this, parent);
                 }
             }
         }
@@ -246,13 +232,13 @@ namespace TileMapLogic
             return tileMap;
         }
 
-        public void SetTileMap(Tile[,] map)
+        public void SetTileMap(Tile[,] map, Transform parent)
         {
             for (int i = 0; i < rows; i++)
             {
                 for (int j = 0; j < columns; j++)
                 {
-                    tileMap[i, j].SetTile(map[i, j]);
+                    tileMap[i, j].SetTile(map[i, j], parent);
                 }
             }
         }

@@ -22,18 +22,6 @@ public class MetricsManager : MonoBehaviour
     public Button classBalanceBtn;
     public Button pickUpsBalanceBtn;
 
-    private void OnEnable()
-    {
-        OnBalancedCharacters += SetClassBalanceBtn;
-        OnGeneratedPickUps += SetPickupsBtn;
-    }
-
-    private void OnDisable()
-    {
-        OnBalancedCharacters -= SetClassBalanceBtn;
-        OnGeneratedPickUps -= SetPickupsBtn;
-    }
-
     public void Start()
     {
         classBalanceBtn.interactable = false;
@@ -105,15 +93,5 @@ public class MetricsManager : MonoBehaviour
             GameDurationText.text = (Mathf.Floor(timeSecs) / 60.0f).ToString("F1") + "/ 10 min \n (Long)";
         }
         GameDurationRadialBar.fillAmount = timeSecs / 600.0f;
-    }
-
-    public void SetPickupsBtn(bool value)
-    {
-        pickUpsBalanceBtn.interactable = value;
-    }
-
-    public void SetClassBalanceBtn(bool value)
-    {
-        classBalanceBtn.interactable = value;
     }
 }

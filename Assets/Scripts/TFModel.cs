@@ -23,7 +23,6 @@ public class TFModel : MonoBehaviour
         dArcGraph = InitGraph(dArcGraph, "dramatic_arc");
         gameDurationGraph = InitGraph(gameDurationGraph, "game_duration");
         combatPaceGraph = InitGraph(combatPaceGraph, "combat_pace");
-        Debug.Log("graphs loaded");
     }
 
     private Graph InitGraph(Graph graph, string pbFile)
@@ -36,7 +35,8 @@ public class TFModel : MonoBehaviour
 
     public static Task<float[]> PredictDeathHeatmap(NDArray map, NDArray weapons)
     {
-        return Task.Run(() =>
+        Task<float[]> heatmapTask;
+        heatmapTask = Task.Run(() =>
         {
             heatmapGraph.as_default();
             Tensor input_maps = heatmapGraph.OperationByName("input_layer");
@@ -55,6 +55,7 @@ public class TFModel : MonoBehaviour
                 return x;
             }
         });
+        return heatmapTask;
     }
 
     public static Task<float> PredictKillRatio(NDArray map, NDArray weapons)
@@ -100,7 +101,6 @@ public class TFModel : MonoBehaviour
                 });
 
                 var x = results.ToArray<float>();
-                Debug.Log(x[0]);
                 return x[0];
             }
         });
@@ -213,10 +213,6 @@ public class TFModel : MonoBehaviour
                 values[2] = output_3.ToArray<float>()[0];
                 values[3] = output_4.ToArray<float>()[0];
                 values[4] = output_5.ToArray<float>()[0];
-                foreach (var item in values)
-                {
-                    Debug.Log(item);
-                }
                 return values;
             }
         });

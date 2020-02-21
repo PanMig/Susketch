@@ -123,7 +123,6 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
             int index_row, index_col;
             GetIndexFromCoordinates(eventData, out index_row, out index_col);
             SetSingleTile(index_row, index_col);
-            Debug.Log("Tile drawn");
         }
     }
 
@@ -144,7 +143,7 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
             // column, row.
             Tile tile = tileMapMain.GetTileWithIndex(index_row, index_col);
             int index = Brush.Instance.currTileBrush;
-            tile.PaintTile(Brush.Instance.brushThemes[index], tileMapMain);
+            tile.PaintTile(Brush.Instance.brushThemes[index], tileMapMain, tileMapViewMain.gridRect.transform);
             //if(tile.envTileID == TileEnums.EnviromentTiles.level_1)
             //{
             //    tileMapMain.FormatTileOrientation(tile.X, tile.Y, new HashSet<Tile>());
@@ -162,7 +161,7 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
             Tile tile = tileMapMain.GetTileWithIndex(index_row, index_col);
             // zero index is always the empty decoration, that's why we add plus one to current brush index.
             int index = Brush.Instance.currDecBrush;
-            tile.PaintDecoration(Brush.Instance.decorations[index], tileMapMain);
+            tile.PaintDecoration(Brush.Instance.decorations[index], tileMapMain, tileMapViewMain.gridRect.transform);
             EventManagerUI.onTileMapEdit?.Invoke();
         }
     }
