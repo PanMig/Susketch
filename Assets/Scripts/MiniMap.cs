@@ -4,22 +4,24 @@ using UnityEngine;
 using TileMapLogic;
 using UnityEngine.UI;
 using System;
+using static AuthoringTool;
+using Michsky.UI.ModernUIPack;
+using UnityEngine.EventSystems;
+using TMPro;
 
 public class MiniMap : MonoBehaviour
 {
     private TileMapView tileMapView;
-    [SerializeField] private GameObject prefab;
+    [SerializeField] private TextMeshProUGUI resultsText;
+    [SerializeField] private GameObject prefab; 
+    [SerializeField] private ModalWindowManager modalWindow;
+    [SerializeField] private int index;
     private TileMap map;
 
     public void OnEnable()
     {
         AuthoringTool.onMapInitEnded += Init;
         AuthoringTool.onMapSuggestionsReady += SetMiniMap;
-    }
-
-    public void Start()
-    {
-
     }
 
     public void Init()
@@ -30,18 +32,14 @@ public class MiniMap : MonoBehaviour
         map.PaintTiles(tileMapView.gridRect.transform,0.1f);
     }
 
-    public void CreateMiniMap()
+    public void SetMiniMap(List<KeyValuePair<TileMap, float>> balancedMaps)
     {
-        //map.SetTileMap(AuthoringTool.tileMapMain.GetTileMap());
-        //map.RenderTileMap();
-    }
-
-    public void SetMiniMap(Tile[,] balancedMap)
-    {
-        
-        map.SetTileMap(balancedMap);
+        map.SetTileMap(balancedMaps[index].Key.GetTileMap());
+        float percent = balancedMaps[index].Value;
         map.Render();
-        balancedMap = null;
-        DestroyImmediate(MapSuggestionMng.tempView);
+        float blueAmount = (1 - percent)*100;
+        float redAmount = percent * 100;
+        resultsText.text = "Blue: " + blueAmount.ToString("F1") + "%  " + "Red: " + redAmount.ToString("F1") + "%";
+        Destroy(MapSuggestionMng.tempView);
     }
 }

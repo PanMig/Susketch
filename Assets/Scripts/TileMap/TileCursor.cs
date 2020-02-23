@@ -148,7 +148,6 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
             //{
             //    tileMapMain.FormatTileOrientation(tile.X, tile.Y, new HashSet<Tile>());
             //}
-            Debug.Log(tile.gameObj.name + "_" + tile.envTileID + " " + tile.decID);
             EventManagerUI.onTileMapEdit?.Invoke();
         }
     }

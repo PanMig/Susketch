@@ -4,6 +4,7 @@ using TileMapLogic;
 using static MapSuggestionMng;
 using static TFModel;
 using Michsky.UI.ModernUIPack;
+using System.Collections.Generic;
 
 // Change it with the TEMPLATE METHOD pattern.
 public class AuthoringTool : MonoBehaviour
@@ -26,7 +27,7 @@ public class AuthoringTool : MonoBehaviour
     public delegate void OnMapInitEnded();
     public static event OnMapInitEnded onMapInitEnded;
 
-    public delegate void OnMapSuggestionsReady(Tile[,] tileMap);
+    public delegate void OnMapSuggestionsReady(List<KeyValuePair<TileMap,float>> balancedMaps);
     public static event OnMapSuggestionsReady onMapSuggestionsReady;
     // Task shedulers
     public bool heatmapTaskBusy = false;
@@ -42,14 +43,8 @@ public class AuthoringTool : MonoBehaviour
         EventManagerUI.onMapReadyForPrediction += InvokeMetrics;
         EventManagerUI.onMapReadyForPrediction += CalculateBalancedPickUpsAsync;
 
-        /* 
-         * MapSuggestionManager events run on the background and are
-         * fired when their processes have ended.
-        */
-        //onMapSuggestionsReady += GeneratePickUps;
-
         // CharacterClassMng is fired when the class selector is edited.
-        //CharacterClassMng.onClassSelectorEdit += InvokeMetrics;
+        CharacterClassMng.onClassSelectorEdit += InvokeMetrics;
     }
 
     private void OnDisable()
@@ -128,10 +123,10 @@ public class AuthoringTool : MonoBehaviour
     private void InvokeMetrics()
     {
         DeathHeatmapListenerSmall();
-        //DramaticArcListener();
-        //CombatPaceListener();
-        //KillRatioListener();
-        //GameDurationListener();
+        DramaticArcListener();
+        CombatPaceListener();
+        KillRatioListener();
+        GameDurationListener();
     }
 
     public async void DeathHeatmapListenerOverlay()
@@ -211,8 +206,8 @@ public class AuthoringTool : MonoBehaviour
         if (!MapSuggestionMng.pickUpsTaskBusy && TileMapPlayable())
         {
             Debug.Log("Spawn pick ups called");
-            var generatedMap = await SpawnPickupsAsynchronous(tileMapMain);
-            onMapSuggestionsReady?.Invoke(generatedMap);
+            var generatedMaps = await SpawnPickupsAsynchronous(tileMapMain);
+            onMapSuggestionsReady?.Invoke(generatedMaps);
         }
 
     }

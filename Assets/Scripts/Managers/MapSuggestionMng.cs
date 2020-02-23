@@ -72,33 +72,33 @@ public class MapSuggestionMng : MonoBehaviour
         return resultIdx;
     }
 
-    public static async Task<Tile[,]> SpawnPickupsAsynchronous(TileMap tilemapMain)
+    public static async Task<List<KeyValuePair<TileMap, float>>> SpawnPickupsAsynchronous(TileMap tilemapMain)
     {
 
         Debug.Log("Spawn Pickups started");
         pickUpsTaskBusy = true;
         onPickUpsGenerated?.Invoke(false);
-        var map = await SpawnBalancedPickUps(tilemapMain);
+        var maps = await SpawnBalancedPickUps(tilemapMain);
         Debug.Log("Spawn Pickups ended");
         onPickUpsGenerated?.Invoke(true);
         pickUpsTaskBusy = false;
-        return map;
+        return maps;
     }
 
-    public static async Task<Tile[,]> SpawnBalancedPickUps(TileMap tilemapMain)
+    public static async Task<List<KeyValuePair<TileMap,float>>> SpawnBalancedPickUps(TileMap tilemapMain)
     {
-        GameObject tempView = new GameObject("TempView");
+        tempView = new GameObject("TempView");
         var tempMap = tilemapMain.GetTileMap();
         TileMap map;
         Dictionary<TileMap, float> mapsDict = new Dictionary<TileMap, float>();
 
         // randomly select a region to spawn a pickups
-        for (int m = 0; m < 5; m++)
+        for (int m = 0; m < 12; m++)
         {
             // this will erase all previous decorations on the main map.
             map = new TileMap();
             map.Init();
-            map.PaintTiles(tempView.transform,1.0f);
+            map.PaintTiles(tempView.transform, 1.0f);
             map.SetTileMap(tempMap);
             map.RemoveDecorations();
             map = await SetPickUpsLocations(map, RNG).ConfigureAwait(false);
@@ -110,12 +110,12 @@ public class MapSuggestionMng : MonoBehaviour
             await new WaitForEndOfFrame();
         }
 
-        var valueslist = mapsDict.Values.ToList();
-        float bestMatch = valueslist[GetClosestIdxToThresshold(thresshold, valueslist)];
-        var balancedMap = mapsDict.FirstOrDefault(x => x.Value == bestMatch);
-        //Destroy(tempView);
-        //map = null;
-        return balancedMap.Key.GetTileMap();
+        //var valueslist = mapsDict.Values.ToList();
+        //float bestMatch = valueslist[GetClosestIdxToThresshold(thresshold, valueslist)];
+        //var balancedMap = mapsDict.FirstOrDefault(x => x.Value == bestMatch);
+        var balancedMaps = (from pair in mapsDict
+                    orderby pair.Value select pair).ToList();
+        return balancedMaps;
     }
 
     private static Task<TileMap> SetPickUpsLocations(TileMap map, System.Random RNG)

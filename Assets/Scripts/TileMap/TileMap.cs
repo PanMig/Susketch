@@ -246,6 +246,17 @@ namespace TileMapLogic
             }
         }
 
+        public void CopyTileMap(Tile[,] map)
+        {
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    tileMap[i, j] = map[i, j].ShallowCopy(tileMap[i,j]);
+                }
+            }
+        }
+
         public void RemoveDecorations()
         {
             for (int i = 0; i < rows; i++)

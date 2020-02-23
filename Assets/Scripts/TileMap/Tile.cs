@@ -79,6 +79,16 @@ public class Tile
         decID = tile.decID;
     }
 
+    public Tile ShallowCopy(Tile newTile)
+    {
+        newTile.envTileID = this.envTileID;
+        newTile.decID = this.decID;
+        newTile.image.sprite = this.image.sprite;
+        newTile.decorationImage.sprite = this.decorationImage.sprite;
+
+        return newTile;
+    }
+
     public void SetColor(Color color)
     {
         image.color = color;
