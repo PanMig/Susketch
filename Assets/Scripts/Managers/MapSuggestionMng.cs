@@ -15,11 +15,11 @@ public class MapSuggestionMng : MonoBehaviour
     private enum pickups { none, health, armor, damage };
     public static Task<TileMap> pickUpsTask;
     public static bool pickUpsTaskBusy;
+    public static GameObject tempView;
 
     private readonly static System.Random RNG = new System.Random();
     readonly static float thresshold = 0.5f;
     private static float score = 0.0f;
-    private static GameObject tempView = new GameObject("TempView");
 
     #region events
 
@@ -87,12 +87,9 @@ public class MapSuggestionMng : MonoBehaviour
 
     public static async Task<Tile[,]> SpawnBalancedPickUps(TileMap tilemapMain)
     {
+        GameObject tempView = new GameObject("TempView");
         var tempMap = tilemapMain.GetTileMap();
         TileMap map;
-        foreach (Transform child in tempView.transform)
-        {
-            Destroy(child.gameObject);
-        }
         Dictionary<TileMap, float> mapsDict = new Dictionary<TileMap, float>();
 
         // randomly select a region to spawn a pickups
@@ -100,8 +97,9 @@ public class MapSuggestionMng : MonoBehaviour
         {
             // this will erase all previous decorations on the main map.
             map = new TileMap();
-            map.InitTileMap(tempView.transform);
-            map.SetTileMap(tempMap, tempView.transform);
+            map.Init();
+            map.PaintTiles(tempView.transform,1.0f);
+            map.SetTileMap(tempMap);
             map.RemoveDecorations();
             map = await SetPickUpsLocations(map, RNG).ConfigureAwait(false);
             score = await PredictKillRatio(GetInputMap(map), GetInputWeapons(blueClass, redClass));
@@ -115,8 +113,8 @@ public class MapSuggestionMng : MonoBehaviour
         var valueslist = mapsDict.Values.ToList();
         float bestMatch = valueslist[GetClosestIdxToThresshold(thresshold, valueslist)];
         var balancedMap = mapsDict.FirstOrDefault(x => x.Value == bestMatch);
-        tempView.SetActive(false);
-        map = null;
+        //Destroy(tempView);
+        //map = null;
         return balancedMap.Key.GetTileMap();
     }
 
@@ -137,7 +135,6 @@ public class MapSuggestionMng : MonoBehaviour
                         if (fillTile.envTileID != TileEnums.EnviromentTiles.level_2)
                         {
                             fillTile.decID = TileEnums.Decorations.healthPack;
-                            map.SetTileMapTile(fillTile);
                         }
                     }
                     else if (diceRoll == (int)pickups.armor)
@@ -146,7 +143,6 @@ public class MapSuggestionMng : MonoBehaviour
                         if (fillTile.envTileID != TileEnums.EnviromentTiles.level_2)
                         {
                             fillTile.decID = TileEnums.Decorations.armorVest;
-                            map.SetTileMapTile(fillTile);
                         }
                     }
                     else if (diceRoll == (int)pickups.damage)
@@ -155,7 +151,6 @@ public class MapSuggestionMng : MonoBehaviour
                         if (fillTile.envTileID != TileEnums.EnviromentTiles.level_2)
                         {
                             fillTile.decID = TileEnums.Decorations.damageBoost;
-                            map.SetTileMapTile(fillTile);
                         }
                     }
                     else
@@ -164,7 +159,6 @@ public class MapSuggestionMng : MonoBehaviour
                         if (fillTile.envTileID != TileEnums.EnviromentTiles.level_2)
                         {
                             fillTile.decID = TileEnums.Decorations.empty;
-                            map.SetTileMapTile(fillTile);
                         }
                             
                     }

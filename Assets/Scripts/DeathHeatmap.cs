@@ -43,7 +43,8 @@ public class DeathHeatmap : MonoBehaviour
         {
             for (int j = 0; j < 4; j++)
             {
-                heatmap[i, j] = new Tile(prefab, this.transform, 0, 0, 0, 0);
+                heatmap[i, j] = new Tile(0, 0, 0, 0);
+                heatmap[i, j].PaintTile(prefab, gridRect.transform);
             }
         }
     }
@@ -56,7 +57,7 @@ public class DeathHeatmap : MonoBehaviour
             for (int j = 0; j < 4; j++)
             {
                 var normalized = values[i, j] * 10.0f;
-                heatmap[i, j].PaintTile(new Color(normalized, normalized - 0.2f, 0, 0.7f));
+                heatmap[i, j].SetColor(new Color(normalized, normalized - 0.2f, 0, 0.7f));
             }
         }
     }

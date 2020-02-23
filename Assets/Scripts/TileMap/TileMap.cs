@@ -19,16 +19,16 @@ namespace TileMapLogic
 
         public TileMap()
         {
-
+            Init();
         }
 
-        public TileMap(Tile[,] map)
-        {
-            InitTileMap(null);
-            SetTileMap(map, null);
-        }
+        //public TileMap(Tile[,] map)
+        //{
+        //    InitTileMap();
+        //    SetTileMap(map, null);
+        //}
 
-        public void InitTileMap(Transform gridTransformParent)
+        public void Init()
         {
             tileMap = new Tile[rows, columns];
             TileThemes tileTheme;
@@ -41,8 +41,7 @@ namespace TileMapLogic
                     //ground tile and empty decoration.
                     tileTheme = Brush.Instance.brushThemes[UnityEngine.Random.Range(0, 1)];
                     dec = Brush.Instance.decorations[0];
-                    tileMap[row, col] = new Tile(tileTheme.prefab, gridTransformParent,
-                        tileTheme.envTileID, dec.decorationID, row, col);
+                    tileMap[row, col] = new Tile( tileTheme.envTileID, dec.decorationID, row, col);
                 }
             }
         }
@@ -75,13 +74,13 @@ namespace TileMapLogic
             return tileSet;
         }
 
-        public void PaintRegion(int row, int column, int brushIndex, Transform parent)
+        public void PaintRegion(int row, int column, int brushIndex)
         {
             for (int i = 0; i < CELL_PER_REGION; i++)
             {
                 for (int j = 0; j < CELL_PER_REGION; j++)
                 {
-                    regions[row, column].tileSet[i, j].PaintTile(Brush.Instance.brushThemes[brushIndex], this, parent);
+                    regions[row, column].tileSet[i, j].SetTheme(Brush.Instance.brushThemes[brushIndex]);
                 }
             }
         }
@@ -92,27 +91,30 @@ namespace TileMapLogic
             {
                 for (int j = 0; j < CELL_PER_REGION; j++)
                 {
-                    regions[row, column].tileSet[i, j].PaintTile(color);
+                    regions[row, column].tileSet[i, j].SetColor(color);
                 }
             }
         }
 
-        public void RenderTileMap(Transform parent)
+        public void PaintTiles(Transform parent, float decorationScale)
         {
             for (int i = 0; i < rows; i++)
             {
                 for (int j = 0; j < columns; j++)
                 {
-                    Tile tile = tileMap[i, j];
-                    tile.PaintTile(Brush.Instance.brushThemes[(int)tile.envTileID], this, parent);
-                    if(tile.decID != TileEnums.Decorations.empty)
-                    {
-                        tile.PaintDecoration(Brush.Instance.decorations[(int)tile.decID], this, parent);
-                    }
-                    else
-                    {
-                        tile.PaintDecoration(Brush.Instance.decorations[0], this, parent);
-                    }
+                    tileMap[i, j].PaintTile(Brush.Instance.brushThemes[0].prefab,
+                        Brush.Instance.brushThemes[0], Brush.Instance.decorations[0] ,parent, decorationScale);
+                }
+            }
+        }
+
+        public void Render()
+        {
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    tileMap[i, j].Render();
                 }
             }
         }
@@ -128,8 +130,8 @@ namespace TileMapLogic
                 {
                     tileTheme = Brush.Instance.brushThemes[envIndex];
                     decor = Brush.Instance.decorations[decorIndex];
-                    tileMap[row, col].PaintTile(tileTheme, this, parent);
-                    tileMap[row, col].PaintDecoration(decor, this, parent);
+                    tileMap[row, col].SetTheme(tileTheme);
+                    tileMap[row, col].SetDecoration(decor);
                 }
             }
         }
@@ -232,13 +234,14 @@ namespace TileMapLogic
             return tileMap;
         }
 
-        public void SetTileMap(Tile[,] map, Transform parent)
+        public void SetTileMap(Tile[,] map)
         {
             for (int i = 0; i < rows; i++)
             {
                 for (int j = 0; j < columns; j++)
                 {
-                    tileMap[i, j].SetTile(map[i, j], parent);
+                    //tileMap[i, j] = map[i, j];
+                    tileMap[i, j].SetTile(map[i, j]);
                 }
             }
         }
@@ -251,7 +254,7 @@ namespace TileMapLogic
                 {
                     if (tileMap[i, j].decID != TileEnums.Decorations.stairs && tileMap[i, j].decID != TileEnums.Decorations.empty)
                     {
-                        tileMap[i, j].RemoveDecoration(this);
+                        tileMap[i, j].SetDecoration(Brush.Instance.decorations[0]);
                     }
                 }
             }
@@ -388,63 +391,54 @@ namespace TileMapLogic
                             {
                                 case "0":
                                     Tile tile = this.GetTileWithIndex(i, j);
-                                    tile.envTileID = TileEnums.EnviromentTiles.ground;
-                                    tile.decID = TileEnums.Decorations.empty;
-                                    this.SetTileMapTile(tile);
+                                    tile.SetTheme(Brush.Instance.brushThemes[0]);
+                                    tile.SetDecoration(Brush.Instance.decorations[0]);
                                     break;
                                 case "1":
                                     tile = this.GetTileWithIndex(i, j);
-                                    tile.envTileID = TileEnums.EnviromentTiles.level_1;
-                                    tile.decID = TileEnums.Decorations.empty;
+                                    tile.SetTheme(Brush.Instance.brushThemes[1]);
+                                    tile.SetDecoration(Brush.Instance.decorations[0]);
                                     this.SetTileMapTile(tile);
                                     break;
                                 case "2":
                                     tile = this.GetTileWithIndex(i, j);
-                                    tile.envTileID = TileEnums.EnviromentTiles.level_2;
-                                    tile.decID = TileEnums.Decorations.empty;
-                                    this.SetTileMapTile(tile);
+                                    tile.SetTheme(Brush.Instance.brushThemes[2]);
+                                    tile.SetDecoration(Brush.Instance.decorations[0]);
                                     break;
                                 case "0H":
                                     tile = this.GetTileWithIndex(i, j);
-                                    tile.envTileID = TileEnums.EnviromentTiles.ground;
-                                    tile.decID = TileEnums.Decorations.healthPack;
-                                    this.SetTileMapTile(tile);
+                                    tile.SetTheme(Brush.Instance.brushThemes[0]);
+                                    tile.SetDecoration(Brush.Instance.decorations[1]);
                                     break;
                                 case "0A":
                                     tile = this.GetTileWithIndex(i, j);
-                                    tile.envTileID = TileEnums.EnviromentTiles.ground;
-                                    tile.decID = TileEnums.Decorations.armorVest;
-                                    this.SetTileMapTile(tile);
+                                    tile.SetTheme(Brush.Instance.brushThemes[0]);
+                                    tile.SetDecoration(Brush.Instance.decorations[2]);
                                     break;
                                 case "0D":
                                     tile = this.GetTileWithIndex(i, j);
-                                    tile.envTileID = TileEnums.EnviromentTiles.ground;
-                                    tile.decID = TileEnums.Decorations.damageBoost;
-                                    this.SetTileMapTile(tile);
+                                    tile.SetTheme(Brush.Instance.brushThemes[0]);
+                                    tile.SetDecoration(Brush.Instance.decorations[3]);
                                     break;
                                 case "0S":
                                     tile = this.GetTileWithIndex(i, j);
-                                    tile.envTileID = TileEnums.EnviromentTiles.ground;
-                                    tile.decID = TileEnums.Decorations.stairs;
-                                    this.SetTileMapTile(tile);
+                                    tile.SetTheme(Brush.Instance.brushThemes[0]);
+                                    tile.SetDecoration(Brush.Instance.decorations[4]);
                                     break;
                                 case "1H":
                                     tile = this.GetTileWithIndex(i, j);
-                                    tile.envTileID = TileEnums.EnviromentTiles.level_1;
-                                    tile.decID = TileEnums.Decorations.healthPack;
-                                    this.SetTileMapTile(tile);
+                                    tile.SetTheme(Brush.Instance.brushThemes[1]);
+                                    tile.SetDecoration(Brush.Instance.decorations[1]);
                                     break;
                                 case "1A":
                                     tile = this.GetTileWithIndex(i, j);
-                                    tile.envTileID = TileEnums.EnviromentTiles.level_1;
-                                    tile.decID = TileEnums.Decorations.armorVest;
-                                    this.SetTileMapTile(tile);
+                                    tile.SetTheme(Brush.Instance.brushThemes[1]);
+                                    tile.SetDecoration(Brush.Instance.decorations[2]);
                                     break;
                                 case "1D":
                                     tile = this.GetTileWithIndex(i, j);
-                                    tile.envTileID = TileEnums.EnviromentTiles.level_1;
-                                    tile.decID = TileEnums.Decorations.damageBoost;
-                                    this.SetTileMapTile(tile);
+                                    tile.SetTheme(Brush.Instance.brushThemes[1]);
+                                    tile.SetDecoration(Brush.Instance.decorations[3]);
                                     break;
                                 case "1S":
                                     Debug.LogError("stair on top of first level tile");

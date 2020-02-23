@@ -19,14 +19,15 @@ public class MiniMap : MonoBehaviour
 
     public void Start()
     {
-        tileMapView = GetComponent<TileMapView>();
-        map = new TileMap();
-        map.InitTileMap(tileMapView.gridRect.transform);
+
     }
 
     public void Init()
     {
-       
+        tileMapView = GetComponent<TileMapView>();
+        map = new TileMap();
+        map.Init();
+        map.PaintTiles(tileMapView.gridRect.transform,0.1f);
     }
 
     public void CreateMiniMap()
@@ -37,7 +38,10 @@ public class MiniMap : MonoBehaviour
 
     public void SetMiniMap(Tile[,] balancedMap)
     {
-        map.SetTileMap(balancedMap, tileMapView.gridRect.transform);
-        map.RenderTileMap(tileMapView.gridRect.transform);
+        
+        map.SetTileMap(balancedMap);
+        map.Render();
+        balancedMap = null;
+        DestroyImmediate(MapSuggestionMng.tempView);
     }
 }

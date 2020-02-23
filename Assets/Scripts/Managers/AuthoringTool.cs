@@ -39,7 +39,7 @@ public class AuthoringTool : MonoBehaviour
         EventManagerUI.onTileMapEdit += CheckTileMapListener;
         
         //onMapReadyForPrediction is fired on End of drag and pointer up.
-        //EventManagerUI.onMapReadyForPrediction += InvokeMetrics;
+        EventManagerUI.onMapReadyForPrediction += InvokeMetrics;
         EventManagerUI.onMapReadyForPrediction += CalculateBalancedPickUpsAsync;
 
         /* 
@@ -49,7 +49,7 @@ public class AuthoringTool : MonoBehaviour
         //onMapSuggestionsReady += GeneratePickUps;
 
         // CharacterClassMng is fired when the class selector is edited.
-        CharacterClassMng.onClassSelectorEdit += InvokeMetrics;
+        //CharacterClassMng.onClassSelectorEdit += InvokeMetrics;
     }
 
     private void OnDisable()
@@ -66,7 +66,7 @@ public class AuthoringTool : MonoBehaviour
     {
         tileMapMain = new TileMap();
         tileMapViewMain = GameObject.FindGameObjectWithTag("tileMapViewMain").GetComponent<TileMapView>();
-        tileMapMain.InitTileMap(tileMapViewMain.gridRect.transform);
+        tileMapMain.PaintTiles(tileMapViewMain.gridRect.transform, 0.28f);
         tileMapMain.InitRegions();
         PaintTeamRegions();
         CheckTileMapListener();
@@ -108,14 +108,14 @@ public class AuthoringTool : MonoBehaviour
         // create a temp parent to save all instantiated tiles
         GameObject tempView = new GameObject("TempView");
         var randomMap = new TileMap();
-        randomMap.InitTileMap(tempView.transform);
+        randomMap.Init();
+        randomMap.PaintTiles(tempView.transform,1.0f);
 
         int index = Random.Range(1, 10);
         randomMap.ReadCSVToTileMap("Map Files/mapFile" + index);
-        tileMapMain.SetTileMap(randomMap.GetTileMap(),tileMapViewMain.gridRect.transform);
+        tileMapMain.SetTileMap(randomMap.GetTileMap());
         randomMap = null;
         Destroy(tempView);
-        tileMapMain.RenderTileMap(tileMapViewMain.gridRect.transform);
         CheckTileMapListener();
     }
 

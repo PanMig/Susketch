@@ -68,7 +68,7 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
 
     private void UnHighlightHoveredTile()
     {
-        selectedTile.PaintTile(startcolor);
+        selectedTile.SetColor(startcolor);
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -113,7 +113,7 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
             GetIndexFromCoordinates(eventData, out index_row, out index_col);
             selectedTile = tileMapMain.GetTileWithIndex(index_row, index_col);
             startcolor = selectedTile.image.color;
-            selectedTile.PaintTile(Color.red);
+            selectedTile.SetColor(Color.red);
     }
 
     private void DrawTile(PointerEventData eventData)
@@ -143,12 +143,12 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
             // column, row.
             Tile tile = tileMapMain.GetTileWithIndex(index_row, index_col);
             int index = Brush.Instance.currTileBrush;
-            tile.PaintTile(Brush.Instance.brushThemes[index], tileMapMain, tileMapViewMain.gridRect.transform);
+            tile.SetTheme(Brush.Instance.brushThemes[index]);
             //if(tile.envTileID == TileEnums.EnviromentTiles.level_1)
             //{
             //    tileMapMain.FormatTileOrientation(tile.X, tile.Y, new HashSet<Tile>());
             //}
-            //Debug.Log(tile.gameObj.name + "_" + tile.envTileID + " " + tile.decID);
+            Debug.Log(tile.gameObj.name + "_" + tile.envTileID + " " + tile.decID);
             EventManagerUI.onTileMapEdit?.Invoke();
         }
     }
@@ -161,7 +161,7 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
             Tile tile = tileMapMain.GetTileWithIndex(index_row, index_col);
             // zero index is always the empty decoration, that's why we add plus one to current brush index.
             int index = Brush.Instance.currDecBrush;
-            tile.PaintDecoration(Brush.Instance.decorations[index], tileMapMain, tileMapViewMain.gridRect.transform);
+            tile.SetDecoration(Brush.Instance.decorations[index]);
             EventManagerUI.onTileMapEdit?.Invoke();
         }
     }

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Tile_level 2
   m_EditorClassIdentifier: 
   envTileID: 2
-  prefab: {fileID: 5470239631244777927, guid: 56b0229e852c26f43bf05abd1bdb0a64, type: 3}
+  prefab: {fileID: 8722793843577092374, guid: 1f356722a096b4b47a15073418ff40cb, type: 3}
   sprite: {fileID: 21300000, guid: 66d0987a652b1294983ed0ebd2e14073, type: 3}
