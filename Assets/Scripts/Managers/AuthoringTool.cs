@@ -16,6 +16,8 @@ public class AuthoringTool : MonoBehaviour
     public static TileMapView tileMapViewMain;
     public static TileMap tileMapMain;
     private Tile[,] generatedMap = null;
+    public static float currKillRatio;
+    public static float currDuration;
     // Network input
     private NDArray input_map;
     private NDArray input_weapons;
@@ -177,6 +179,7 @@ public class AuthoringTool : MonoBehaviour
         SetModelInput();
         //result returns the kills of player one (red) divided by the total kills.
         var results = await PredictKillRatio(input_map, input_weapons);
+        currKillRatio = results;
         metricsMng.SetKillRatioProgressBar(results);
         Debug.Log("Kill ratio prediction");
     }
@@ -185,6 +188,7 @@ public class AuthoringTool : MonoBehaviour
     {
         SetModelInput();
         var results = await PredictGameDuration(input_map, input_weapons);
+        currDuration = results;
         metricsMng.SetGameDurationText(results);
         Debug.Log("Game duration prediction");
     }

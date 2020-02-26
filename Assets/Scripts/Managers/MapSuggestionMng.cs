@@ -114,7 +114,8 @@ public class MapSuggestionMng : MonoBehaviour
         //float bestMatch = valueslist[GetClosestIdxToThresshold(thresshold, valueslist)];
         //var balancedMap = mapsDict.FirstOrDefault(x => x.Value == bestMatch);
         var balancedMaps = (from pair in mapsDict
-                    orderby pair.Value select pair).ToList();
+                            orderby Math.Abs(pair.Value - thresshold)
+                            select pair).ToList();
         return balancedMaps;
     }
 

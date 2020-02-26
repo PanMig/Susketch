@@ -581,7 +581,7 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLWasmStreaming: 0
   scriptingDefineSymbols:
-    1: ODIN_INSPECTOR
+    1: ODIN_INSPECTOR;ENABLE_TENSORFLOW
   platformArchitecture: {}
   scriptingBackend:
     Standalone: 0
