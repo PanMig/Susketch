@@ -122,7 +122,7 @@ public class AuthoringTool : MonoBehaviour
         CheckTileMapListener();
     }
 
-    private void InvokeMetrics()
+    public void InvokeMetrics()
     {
         DeathHeatmapListenerSmall();
         DramaticArcListener();
@@ -213,7 +213,6 @@ public class AuthoringTool : MonoBehaviour
             var generatedMaps = await SpawnPickupsAsynchronous(tileMapMain);
             onMapSuggestionsReady?.Invoke(generatedMaps);
         }
-
     }
 
     public void FindClassBalance()
