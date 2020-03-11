@@ -22,12 +22,6 @@ namespace TileMapLogic
             Init();
         }
 
-        //public TileMap(Tile[,] map)
-        //{
-        //    InitTileMap();
-        //    SetTileMap(map, null);
-        //}
-
         public void Init()
         {
             tileMap = new Tile[rows, columns];

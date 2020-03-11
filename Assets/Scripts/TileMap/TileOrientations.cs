@@ -5,7 +5,9 @@ using UnityEngine;
 public class TileOrientations : MonoBehaviour
 {
     public static TileOrientations Instance;
-    public Sprite[] firstFloorOrientations;
+    public Sprite[] TopOrientations;
+    public Sprite[] BottomOrientations;
+    public Sprite[] MiddleOrientations;
 
     private void Awake()
     {

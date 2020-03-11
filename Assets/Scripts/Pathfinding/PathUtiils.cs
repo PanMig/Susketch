@@ -132,6 +132,12 @@ public static class PathUtils
         }
     }
 
+    /// <summary>
+    /// Returns the neighbours of the given Tile in the following orientation : D, U, R, L 
+    /// </summary>
+    /// <param name="tile"></param>
+    /// <param name="tileMap"></param>
+    /// <returns></returns>
     public static List<Tile> GetNeighboursCross(Tile tile, TileMap tileMap)
     {
         List<Tile> neighbours = new List<Tile>();

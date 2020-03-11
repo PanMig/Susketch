@@ -144,10 +144,10 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
             Tile tile = tileMapMain.GetTileWithIndex(index_row, index_col);
             int index = Brush.Instance.currTileBrush;
             tile.SetTheme(Brush.Instance.brushThemes[index]);
-            //if(tile.envTileID == TileEnums.EnviromentTiles.level_1)
-            //{
-            //    tileMapMain.FormatTileOrientation(tile.X, tile.Y, new HashSet<Tile>());
-            //}
+            if (tile.envTileID == TileEnums.EnviromentTiles.level_1)
+            {
+                tileMapMain.FormatTileOrientation(tile.X, tile.Y, new HashSet<Tile>(), 0);
+            }
             EventManagerUI.onTileMapEdit?.Invoke();
         }
     }

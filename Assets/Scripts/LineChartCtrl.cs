@@ -26,7 +26,7 @@ public class LineChartCtrl : MonoBehaviour
     public void SetChartData(float[] values)
     {
 
-        set1.LineColor = new Color32(255, 133, 0, 255);
+        set1.LineColor = new Color32(255, 255, 255, 255);
         set1.FillColor = new Color32(0, 0, 0, 0);
 
         set1.GetEntryAt(1).Value = values[0];
