@@ -14,7 +14,7 @@ namespace TileMapLogic
         public static readonly int columns = 20;
         private static readonly int CELL_PER_REGION = 5;
         private Tile[,] tileMap;
-        private Region[,] regions = new Region[4, 4];
+        private readonly Region[,] regions = new Region[4, 4];
 
 
         public TileMap()
@@ -115,15 +115,12 @@ namespace TileMapLogic
 
         public void SetDefaultMap(int envIndex, int decorIndex, Transform parent)
         {
-            TileThemes tileTheme;
-            Decoration decor;
-
-            for (int row = 0; row < rows; row++)
+            for (var row = 0; row < rows; row++)
             {
-                for (int col = 0; col < columns; col++)
+                for (var col = 0; col < columns; col++)
                 {
-                    tileTheme = Brush.Instance.brushThemes[envIndex];
-                    decor = Brush.Instance.decorations[decorIndex];
+                    var tileTheme = Brush.Instance.brushThemes[envIndex];
+                    var decor = Brush.Instance.decorations[decorIndex];
                     tileMap[row, col].SetTheme(tileTheme);
                     tileMap[row, col].SetDecoration(decor);
                 }
