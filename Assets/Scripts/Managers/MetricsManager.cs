@@ -68,12 +68,12 @@ public class MetricsManager : MonoBehaviour
     {
         var fillAmountBlue = killRatioBar.transform.GetChild(0).GetComponent<Image>();
         var fillAmountRed = killRatioBar.transform.GetChild(1).GetComponent<Image>();
-        float blueAmount = 1 - percent;
-        float redAmount = percent;
-        fillAmountBlue.fillAmount = blueAmount;
-        fillAmountRed.fillAmount = redAmount;
-        killRatioTextBlue.text = Mathf.Floor(blueAmount * 100).ToString() + "%";
-        killRatioTextRed.text =  Mathf.Floor(redAmount * 100).ToString()  + "%";
+        var blueAmount = (1 - percent) * 100.0f;
+        var redAmount = percent* 100.0f;
+        fillAmountBlue.fillAmount = blueAmount / 100.0f;
+        fillAmountRed.fillAmount = redAmount / 100.0f;
+        killRatioTextBlue.text = $"{blueAmount.ToString("F0")} %";
+        killRatioTextRed.text =  $"{redAmount.ToString("F0")} %";
     }
 
     public void SetGameDurationText(float value)

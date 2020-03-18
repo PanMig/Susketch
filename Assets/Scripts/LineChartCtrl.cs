@@ -15,7 +15,7 @@ public class LineChartCtrl : MonoBehaviour
         chart = gameObject.GetComponent<LineChart>();
         //ConfigChart();
         set1 = chart.GetChartData().DataSets[0];
-        SetChartData(new float[2]);
+        SetChartData(new float[5]);
     }
 
     private void ConfigChart()
