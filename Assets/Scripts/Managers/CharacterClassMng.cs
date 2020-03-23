@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class CharacterClassMng : MonoBehaviour
 {
     public static CharacterClassMng Instance { get; private set; }
+    public CharacterParams BlueClass;
+    public CharacterParams RedClass;
     public HorizontalSelector blueSelector;
     public HorizontalSelector redSelector;
     private FPSClasses fpsClasses;
@@ -45,18 +47,24 @@ public class CharacterClassMng : MonoBehaviour
     public void Start()
     {
         fpsClasses = GetComponent<FPSClasses>();
-        SetClassParams();
+        SetClassParamsFromUI();
     }
 
-    public void SetClassParams()
+    public void SetClassParamsFromUI()
     {
-        AuthoringTool.blueClass = fpsClasses.characters[blueSelector.index];
-        AuthoringTool.redClass = fpsClasses.characters[redSelector.index];
+        BlueClass = fpsClasses.characters[blueSelector.index];
+        RedClass = fpsClasses.characters[redSelector.index];
+    }
+
+    public void SetClassParams(CharacterParams blue, CharacterParams red)
+    {
+        BlueClass = blue;
+        RedClass = red;
     }
 
     public void ClassSelectorListener()
     {
-        SetClassParams();
+        SetClassParamsFromUI();
         SetClassSprites();
         onClassSelectorEdit?.Invoke();
     }
@@ -65,7 +73,6 @@ public class CharacterClassMng : MonoBehaviour
     {
         //wait for next frame so position in element of gridlayoutgroup is updated.
         StartCoroutine(CoWaitForPosition());
-        
     }
 
     public IEnumerator CoWaitForPosition()
@@ -89,5 +96,46 @@ public class CharacterClassMng : MonoBehaviour
     {
         blueClassImage.sprite = sprites[blueSelector.index];
         redClassImage.sprite = sprites[redSelector.index];
+    }
+
+    public void SetClassSprites(int indexBlue, int indexRed)
+    {
+        blueClassImage.sprite = sprites[indexBlue];
+        redClassImage.sprite = sprites[indexRed];
+    }
+
+    public void SetClassSpriteSelectors(int blue, int red)
+    {
+        blueSelector.index = blue;
+        redSelector.index = red;
+    }
+
+    /*Really ugly... but it's for a quick implementation
+      The convention followed is Scout, Sniper, Heavy, Soldier, Demolition man.
+    .*/
+    public int GetClassIndex(string className)
+    {
+        switch (className)
+        {
+            case "Scout":
+                return 0;
+                break;
+            case "Sniper":
+                return 1;
+                break;
+            case "Heavy":
+                return 2;
+                break;
+            case "Soldier":
+                return 3;
+                break;
+            case "Demolition Man":
+                return 4;
+                break;
+            default:
+                return 0;
+                Debug.LogError("no matching class name found in GetClassIndex");
+                break;
+        }
     }
 }

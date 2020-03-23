@@ -15,10 +15,11 @@ public class MiniMap : MonoBehaviour
     private TileMap _map;
     private MiniMapView _mapView;
     [SerializeField] private int _index;
-    private AuthoringTool authTool;
     private float _newBlueAmount = 0;
     private float _newRedAmount= 0;
 
+    public delegate void OnMiniMapApply();
+    public static event OnMiniMapApply onMiniMapApply;
 
     public void OnEnable()
     {
@@ -28,7 +29,6 @@ public class MiniMap : MonoBehaviour
 
     public void Init()
     {
-        authTool = GameObject.FindGameObjectWithTag("authoring tool").GetComponent<AuthoringTool>();
         _tileMapView = GetComponent<TileMapView>();
         _map = new TileMap();
         _map.Init();
@@ -41,8 +41,9 @@ public class MiniMap : MonoBehaviour
         if (_map.GetTileMap() != null)
         {
             tileMapMain.SetTileMap(_map.GetTileMap());
-            authTool.InvokeMetrics();
+            _mapView.Btn.SetActive(false);
         }
+        onMiniMapApply?.Invoke();
     }
 
     public void SetMiniMap(List<KeyValuePair<TileMap, float>> balancedMaps)
@@ -50,8 +51,8 @@ public class MiniMap : MonoBehaviour
         _map.SetTileMap(balancedMaps[_index].Key.GetTileMap());
         _map.Render();
         var percent = balancedMaps[_index].Value;
-        Destroy(MapSuggestionMng.tempView);
         SetMiniMapView(percent);
+        Destroy(MapSuggestionMng.tempView);
     }
 
     public void SetMiniMapView(float percent)
@@ -64,31 +65,49 @@ public class MiniMap : MonoBehaviour
         var blueSign = (curBlueAmount - _newBlueAmount) < 0 ? "-" : "+";
         var redSign = (curRedAmount - _newRedAmount) < 0 ? "-" : "+";
 
-        _mapView.SetKillRatioBar(_newBlueAmount/100.0f, _newRedAmount / 100.0f);
+        //_mapView.SetKillRatioBar(_newBlueAmount / 100.0f, _newRedAmount / 100.0f);
+        MetricsManager.SetKillRatioBar(_newBlueAmount / 100.0f, _newRedAmount / 100.0f, _mapView.KillRatioBar);
         //use three whitespaces for better alignment.
-        _mapView.BluePercentText.text = $"{_newBlueAmount.ToString($"F0")} %   ({blueSign}{(curBlueAmount - _newBlueAmount).ToString("F0")}%)";
-        _mapView.RedPercentText.text = $"{_newRedAmount.ToString($"F0")} %   ({redSign}{(curRedAmount - _newRedAmount).ToString("F0")}%)";
+        _mapView.BluePercentText.text = $"{_newBlueAmount.ToString($"F0")} %";
+        _mapView.RedPercentText.text = $"{_newRedAmount.ToString($"F0")} %";
 
-        var result = CalculateRatioDifference(percent, currKillRatio);
+        var result = MetricsManager.CalculateRatioDifference(percent, currKillRatio);
         if (result < 0)
         {
-            _mapView.ResultsText.text = $"+{Mathf.Abs(result).ToString($"F1")} % improvement";
+            _mapView.ResultsText.text = $"+{Mathf.Abs(result).ToString($"F1")} % balance gain";
             _mapView.ResultsText.color = Color.green;
         }
         else
         {
-            _mapView.ResultsText.text = $"-{result.ToString($"F1")} % loss";
+            _mapView.ResultsText.text = $"-{result.ToString($"F1")} % balance loss";
             _mapView.ResultsText.color = Color.red;
+        }
+
+        SetPowerUpsCount();
+
+        //set button active
+        if (!_mapView.Btn.activeInHierarchy)
+        {
+            _mapView.Btn.SetActive(true);
         }
     }
 
-    private float CalculateRatioDifference(float newPercent, float curPercent)
+    private void SetPowerUpsCount()
     {
-        var suggestedKR = Mathf.Abs(0.5f - newPercent);
-        var currentKR = Mathf.Abs(0.5f - curPercent);
-        if (currentKR == 0.0f) return 0.0f;
-        // we divide by the desired number(0.5) so we get the percentage error (mathematical measurement).
-        var result = (suggestedKR - currentKR) / 0.5f;
-        return result * 100;
+
+        var healthCount = _map.GetDecoration(TileEnums.Decorations.healthPack).Count;
+        var healthDiff = healthCount - tileMapMain.GetDecoration(TileEnums.Decorations.healthPack).Count;
+        // IMPORTANT there is an error and the values of armor and damage boost are switched.
+        // Therefore, until error is solved, the texts will have switched values.
+        // This occurs only on the minimap. Error propably in MapSuggestionManager.cs
+        var armorCount = _map.GetDecoration(TileEnums.Decorations.armorVest).Count;
+        var dmgCount = _map.GetDecoration(TileEnums.Decorations.damageBoost).Count;
+        var armorDiff = armorCount - tileMapMain.GetDecoration(TileEnums.Decorations.armorVest).Count;
+        var dmgDiff = dmgCount - tileMapMain.GetDecoration(TileEnums.Decorations.damageBoost).Count;
+
+
+        _mapView.HealthCountText.text = $"{healthCount.ToString()} ({healthDiff.ToString("+0;-#")})";
+        _mapView.ArmorCountText.text = $"{armorCount.ToString()} ({armorDiff.ToString("+0;-#")})";
+        _mapView.DmgCountText.text = $"{dmgCount.ToString()} ({dmgDiff.ToString("+0;-#")})";
     }
 }

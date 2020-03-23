@@ -22,17 +22,23 @@ public class AuthoringTool : MonoBehaviour
     private NDArray input_map;
     private NDArray input_weapons;
     // Character classes
-    public static CharacterParams blueClass;
-    public static CharacterParams redClass;
-    private CharacterParams[] balanced_classes;
+    private KeyValuePair<CharacterParams[],float> balanced_classes;
     //Events
     public delegate void OnMapInitEnded();
     public static event OnMapInitEnded onMapInitEnded;
 
     public delegate void OnMapSuggestionsReady(List<KeyValuePair<TileMap,float>> balancedMaps);
     public static event OnMapSuggestionsReady onMapSuggestionsReady;
+
+    public delegate void OnClassBalanceReady(KeyValuePair<CharacterParams[],float> balancedMatch);
+    public static event OnClassBalanceReady onclassBalanceReady;
+
     // Task shedulers
     public bool heatmapTaskBusy = false;
+    private bool daTaskBusy;
+    private bool cpTaskBusy;
+    private bool krTaskBusy;
+    private bool durationTaskBusy;
 
 
     private void OnEnable()
@@ -44,9 +50,14 @@ public class AuthoringTool : MonoBehaviour
         //onMapReadyForPrediction is fired on End of drag and pointer up.
         EventManagerUI.onMapReadyForPrediction += InvokeMetrics;
         EventManagerUI.onMapReadyForPrediction += CalculateBalancedPickUpsAsync;
+        EventManagerUI.onMapReadyForPrediction += CalculateClassBalanceAsync;
 
         // CharacterClassMng is fired when the class selector is edited.
         CharacterClassMng.onClassSelectorEdit += InvokeMetrics;
+        CharacterClassMng.onClassSelectorEdit += CalculateClassBalanceAsync;
+
+        // When minimap is applied.
+        MiniMap.onMiniMapApply += InvokeMetrics;
     }
 
     private void OnDisable()
@@ -54,8 +65,11 @@ public class AuthoringTool : MonoBehaviour
         EventManagerUI.onTileMapEdit -= PaintTeamRegions;
         EventManagerUI.onTileMapEdit -= CheckTileMapListener;
         EventManagerUI.onMapReadyForPrediction -= InvokeMetrics;
-        EventManagerUI.onMapReadyForPrediction -= CalculateBalancedPickUpsAsync;
+        EventManagerUI.onMapReadyForPrediction -= CalculateClassBalanceAsync;
         CharacterClassMng.onClassSelectorEdit -= InvokeMetrics;
+        CharacterClassMng.onClassSelectorEdit -= CalculateBalancedPickUpsAsync;
+        CharacterClassMng.onClassSelectorEdit -= CalculateClassBalanceAsync;
+        MiniMap.onMiniMapApply -= InvokeMetrics;
     }
 
     // Start is called before the first frame update
@@ -114,6 +128,7 @@ public class AuthoringTool : MonoBehaviour
         randomMap = null;
         Destroy(tempView);
         CheckTileMapListener();
+        InvokeMetrics();
     }
 
     public void EmptyMapListener()
@@ -147,7 +162,6 @@ public class AuthoringTool : MonoBehaviour
             heatmapTaskBusy = true;
             SetModelInput();
             var results = await PredictDeathHeatmap(input_map, input_weapons);
-            Debug.Log("Death heatmap prediction");
             var heatmap = ArrayParsingUtils.Make2DArray(results, 4, 4);
             metricsMng.GenerateDeathHeatmap(heatmap);
             heatmapTaskBusy = false;
@@ -156,60 +170,81 @@ public class AuthoringTool : MonoBehaviour
 
     public async void DramaticArcListener()
     {
-        SetModelInput();
-        var results = await PredictDramaticArc(input_map, input_weapons);
-        Debug.Log("Dramatic arc prediction");
-        metricsMng.GenerateDramaticArcGraph(results);
+        if (!daTaskBusy && TileMapPlayable())
+        {
+            daTaskBusy = true;
+            SetModelInput();
+            var results = await PredictDramaticArc(input_map, input_weapons);
+            metricsMng.GenerateDramaticArcGraph(results);
+            daTaskBusy = false;
+        }
     }
 
     public async void CombatPaceListener()
     {
-        SetModelInput();
-        var results = await PredictCombatPace(input_map, input_weapons);
-        for (int i = 0; i < results.Length; i++)
+        if(!cpTaskBusy && TileMapPlayable())
         {
-            results[i] = results[i] * 20.0f;
+            cpTaskBusy = true;
+            SetModelInput();
+            var results = await PredictCombatPace(input_map, input_weapons);
+            for (int i = 0; i < results.Length; i++)
+            {
+                results[i] = results[i] * 20.0f;
+            }
+
+            metricsMng.GenerateCombatPaceGraph(results);
+            cpTaskBusy = false;
         }
-        Debug.Log("Combat pace prediction");
-        metricsMng.GenerateCombatPaceGraph(results);
     }
 
     public async void KillRatioListener()
     {
-        SetModelInput();
-        //result returns the kills of player one (red) divided by the total kills.
-        var results = await PredictKillRatio(input_map, input_weapons);
-        currKillRatio = results;
-        metricsMng.SetKillRatioProgressBar(results);
-        Debug.Log("Kill ratio prediction");
+        if (!krTaskBusy && TileMapPlayable())
+        {
+            krTaskBusy = true;
+            SetModelInput();
+            //result returns the kills of player one (red) divided by the total kills.
+            var results = await PredictKillRatio(input_map, input_weapons);
+            currKillRatio = results;
+            metricsMng.SetKillRatioProgressBar(results);
+            krTaskBusy = false;
+        }
     }
 
     public async void GameDurationListener()
     {
-        SetModelInput();
-        var results = await PredictGameDuration(input_map, input_weapons);
-        currDuration = results;
-        metricsMng.SetGameDurationText(results);
-        Debug.Log("Game duration prediction");
+        if (!durationTaskBusy && TileMapPlayable())
+        {
+            durationTaskBusy = true;
+            SetModelInput();
+            var results = await PredictGameDuration(input_map, input_weapons);
+            currDuration = results;
+            metricsMng.SetGameDurationText(results);
+            durationTaskBusy = false;
+        }
     }
 
     private void SetModelInput()
     {
         input_map = GetInputMap(tileMapMain);
         // red player is player 1.
-        input_weapons = GetInputWeapons(blueClass, redClass);
+        input_weapons = GetInputWeapons(CharacterClassMng.Instance.BlueClass, CharacterClassMng.Instance.RedClass);
     }
 
     public async void CalculateClassBalanceAsync()
     {
-        balanced_classes = await GetBalancedMatchUpAsynchronous(FPSClasses.matchups, GetInputMap(tileMapMain));
+        if (!MapSuggestionMng.classBalanceTaskBusy && TileMapPlayable())
+        {
+            balanced_classes = await GetBalancedMatchUpAsynchronous(FPSClasses.matchups, GetInputMap(tileMapMain));
+            KillRatioListener();
+            onclassBalanceReady?.Invoke(balanced_classes);
+        }
     }
 
     public async void CalculateBalancedPickUpsAsync()
     {
         if (!MapSuggestionMng.pickUpsTaskBusy && TileMapPlayable())
         {
-            Debug.Log("Spawn pick ups called");
             var generatedMaps = await SpawnPickupsAsynchronous(tileMapMain);
             onMapSuggestionsReady?.Invoke(generatedMaps);
         }
@@ -217,8 +252,7 @@ public class AuthoringTool : MonoBehaviour
 
     public void FindClassBalance()
     {
-        redClass = balanced_classes[0];
-        blueClass = balanced_classes[1];
-        Debug.Log($"blue: {blueClass}" + $"red: {redClass}");
+        //redClass = balanced_classes[0];
+        //blueClass = balanced_classes[1];
     }
 }

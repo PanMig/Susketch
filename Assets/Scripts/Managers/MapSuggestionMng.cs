@@ -15,6 +15,7 @@ public class MapSuggestionMng : MonoBehaviour
     private enum pickups { none, health, armor, damage };
     public static Task<TileMap> pickUpsTask;
     public static bool pickUpsTaskBusy;
+    public static bool classBalanceTaskBusy;
     public static GameObject tempView;
 
     private readonly static System.Random RNG = new System.Random();
@@ -32,10 +33,10 @@ public class MapSuggestionMng : MonoBehaviour
     #endregion
 
     // Old implementation with the Task System.
-    public async static Task<CharacterParams[]> GetBalancedMatchup(List<CharacterParams[]> classMatchups, NDArray input_map)
+    public static async Task<KeyValuePair<CharacterParams[],float>> GetBalancedMatchup(List<CharacterParams[]> classMatchups, NDArray inputMap)
     {
         return await Task.Run(async () =>
-         {
+        {
              var classes = new CharacterParams[2];
              var thresshold = 0.5f;
              float score = 0;
@@ -43,25 +44,28 @@ public class MapSuggestionMng : MonoBehaviour
              foreach (var matchup in classMatchups)
              {
                  var input_weapons = GetInputWeapons(matchup[0], matchup[1]);
-                 score = await PredictKillRatio(input_map, input_weapons);
+                 score = await PredictKillRatio(inputMap, input_weapons);
                  scores.Add(score);
              }
 
              int resultIdx = GetClosestIdxToThresshold(thresshold, scores);
 
              classes[0] = classMatchups[resultIdx][0]; // red team.
-            classes[1] = classMatchups[resultIdx][1]; // blue team.
-
-            return classes;
+             classes[1] = classMatchups[resultIdx][1]; // blue team.
+             var classPair = new KeyValuePair<CharacterParams[],float>(classes,scores[resultIdx]);
+             return classPair;
          });
     }
 
-    public static async Task<CharacterParams[]> GetBalancedMatchUpAsynchronous(List<CharacterParams[]> classMatchups, NDArray input_map)
+    public static async Task<KeyValuePair<CharacterParams[], float>> GetBalancedMatchUpAsynchronous(List<CharacterParams[]> classMatchups, NDArray input_map)
     {
         Debug.Log("Balanced classes started");
+        classBalanceTaskBusy = true;
+        onCharactersBalanced?.Invoke(false);
         var characterClasses = await GetBalancedMatchup(classMatchups, input_map).ConfigureAwait(false);
         Debug.Log("Balanced classes ended");
         onCharactersBalanced?.Invoke(true);
+        classBalanceTaskBusy = false;
         return characterClasses;
     }
 
@@ -102,7 +106,7 @@ public class MapSuggestionMng : MonoBehaviour
             map.SetTileMap(tempMap);
             map.RemoveDecorations();
             map = await SetPickUpsLocations(map, RNG).ConfigureAwait(false);
-            score = await PredictKillRatio(GetInputMap(map), GetInputWeapons(blueClass, redClass));
+            score = await PredictKillRatio(GetInputMap(map), GetInputWeapons(CharacterClassMng.Instance.BlueClass, CharacterClassMng.Instance.RedClass));
             if (TileMapRepair.HasAccesiblePowerUps(map))
             {
                 mapsDict.Add(map, score);

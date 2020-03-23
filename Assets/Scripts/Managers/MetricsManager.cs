@@ -94,4 +94,22 @@ public class MetricsManager : MonoBehaviour
         }
         GameDurationRadialBar.fillAmount = timeSecs / 600.0f;
     }
+
+    public static void SetKillRatioBar(float blueAmount, float redAmount, GameObject killRatioBar)
+    {
+        var fillAmountBlue = killRatioBar.transform.GetChild(0).GetComponent<Image>();
+        var fillAmountRed = killRatioBar.transform.GetChild(1).GetComponent<Image>();
+        fillAmountBlue.fillAmount = blueAmount;
+        fillAmountRed.fillAmount = redAmount;
+    }
+
+    public static float CalculateRatioDifference(float newPercent, float curPercent)
+    {
+        var suggestedKR = Mathf.Abs(0.5f - newPercent);
+        var currentKR = Mathf.Abs(0.5f - curPercent);
+        if (currentKR == 0.0f) return 0.0f;
+        // we divide by the desired number(0.5) so we get the percentage error (mathematical measurement).
+        var result = (suggestedKR - currentKR) / 0.5f;
+        return result * 100;
+    }
 }

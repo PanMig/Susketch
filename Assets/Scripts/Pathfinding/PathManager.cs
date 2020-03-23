@@ -93,71 +93,21 @@ public class PathManager : MonoBehaviour
         }
     }
 
+    public void UpdateMovementSteps()
+    {
+        CalculatePathBlueTarget(pathTargetBlue);
+        CalculatePathRedTarget(pathTargetRed);
+    }
+
     public void PathHighlightListener()
     {
         if (pathBlueProps.pathActive)
         {
-            switch (pathTargetBlue)
-            {
-                case (int)Targets.enemyBase:
-                    IPathFinding enemyPath = new EnemyBasePath();
-                    enemyPath.FindShortestPath(new Vector2(19, 0), new Vector2(0, 19), pathBlueProps);
-                    break;
-                case (int)Targets.health:
-                    IPathFinding healthPath = new HealthPath();
-                    // second parameter stands for empty, goal is handled by the class implementation.
-                    healthPath.FindShortestPath(new Vector2(19, 0), new Vector2(0, 19), pathBlueProps);
-                    break;
-                case (int)Targets.armor:
-                    IPathFinding armorPath = new ArmorPath();
-                    // second parameter stands for empty, goal is handled by the class implementation.
-                    armorPath.FindShortestPath(new Vector2(19, 0), new Vector2(0, 19), pathBlueProps);
-                    break;
-                case (int)Targets.damage:
-                    IPathFinding damagePath = new DamagePath();
-                    // second parameter stands for empty, goal is handled by the class implementation.
-                    damagePath.FindShortestPath(new Vector2(19, 0), new Vector2(0, 19), pathBlueProps);
-                    break;
-                case (int)Targets.stair:
-                    IPathFinding stairsPath = new StairsPath();
-                    // second parameter stands for empty, goal is handled by the class implementation.
-                    stairsPath.FindShortestPath(new Vector2(19, 0), new Vector2(0, 19), pathBlueProps);
-                    break;
-                default:
-                    break;
-            }
+            CalculatePathBlueTarget(pathTargetBlue);
         }
         if (pathRedProps.pathActive)
         {
-            switch (pathTargetRed)
-            {
-                case (int)Targets.enemyBase:
-                    IPathFinding enemyPath = new EnemyBasePath();
-                    enemyPath.FindShortestPath(new Vector2(0, 19), new Vector2(19, 0), pathRedProps);
-                    break;
-                case (int)Targets.health:
-                    IPathFinding healthPath = new HealthPath();
-                    // zero parameter stands for empty, goal is handled by the class implementation.
-                    healthPath.FindShortestPath(new Vector2(0,19), new Vector2(19, 0), pathRedProps);
-                    break;
-                case (int)Targets.armor:
-                    IPathFinding armorPath = new ArmorPath();
-                    // zero parameter stands for empty, goal is handled by the class implementation.
-                    armorPath.FindShortestPath(new Vector2(0, 19), new Vector2(19, 0), pathRedProps);
-                    break;
-                case (int)Targets.damage:
-                    IPathFinding damagePath = new DamagePath();
-                    // second parameter stands for empty, goal is handled by the class implementation.
-                    damagePath.FindShortestPath(new Vector2(0, 19), new Vector2(19, 0), pathRedProps);
-                    break;
-                case (int)Targets.stair:
-                    IPathFinding stairsPath = new StairsPath();
-                    // second parameter stands for empty, goal is handled by the class implementation.
-                    stairsPath.FindShortestPath(new Vector2(0, 19), new Vector2(19, 0), pathRedProps);
-                    break;
-                default:
-                    break;
-            }
+            CalculatePathRedTarget(pathTargetRed);
         }
     }
 
@@ -171,16 +121,16 @@ public class PathManager : MonoBehaviour
         return false;
     }
 
-    public void HighlightShortestPath(Vector2 start, Vector2 goal, PlayerPathProperties playerProps)
-    {
-        if (playerProps.highlightedTiles.Count > 0)
-        {
-            UnhighlightPath(playerProps);
-        }
-        playerProps.highlightedTiles = PathUtils.BFSGetShortestPath(tileMapMain.GetTileWithIndex((int)start.x, (int)start.y),
-            tileMapMain.GetTileWithIndex((int)goal.x, (int)goal.y), tileMapMain);
-        HighlightPath(playerProps);
-    }
+    //public void HighlightShortestPath(Vector2 start, Vector2 goal, PlayerPathProperties playerProps)
+    //{
+    //    if (playerProps.highlightedTiles.Count > 0)
+    //    {
+    //        UnhighlightPath(playerProps);
+    //    }
+    //    playerProps.highlightedTiles = PathUtils.BFSGetShortestPath(tileMapMain.GetTileWithIndex((int)start.x, (int)start.y),
+    //        tileMapMain.GetTileWithIndex((int)goal.x, (int)goal.y), tileMapMain);
+    //    HighlightPath(playerProps);
+    //}
 
     public void HighlightPath(PlayerPathProperties playerProps)
     {
@@ -197,6 +147,68 @@ public class PathManager : MonoBehaviour
         foreach (var tile in tiles)
         {
             tile.Unhighlight();
+        }
+    }
+
+    public void CalculatePathBlueTarget(int targetBlue)
+    {
+        switch (targetBlue)
+        {
+            case (int)Targets.enemyBase:
+                IPathFinding enemyPath = new EnemyBasePath();
+                enemyPath.FindShortestPath(new Vector2(19, 0), new Vector2(0, 19), pathBlueProps);
+                break;
+            case (int)Targets.health:
+                IPathFinding healthPath = new HealthPath();
+                // second parameter stands for empty, goal is handled by the class implementation.
+                healthPath.FindShortestPath(new Vector2(19, 0), new Vector2(0, 19), pathBlueProps);
+                break;
+            case (int)Targets.armor:
+                IPathFinding armorPath = new ArmorPath();
+                // second parameter stands for empty, goal is handled by the class implementation.
+                armorPath.FindShortestPath(new Vector2(19, 0), new Vector2(0, 19), pathBlueProps);
+                break;
+            case (int)Targets.damage:
+                IPathFinding damagePath = new DamagePath();
+                // second parameter stands for empty, goal is handled by the class implementation.
+                damagePath.FindShortestPath(new Vector2(19, 0), new Vector2(0, 19), pathBlueProps);
+                break;
+            case (int)Targets.stair:
+                IPathFinding stairsPath = new StairsPath();
+                // second parameter stands for empty, goal is handled by the class implementation.
+                stairsPath.FindShortestPath(new Vector2(19, 0), new Vector2(0, 19), pathBlueProps);
+                break;
+        }
+    }
+
+    public void CalculatePathRedTarget(int targetRed)
+    {
+        switch (targetRed)
+        {
+            case (int)Targets.enemyBase:
+                IPathFinding enemyPath = new EnemyBasePath();
+                enemyPath.FindShortestPath(new Vector2(0, 19), new Vector2(19, 0), pathRedProps);
+                break;
+            case (int)Targets.health:
+                IPathFinding healthPath = new HealthPath();
+                // zero parameter stands for empty, goal is handled by the class implementation.
+                healthPath.FindShortestPath(new Vector2(0, 19), new Vector2(19, 0), pathRedProps);
+                break;
+            case (int)Targets.armor:
+                IPathFinding armorPath = new ArmorPath();
+                // zero parameter stands for empty, goal is handled by the class implementation.
+                armorPath.FindShortestPath(new Vector2(0, 19), new Vector2(19, 0), pathRedProps);
+                break;
+            case (int)Targets.damage:
+                IPathFinding damagePath = new DamagePath();
+                // second parameter stands for empty, goal is handled by the class implementation.
+                damagePath.FindShortestPath(new Vector2(0, 19), new Vector2(19, 0), pathRedProps);
+                break;
+            case (int)Targets.stair:
+                IPathFinding stairsPath = new StairsPath();
+                // second parameter stands for empty, goal is handled by the class implementation.
+                stairsPath.FindShortestPath(new Vector2(0, 19), new Vector2(19, 0), pathRedProps);
+                break;
         }
     }
 }

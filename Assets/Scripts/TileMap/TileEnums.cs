@@ -11,8 +11,8 @@
     {
         empty,
         healthPack,
-        damageBoost,
         armorVest,
+        damageBoost,
         stairs
     };
 }

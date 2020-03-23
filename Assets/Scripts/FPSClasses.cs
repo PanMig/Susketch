@@ -16,15 +16,30 @@ public class FPSClasses : MonoBehaviour
 
     public void Awake()
     {
-        matchups.Add( new CharacterParams[2] { sniperParams, scoutParams });
-        //matchups.Add( new CharacterParams[2] { sniperParams, soldierParams });
-        matchups.Add( new CharacterParams[2] { sniperParams, heavyParams });
-        matchups.Add( new CharacterParams[2] { sniperParams, demoManParams });
-        matchups.Add( new CharacterParams[2] { scoutParams, soldierParams });
-        matchups.Add( new CharacterParams[2] { scoutParams, heavyParams });
-        matchups.Add( new CharacterParams[2] { scoutParams, demoManParams });
-        matchups.Add( new CharacterParams[2] { soldierParams, heavyParams });
-        matchups.Add( new CharacterParams[2] { soldierParams, demoManParams });
-        matchups.Add( new CharacterParams[2] { heavyParams, demoManParams });
+        //scout
+        matchups.Add(new CharacterParams[2] { scoutParams, sniperParams });
+        matchups.Add(new CharacterParams[2] { scoutParams, soldierParams });
+        matchups.Add(new CharacterParams[2] { scoutParams, heavyParams });
+        matchups.Add(new CharacterParams[2] { scoutParams, demoManParams });
+        //sniper
+        matchups.Add(new CharacterParams[2] {sniperParams, scoutParams });
+        //matchups.Add(new CharacterParams[2] {sniperParams, soldierParams });
+        matchups.Add(new CharacterParams[2] {sniperParams, heavyParams });
+        matchups.Add(new CharacterParams[2] {sniperParams, demoManParams});
+        //heavy
+        matchups.Add(new CharacterParams[2] { heavyParams, scoutParams });
+        matchups.Add(new CharacterParams[2] { heavyParams, soldierParams });
+        matchups.Add(new CharacterParams[2] { heavyParams, sniperParams });
+        matchups.Add(new CharacterParams[2] { heavyParams, demoManParams });
+        //soldier
+        matchups.Add(new CharacterParams[2] { soldierParams, scoutParams });
+        //matchups.Add(new CharacterParams[2] { soldierParams, sniperParams });
+        matchups.Add(new CharacterParams[2] { soldierParams, demoManParams });
+        matchups.Add( new CharacterParams[2] {soldierParams, heavyParams });
+        //demolition man
+        matchups.Add(new CharacterParams[2] { demoManParams, scoutParams });
+        matchups.Add(new CharacterParams[2] { demoManParams, sniperParams });
+        matchups.Add(new CharacterParams[2] { demoManParams, soldierParams });
+        matchups.Add(new CharacterParams[2] { demoManParams, heavyParams });
     }
 }

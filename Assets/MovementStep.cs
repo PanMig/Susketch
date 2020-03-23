@@ -10,13 +10,13 @@ public class MovementStep : MonoBehaviour
 
     private void OnEnable()
     {
-        EventManagerUI.onPlayableMap += SetText;
+        //EventManagerUI.onPlayableMap += SetText;
         EventManagerUI.onTileMapEdit += SetText;
     }
 
     private void OnDisable()
     {
-        EventManagerUI.onPlayableMap -= SetText;
+        //EventManagerUI.onPlayableMap -= SetText;
         EventManagerUI.onTileMapEdit -= SetText;
     }
 
@@ -27,6 +27,7 @@ public class MovementStep : MonoBehaviour
 
     public void SetText()
     {
+        PathManager.Instance.UpdateMovementSteps();
         if (team == 0)
         {
             textNumber.text = PathManager.Instance.pathRedProps.movementSteps.ToString();
