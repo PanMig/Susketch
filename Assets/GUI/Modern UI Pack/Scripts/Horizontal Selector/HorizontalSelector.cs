@@ -9,6 +9,12 @@ namespace Michsky.UI.ModernUIPack
     public class HorizontalSelector : MonoBehaviour
     {
         private TextMeshProUGUI label;
+
+        public TextMeshProUGUI Label
+        {
+            get => label;
+            set => label = value;
+        }
         private TextMeshProUGUI labeHelper;
         private Animator selectorAnimator;
         string newItemTitle;

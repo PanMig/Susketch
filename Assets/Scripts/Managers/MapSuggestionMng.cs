@@ -79,11 +79,9 @@ public class MapSuggestionMng : MonoBehaviour
     public static async Task<List<KeyValuePair<TileMap, float>>> SpawnPickupsAsynchronous(TileMap tilemapMain)
     {
 
-        Debug.Log("Spawn Pickups started");
         pickUpsTaskBusy = true;
         onPickUpsGenerated?.Invoke(false);
         var maps = await SpawnBalancedPickUps(tilemapMain);
-        Debug.Log("Spawn Pickups ended");
         onPickUpsGenerated?.Invoke(true);
         pickUpsTaskBusy = false;
         return maps;

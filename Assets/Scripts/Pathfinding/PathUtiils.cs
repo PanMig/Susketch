@@ -122,6 +122,56 @@ public static class PathUtils
         return neighbours;
     }
 
+    public static List<Tile> GetNeighboursToArray(Tile tile, TileMap tileMap)
+    {
+        List<Tile> neighbours = new List<Tile>();
+
+        if (tile.X + 1 >= 0 && tile.X + 1 < 20 && tile.Y >= 0 & tile.Y < 20)
+        {
+            Tile temp = tileMap.GetTileWithIndex(tile.X + 1, tile.Y);
+            AddNeighbour(tile, neighbours, temp);
+        }
+        if (tile.X - 1 >= 0 && tile.X - 1 < 20 && tile.Y >= 0 & tile.Y < 20)
+        {
+            Tile temp = tileMap.GetTileWithIndex(tile.X - 1, tile.Y);
+            AddNeighbour(tile, neighbours, temp);
+        }
+        if (tile.X >= 0 && tile.X < 20 && tile.Y + 1 >= 0 & tile.Y + 1 < 20)
+        {
+            Tile temp = tileMap.GetTileWithIndex(tile.X, tile.Y + 1);
+            AddNeighbour(tile, neighbours, temp);
+        }
+        if (tile.X >= 0 && tile.X < 20 && tile.Y - 1 >= 0 & tile.Y - 1 < 20)
+        {
+            Tile temp = tileMap.GetTileWithIndex(tile.X, tile.Y - 1);
+            AddNeighbour(tile, neighbours, temp);
+        }
+
+        // extra four dimensions
+        //if (tile.X + 1 >= 0 && tile.X + 1 < 20 && tile.Y + 1 >= 0 & tile.Y + 1 < 20)
+        //{
+        //    Tile temp = tileMap.GetTileWithIndex(tile.X + 1, tile.Y + 1);
+        //    AddNeighbour(tile, neighbours, temp);
+        //}
+        //if (tile.X + 1 >= 0 && tile.X + 1 < 20 && tile.Y - 1 >= 0 & tile.Y - 1 < 20)
+        //{
+        //    Tile temp = tileMap.GetTileWithIndex(tile.X + 1, tile.Y - 1);
+        //    AddNeighbour(tile, neighbours, temp);
+        //}
+        //if (tile.X - 1 >= 0 && tile.X - 1 < 20 && tile.Y + 1 >= 0 & tile.Y + 1 < 20)
+        //{
+        //    Tile temp = tileMap.GetTileWithIndex(tile.X - 1, tile.Y + 1);
+        //    AddNeighbour(tile, neighbours, temp);
+        //}
+        //if (tile.X - 1 >= 0 && tile.X - 1 < 20 && tile.Y - 1 >= 0 & tile.Y - 1 < 20)
+        //{
+        //    Tile temp = tileMap.GetTileWithIndex(tile.X - 1, tile.Y - 1);
+        //    AddNeighbour(tile, neighbours, temp);
+        //}
+
+        return neighbours;
+    }
+
     private static void AddNeighbour(Tile tile, List<Tile> neighbours, Tile temp)
     {
         if (temp.envTileID != TileEnums.EnviromentTiles.level_1 && temp.envTileID != TileEnums.EnviromentTiles.level_2 ||

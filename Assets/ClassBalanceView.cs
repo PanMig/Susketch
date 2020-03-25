@@ -58,10 +58,10 @@ public class ClassBalanceView : MonoBehaviour
 
     public void ApplySuggestedClasses()
     {
-        CharacterClassMng.Instance.BlueClass = balancedClasses[1];
-        CharacterClassMng.Instance.RedClass = balancedClasses[0];
-        var blueIndex = CharacterClassMng.Instance.GetClassIndex(balancedClasses[1].className);
-        var redIndex = CharacterClassMng.Instance.GetClassIndex(balancedClasses[0].className);
+        CharacterClassMng.Instance.BlueClass = balancedClasses[0];
+        CharacterClassMng.Instance.RedClass = balancedClasses[1];
+        var blueIndex = CharacterClassMng.Instance.GetClassIndex(balancedClasses[0].className);
+        var redIndex = CharacterClassMng.Instance.GetClassIndex(balancedClasses[1].className);
         CharacterClassMng.Instance.SetClassSprites(blueIndex, redIndex);
         CharacterClassMng.Instance.SetClassSpriteSelectors(blueIndex, redIndex);
         _btn.SetActive(false);

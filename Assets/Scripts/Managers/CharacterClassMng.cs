@@ -106,7 +106,11 @@ public class CharacterClassMng : MonoBehaviour
 
     public void SetClassSpriteSelectors(int blue, int red)
     {
+        blueSelector.Label.text = blueSelector.itemList[blue].itemTitle;
+        blueSelector.defaultIndex = blue;
         blueSelector.index = blue;
+        redSelector.Label.text = redSelector.itemList[red].itemTitle;
+        redSelector.defaultIndex = red;
         redSelector.index = red;
     }
 
