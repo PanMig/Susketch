@@ -121,23 +121,32 @@ public class PathManager : MonoBehaviour
         return false;
     }
 
-    //public void HighlightShortestPath(Vector2 start, Vector2 goal, PlayerPathProperties playerProps)
-    //{
-    //    if (playerProps.highlightedTiles.Count > 0)
-    //    {
-    //        UnhighlightPath(playerProps);
-    //    }
-    //    playerProps.highlightedTiles = PathUtils.BFSGetShortestPath(tileMapMain.GetTileWithIndex((int)start.x, (int)start.y),
-    //        tileMapMain.GetTileWithIndex((int)goal.x, (int)goal.y), tileMapMain);
-    //    HighlightPath(playerProps);
-    //}
-
     public void HighlightPath(PlayerPathProperties playerProps)
     {
         var tiles = playerProps.highlightedTiles;
-        foreach (var tile in tiles)
+        int direction = 0;
+        for (int i = 0; i < tiles.Count-1; i++)
         {
-            tile.Highlight(playerProps.team);
+            /*find in what direction the next tile is on(e.g to the right).
+             *Convention followed clockwise -> 0:top, 1:right, 2:down, 3:left.
+             */
+            if (tiles[i + 1].Y > tiles[i].Y)
+            {
+                direction = 1;
+            }
+            else if (tiles[i + 1].Y < tiles[i].Y)
+            {
+                direction = 3;
+            }
+            else if (tiles[i + 1].X > tiles[i].X)
+            {
+                direction = 0;
+            }
+            else
+            {
+                direction = 2;
+            }
+            tiles[i].Highlight(playerProps.team, direction);
         }
     }
 

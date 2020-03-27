@@ -6,7 +6,53 @@ namespace TileMapLogic
 {
     public partial class TileMap
     {
-        
+        private TileEnums.EnviromentTiles firstFloor = TileEnums.EnviromentTiles.level_1;
+
+        public void FormatTileOrientation(int x, int y, HashSet<Tile> orientedTiles)
+        {
+            Tile tile = GetTileWithIndex(x, y);
+            if (tile.envTileID != firstFloor || orientedTiles.Contains(tile))
+            {
+                return;
+            }
+
+            var neighbours = PathUtils.GetNeighboursToArray(tile, this);
+            var orientation = new char[3,3];
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if(i == 1 && j == 1)
+                    {
+                        orientation[i, j] = 'X';
+                        continue;
+                    }
+
+                    if (neighbours[i, j] == null)
+                    {
+                        orientation[i, j] = 'I';
+                        continue;
+                    }
+                    if (neighbours[i, j].envTileID == firstFloor)
+                    {
+                        orientation[i, j] = 'P';
+                    }
+                    else
+                    {
+                        orientation[i, j] = 'I';
+                    }
+
+                }
+            }
+
+            orientation[0, 0] = 'A';
+            orientation[0, 2] = 'A';
+            orientation[2, 2] = 'A';
+            orientation[2, 0] = 'A';
+
+            var tileSprite = TileOrientations.ruleTiles[orientation];
+            tile.FormatTileSprite(this, tileSprite);
+        }
 
 
 
@@ -152,5 +198,5 @@ namespace TileMapLogic
 
     }
 
- 
+
 }

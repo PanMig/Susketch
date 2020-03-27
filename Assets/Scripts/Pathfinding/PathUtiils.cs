@@ -122,52 +122,58 @@ public static class PathUtils
         return neighbours;
     }
 
-    public static List<Tile> GetNeighboursToArray(Tile tile, TileMap tileMap)
+    public static Tile[,] GetNeighboursToArray(Tile tile, TileMap tileMap)
     {
-        List<Tile> neighbours = new List<Tile>();
+        Tile[,] neighbours = new Tile[3,3];
 
+        //down
         if (tile.X + 1 >= 0 && tile.X + 1 < 20 && tile.Y >= 0 & tile.Y < 20)
         {
             Tile temp = tileMap.GetTileWithIndex(tile.X + 1, tile.Y);
-            AddNeighbour(tile, neighbours, temp);
+            neighbours[2, 1] = temp;
         }
+        //up
         if (tile.X - 1 >= 0 && tile.X - 1 < 20 && tile.Y >= 0 & tile.Y < 20)
         {
             Tile temp = tileMap.GetTileWithIndex(tile.X - 1, tile.Y);
-            AddNeighbour(tile, neighbours, temp);
+            neighbours[0, 1] = temp;
         }
+        //right
         if (tile.X >= 0 && tile.X < 20 && tile.Y + 1 >= 0 & tile.Y + 1 < 20)
         {
             Tile temp = tileMap.GetTileWithIndex(tile.X, tile.Y + 1);
-            AddNeighbour(tile, neighbours, temp);
+            neighbours[1, 2] = temp;
         }
+        //left
         if (tile.X >= 0 && tile.X < 20 && tile.Y - 1 >= 0 & tile.Y - 1 < 20)
         {
             Tile temp = tileMap.GetTileWithIndex(tile.X, tile.Y - 1);
-            AddNeighbour(tile, neighbours, temp);
+            neighbours[1, 0] = temp;
         }
-
-        // extra four dimensions
-        //if (tile.X + 1 >= 0 && tile.X + 1 < 20 && tile.Y + 1 >= 0 & tile.Y + 1 < 20)
-        //{
-        //    Tile temp = tileMap.GetTileWithIndex(tile.X + 1, tile.Y + 1);
-        //    AddNeighbour(tile, neighbours, temp);
-        //}
-        //if (tile.X + 1 >= 0 && tile.X + 1 < 20 && tile.Y - 1 >= 0 & tile.Y - 1 < 20)
-        //{
-        //    Tile temp = tileMap.GetTileWithIndex(tile.X + 1, tile.Y - 1);
-        //    AddNeighbour(tile, neighbours, temp);
-        //}
-        //if (tile.X - 1 >= 0 && tile.X - 1 < 20 && tile.Y + 1 >= 0 & tile.Y + 1 < 20)
-        //{
-        //    Tile temp = tileMap.GetTileWithIndex(tile.X - 1, tile.Y + 1);
-        //    AddNeighbour(tile, neighbours, temp);
-        //}
-        //if (tile.X - 1 >= 0 && tile.X - 1 < 20 && tile.Y - 1 >= 0 & tile.Y - 1 < 20)
-        //{
-        //    Tile temp = tileMap.GetTileWithIndex(tile.X - 1, tile.Y - 1);
-        //    AddNeighbour(tile, neighbours, temp);
-        //}
+        // diagonal down right
+        if (tile.X + 1 >= 0 && tile.X + 1 < 20 && tile.Y + 1 >= 0 & tile.Y + 1 < 20)
+        {
+            Tile temp = tileMap.GetTileWithIndex(tile.X + 1, tile.Y + 1);
+            neighbours[2, 2] = temp;
+        }
+        // diagonal down left
+        if (tile.X + 1 >= 0 && tile.X + 1 < 20 && tile.Y - 1 >= 0 & tile.Y - 1 < 20)
+        {
+            Tile temp = tileMap.GetTileWithIndex(tile.X + 1, tile.Y - 1);
+            neighbours[2, 0] = temp;
+        }
+        // diagonal top right
+        if (tile.X - 1 >= 0 && tile.X - 1 < 20 && tile.Y + 1 >= 0 & tile.Y + 1 < 20)
+        {
+            Tile temp = tileMap.GetTileWithIndex(tile.X - 1, tile.Y + 1);
+            neighbours[0, 2] = temp;
+        }
+        // diagonal top left
+        if (tile.X - 1 >= 0 && tile.X - 1 < 20 && tile.Y - 1 >= 0 & tile.Y - 1 < 20)
+        {
+            Tile temp = tileMap.GetTileWithIndex(tile.X - 1, tile.Y - 1);
+            neighbours[0, 0] = temp;
+        }
 
         return neighbours;
     }

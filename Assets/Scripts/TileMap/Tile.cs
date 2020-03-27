@@ -94,17 +94,21 @@ public class Tile
         image.color = color;
     }
 
-    public void Highlight(int team)
+    public void Highlight(int team, int direction)
     {
+        if (this.decID == TileEnums.Decorations.healthPack || this.decID == TileEnums.Decorations.armorVest ||
+            this.decID == TileEnums.Decorations.damageBoost) return;
         if(team == 0)
         {
             GameObject decorationObj = GameObject.Instantiate(Brush.Instance.highlightPrefabRed, gameObj.transform);
-            ResizeDecoration(decorationObj, 1.0f);
+            ResizeDecoration(decorationObj, 0.5f);
+            SetDirection(decorationObj, direction);
         }
         else
         {
             GameObject decorationObj = GameObject.Instantiate(Brush.Instance.highlightPrefabBlue, gameObj.transform);
-            ResizeDecoration(decorationObj, 1.0f);
+            ResizeDecoration(decorationObj, 0.5f);
+            SetDirection(decorationObj, direction);
         }
     }
 
@@ -160,4 +164,28 @@ public class Tile
         decoration.GetComponent<RectTransform>().sizeDelta =
             new Vector2(gameObj.GetComponent<RectTransform>().sizeDelta.x * removePercent, gameObj.GetComponent<RectTransform>().sizeDelta.y * removePercent);
     }
+
+    private void SetDirection(GameObject decoration, int direction)
+    {
+        var rect = decoration.GetComponent<RectTransform>();
+        switch (direction)
+        {
+            // Up
+            case 0:
+                
+                break;
+            // right
+            case 1:
+                rect.Rotate(Vector3.forward,90);
+                break;
+            //down
+            case 2:
+                rect.Rotate(Vector3.right, 180);
+                break;
+            case 3:
+                rect.Rotate(Vector3.forward, -90);
+                break;
+        }
+    }
+
 }
