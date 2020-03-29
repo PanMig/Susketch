@@ -249,10 +249,4 @@ public class AuthoringTool : MonoBehaviour
             onMapSuggestionsReady?.Invoke(generatedMaps);
         }
     }
-
-    public void FindClassBalance()
-    {
-        //redClass = balanced_classes[0];
-        //blueClass = balanced_classes[1];
-    }
 }

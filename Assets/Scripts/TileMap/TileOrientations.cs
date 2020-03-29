@@ -18,9 +18,25 @@ public class TileOrientations : SerializedMonoBehaviour
     private void Awake()
     {
         InitDictOfTileRules();
-
+        
         //add extra rules procedurally.
+        //foreach (var key in ruleTiles.Keys)
+        //{
+        //    var copyP = (char[,])key.Clone();
+        //    var copyI = (char[,])key.Clone();
 
+        //    for (int i = 0; i < 3; i++)
+        //    {
+        //        for (int j = 0; j < 3; j++)
+        //        {
+        //            if (key[i, j] == 'A')
+        //            {
+        //                copyP[i, j] = 'P';
+        //            }
+        //            ruleTiles.Add(copyP, ruleTiles[key]);
+        //        }
+        //    }
+        //}
     }
 
     public void InitDictOfTileRules()
@@ -84,7 +100,7 @@ public class TileOrientations : SerializedMonoBehaviour
         char[,] bottom = new char[,]
         {
                     {'A', 'P', 'A'},
-                    {'C', 'X', 'C'},
+                    {'I', 'X', 'I'},
                     {'A', 'I', 'A'},
         };
         ruleTiles.Add(bottom, mainTiles[2, 1]);

@@ -60,10 +60,12 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        //HighlightHoveredTile(eventData);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        //UnHighlightHoveredTile();
     }
 
     private void UnHighlightHoveredTile()

@@ -159,7 +159,7 @@ public class Tile
     //    tileMap.SetTileMapTile(this);
     //}
 
-    private void ResizeDecoration(GameObject decoration, float removePercent)
+    public void ResizeDecoration(GameObject decoration, float removePercent)
     {
         decoration.GetComponent<RectTransform>().sizeDelta =
             new Vector2(gameObj.GetComponent<RectTransform>().sizeDelta.x * removePercent, gameObj.GetComponent<RectTransform>().sizeDelta.y * removePercent);
