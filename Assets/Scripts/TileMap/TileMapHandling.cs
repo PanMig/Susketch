@@ -27,13 +27,12 @@ namespace TileMapLogic
                         orientation[i, j] = 'X';
                         continue;
                     }
-
                     if (neighbours[i, j] == null)
                     {
                         orientation[i, j] = 'I';
                         continue;
                     }
-                    if (neighbours[i, j].envTileID == firstFloor)
+                    if (neighbours[i, j].envTileID == firstFloor || neighbours[i, j].decID == TileEnums.Decorations.stairs)
                     {
                         orientation[i, j] = 'P';
                     }
@@ -41,7 +40,6 @@ namespace TileMapLogic
                     {
                         orientation[i, j] = 'I';
                     }
-
                 }
             }
 
@@ -50,7 +48,8 @@ namespace TileMapLogic
             orientation[2, 2] = 'A';
             orientation[2, 0] = 'A';
 
-            var tileSprite = TileOrientations.ruleTiles[orientation];
+            TileOrientations.ruleTiles.TryGetValue(orientation, out var tileSprite);
+        
             tile.FormatTileSprite(this, tileSprite);
         }
 

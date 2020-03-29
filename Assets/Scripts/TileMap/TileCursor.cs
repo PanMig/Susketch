@@ -146,9 +146,12 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
             Tile tile = tileMapMain.GetTileWithIndex(index_row, index_col);
             int index = Brush.Instance.currTileBrush;
             tile.SetTheme(Brush.Instance.brushThemes[index]);
-            if (tile.envTileID == TileEnums.EnviromentTiles.level_1)
+            for (int i = 0; i < 20; i++)
             {
-                tileMapMain.FormatTileOrientation(tile.X, tile.Y, new HashSet<Tile>());
+                for (int j = 0; j < 20; j++)
+                {
+                    tileMapMain.FormatTileOrientation(tileMapMain.GetTileWithIndex(i,j).X, tileMapMain.GetTileWithIndex(i, j).Y, new HashSet<Tile>());
+                }
             }
             EventManagerUI.onTileMapEdit?.Invoke();
         }

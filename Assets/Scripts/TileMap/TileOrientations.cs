@@ -11,6 +11,9 @@ public class TileOrientations : SerializedMonoBehaviour
 
     [TableMatrix(HorizontalTitle = "Main tiles matrix", SquareCells = false, Transpose = true)]
     public Sprite[,] mainTiles = new Sprite[3, 3];
+    [TableMatrix(HorizontalTitle = "Main tiles matrix", SquareCells = false, Transpose = true)]
+    public Sprite[,] secondartTiles = new Sprite[3, 3];
+    [TableMatrix(HorizontalTitle = "Main tiles matrix", SquareCells = false, Transpose = true)]
 
     public static Dictionary<char[,], Sprite> ruleTiles = new Dictionary<char[,], Sprite>(new MyEqualityComparer());
 
@@ -18,7 +21,7 @@ public class TileOrientations : SerializedMonoBehaviour
     private void Awake()
     {
         InitDictOfTileRules();
-        
+
         //add extra rules procedurally.
         //foreach (var key in ruleTiles.Keys)
         //{
@@ -43,83 +46,115 @@ public class TileOrientations : SerializedMonoBehaviour
     {
         char[,] leftCornerBottom = new char[,]
         {
-                    {'A','P','A'},
-                    {'I','X','P'},
-                    {'A','I','A'}
+            {'A','P','A'},
+            {'I','X','P'},
+            {'A','I','A'}
         };
-        ruleTiles.Add(leftCornerBottom, mainTiles[2,0]);
+        ruleTiles.Add(leftCornerBottom, mainTiles[2, 0]);
 
         char[,] leftCornerTop = new char[,]
         {
-                    {'A', 'I', 'A'},
-                    {'I', 'X', 'P'},
-                    {'A', 'P', 'A'},
+            {'A', 'I', 'A'},
+            {'I', 'X', 'P'},
+            {'A', 'P', 'A'},
         };
-        ruleTiles.Add(leftCornerTop, mainTiles[0,0]);
+        ruleTiles.Add(leftCornerTop, mainTiles[0, 0]);
 
         char[,] rightCornerBottom = new char[,]
         {
-                    {'A', 'P', 'A'},
-                    {'P', 'X', 'I'},
-                    {'A', 'I', 'A'},
+            {'A', 'P', 'A'},
+            {'P', 'X', 'I'},
+            {'A', 'I', 'A'},
         };
-        ruleTiles.Add(rightCornerBottom, mainTiles[2,2]);
+        ruleTiles.Add(rightCornerBottom, mainTiles[2, 2]);
 
         char[,] rightCornerTop = new char[,]
         {
-                    {'A', 'I', 'A'},
-                    {'P', 'X', 'I'},
-                    {'A', 'P', 'A'},
+            {'A', 'I', 'A'},
+            {'P', 'X', 'I'},
+            {'A', 'P', 'A'},
         };
-        ruleTiles.Add(rightCornerTop, mainTiles[0,2]);
+        ruleTiles.Add(rightCornerTop, mainTiles[0, 2]);
 
         char[,] left = new char[,]
         {
-                    {'A', 'P', 'A'},
-                    {'I', 'X', 'P'},
-                    {'A', 'P', 'A'},
+            {'A', 'P', 'A'},
+            {'I', 'X', 'P'},
+            {'A', 'P', 'A'},
         };
-        ruleTiles.Add(left, mainTiles[1,0]);
+        ruleTiles.Add(left, mainTiles[1, 0]);
+
+        char[,] left_full = new char[,]
+        {
+            {'A', 'I', 'A'},
+            {'I', 'X', 'P'},
+            {'A', 'I', 'A'},
+        };
+        ruleTiles.Add(left_full, secondartTiles[1, 0]);
 
         char[,] right = new char[,]
         {
-                    {'A', 'P', 'A'},
-                    {'P', 'X', 'I'},
-                    {'A', 'P', 'A'},
+            {'A', 'P', 'A'},
+            {'P', 'X', 'I'},
+            {'A', 'P', 'A'},
         };
         ruleTiles.Add(right, mainTiles[1, 2]);
 
+        char[,] right_full = new char[,]
+        {
+            {'A', 'I', 'A'},
+            {'P', 'X', 'I'},
+            {'A', 'I', 'A'},
+        };
+        ruleTiles.Add(right_full, secondartTiles[1, 2]);
+
         char[,] top = new char[,]
         {
-                    {'A', 'I', 'A'},
-                    {'I', 'X', 'I'},
-                    {'A', 'P', 'A'},
+            {'A', 'I', 'A'},
+            {'P', 'X', 'P'},
+            {'A', 'P', 'A'},
         };
         ruleTiles.Add(top, mainTiles[0, 1]);
 
+        char[,] top_full = new char[,]
+        {
+            {'A', 'I', 'A'},
+            {'I', 'X', 'I'},
+            {'A', 'P', 'A'},
+        };
+        ruleTiles.Add(top_full, secondartTiles[0, 1]);
+
         char[,] bottom = new char[,]
         {
-                    {'A', 'P', 'A'},
-                    {'I', 'X', 'I'},
-                    {'A', 'I', 'A'},
+            {'A', 'P', 'A'},
+            {'P', 'X', 'P'},
+            {'A', 'I', 'A'},
         };
         ruleTiles.Add(bottom, mainTiles[2, 1]);
 
-        //char[,] rightLeft = new char[,]
-        //{
-        //            {'A', 'P', 'A'},
-        //            {'I', 'X', 'I'},
-        //            {'A', 'P', 'A'},
-        //};
-        //ruleTiles.Add(rightLeft, mainTiles[0,0]);
+        char[,] bottom_full = new char[,]
+        {
+            {'A', 'P', 'A'},
+            {'I', 'X', 'I'},
+            {'A', 'I', 'A'},
+        };
+        ruleTiles.Add(bottom_full, secondartTiles[2, 1]);
 
-        //char[,] topBottom = new char[,]
-        //{
-        //            {'A', 'I', 'A'},
-        //            {'P', 'X', 'P'},
-        //            {'A', 'I', 'A'},
-        //};
-        //ruleTiles.Add(topBottom, mainTiles[0, 0]);
+        char[,] rightLeft = new char[,]
+        {
+            {'A', 'P', 'A'},
+            {'I', 'X', 'I'},
+            {'A', 'P', 'A'},
+        };
+        ruleTiles.Add(rightLeft, secondartTiles[2, 2]);
+
+        char[,] topBottom = new char[,]
+        {
+            {'A', 'I', 'A'},
+            {'P', 'X', 'P'},
+            {'A', 'I', 'A'},
+        };
+        ruleTiles.Add(topBottom, secondartTiles[0, 0]);
 
         char[,] empty = new char[,]
         {
@@ -135,7 +170,7 @@ public class TileOrientations : SerializedMonoBehaviour
             {'I', 'X', 'I'},
             {'A', 'I', 'A'},
         };
-        ruleTiles.Add(full, mainTiles[1, 1]);
+        ruleTiles.Add(full, secondartTiles[2, 0]);
     }
 
 
@@ -354,12 +389,15 @@ public class MyEqualityComparer : IEqualityComparer<char[,]>
         {
             for (int j = 0; j < 3; j++)
             {
-                if (x[i,j] != y[i,j])
+                if (x[i, j] == 'A' || y[i, j] == 'A')
+                {
+                    continue;
+                }
+                if (x[i, j] != y[i, j])
                 {
                     return false;
                 }
             }
-            
         }
         return true;
     }
