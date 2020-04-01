@@ -125,6 +125,13 @@ public class AuthoringTool : MonoBehaviour
         int index = Random.Range(1, 10);
         randomMap.ReadCSVToTileMap("Map Files/mapFile" + index);
         tileMapMain.SetTileMap(randomMap.GetTileMap());
+        for (int i = 0; i < 20; i++)
+        {
+            for (int j = 0; j < 20; j++)
+            {
+                tileMapMain.FormatTileOrientation(i,j);
+            }
+        }
         randomMap = null;
         Destroy(tempView);
         CheckTileMapListener();

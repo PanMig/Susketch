@@ -52,6 +52,13 @@ public class MiniMap : MonoBehaviour
         _map.Render();
         var percent = balancedMaps[_index].Value;
         SetMiniMapView(percent);
+        for (int i = 0; i < 20; i++)
+        {
+            for (int j = 0; j < 20; j++)
+            {
+                _map.FormatTileOrientation(i, j);
+            }
+        }
         Destroy(MapSuggestionMng.tempView);
     }
 

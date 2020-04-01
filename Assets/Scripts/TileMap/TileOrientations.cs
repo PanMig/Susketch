@@ -164,6 +164,14 @@ public class TileOrientations : SerializedMonoBehaviour
         };
         ruleTiles.Add(empty, mainTiles[1, 1]);
 
+        char[,] emptyBottomRight = new char[,]
+        {
+            {'A', 'P', 'A'},
+            {'P', 'X', 'P'},
+            {'A', 'P', 'I'},
+        };
+        ruleTiles.Add(emptyBottomRight, secondartTiles[0, 2]);
+
         char[,] full = new char[,]
         {
             {'A', 'I', 'A'},
@@ -402,6 +410,24 @@ public class MyEqualityComparer : IEqualityComparer<char[,]>
         return true;
     }
 
+    //public int GetHashCode(char[,] obj)
+    //{
+    //    int hash = 17;
+    //    string hashS = "";
+    //    for (int i = 0; i < 3; i++)
+    //    {
+    //        for (int j = 0; j < 3; j++)
+    //        {
+    //            if (obj[i, j] != 'A')
+    //            {
+    //                hash = 31 * obj[i, j];
+    //            }
+    //        }
+    //    }
+    //    Debug.Log("Hash code in dict:" + hash);
+    //    return hash;
+    //}
+
     public int GetHashCode(char[,] obj)
     {
         int hash = 17;
@@ -409,9 +435,13 @@ public class MyEqualityComparer : IEqualityComparer<char[,]>
         {
             for (int j = 0; j < 3; j++)
             {
-                hash = hash * 31 + obj[i, j];
+                if (obj[i, j] != 'A')
+                {
+                    hash = hash * 31 + obj[i, j];
+                }
             }
         }
+        Debug.Log("Hash code in dict:" + hash);
         return hash;
     }
 }

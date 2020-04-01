@@ -95,7 +95,7 @@ public class MapSuggestionMng : MonoBehaviour
         Dictionary<TileMap, float> mapsDict = new Dictionary<TileMap, float>();
 
         // randomly select a region to spawn a pickups
-        for (int m = 0; m < 12; m++)
+        for (int m = 0; m < 10; m++)
         {
             // this will erase all previous decorations on the main map.
             map = new TileMap();

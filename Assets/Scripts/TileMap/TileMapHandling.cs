@@ -4,14 +4,29 @@ using UnityEngine;
 
 namespace TileMapLogic
 {
+    public struct OrientationMatrix
+    {
+        private char[,] _orientation;
+
+        public OrientationMatrix(char[,] orientation)
+        {
+            this._orientation = orientation;
+        }
+
+        public char[,] GetOrientation()
+        {
+            return _orientation;
+        }
+    }
+
     public partial class TileMap
     {
         private TileEnums.EnviromentTiles firstFloor = TileEnums.EnviromentTiles.level_1;
 
-        public void FormatTileOrientation(int x, int y, HashSet<Tile> orientedTiles)
+        public void FormatTileOrientation(int x, int y)
         {
             Tile tile = GetTileWithIndex(x, y);
-            if (tile.envTileID != firstFloor || orientedTiles.Contains(tile))
+            if (tile.envTileID != firstFloor)
             {
                 return;
             }
@@ -48,7 +63,8 @@ namespace TileMapLogic
             orientation[2, 2] = 'A';
             orientation[2, 0] = 'A';
 
-            TileOrientations.ruleTiles.TryGetValue(orientation, out var tileSprite);
+            var tileMatrix = new OrientationMatrix(orientation);
+            TileOrientations.ruleTiles.TryGetValue(tileMatrix.GetOrientation(), out var tileSprite);
         
             tile.FormatTileSprite(this, tileSprite);
         }

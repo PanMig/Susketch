@@ -11258,7 +11258,7 @@ Transform:
   m_Children:
   - {fileID: 281606157}
   m_Father: {fileID: 2018068463}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &778456727
 GameObject:
@@ -11455,6 +11455,159 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 778456727}
   m_CullTransparentMesh: 0
+--- !u!1 &780388937
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 780388938}
+  - component: {fileID: 780388939}
+  m_Layer: 0
+  m_Name: TileOrientations (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &780388938
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 780388937}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2018068463}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &780388939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 780388937}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fce65ab701ccb24ea05666aaf3a9974, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 21300000, guid: 5a042234e8026c6498dc0c997ba5676a, type: 3}
+    - {fileID: 21300000, guid: 47dd4d8e1a8c5774e8f7a033996d8113, type: 3}
+    - {fileID: 21300000, guid: cb7f9e6621485c14986acb555f62b44e, type: 3}
+    - {fileID: 21300000, guid: e2aa7a84047c65345b3a290941d7cdee, type: 3}
+    - {fileID: 21300000, guid: 5395f30d58851c647ae3098b3bbaee7d, type: 3}
+    - {fileID: 21300000, guid: 7f53f88ccae4deb4ca696d274dc1a0c2, type: 3}
+    - {fileID: 21300000, guid: 5078b43a40a26ad48a41165346b4f85d, type: 3}
+    - {fileID: 21300000, guid: f7790aa237f2fd94d9137b7cc660b893, type: 3}
+    - {fileID: 21300000, guid: b557e0ae8f917914495ec888dc13861b, type: 3}
+    - {fileID: 21300000, guid: b9a57dac12786dd4f88bfb2c31a71d57, type: 3}
+    - {fileID: 21300000, guid: d85eca98fae065f49bcbce403335e329, type: 3}
+    - {fileID: 21300000, guid: 4b6930033bb1a6d419498086e5cb27a3, type: 3}
+    - {fileID: 21300000, guid: c9de1e7f7da17fc42a1b8f8244eb00a5, type: 3}
+    - {fileID: 21300000, guid: 56ba32ffa72b516428a86b04de734299, type: 3}
+    - {fileID: 21300000, guid: 7f8cc6d85ef12be4e84bf19b5a47e877, type: 3}
+    - {fileID: 21300000, guid: 6249c5d23b224744fa6e5e8e2be6897a, type: 3}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: mainTiles
+      Entry: 7
+      Data: 0|UnityEngine.Sprite[,], UnityEngine.CoreModule
+    - Name: 
+      Entry: 12
+      Data: 9
+    - Name: ranks
+      Entry: 1
+      Data: 3|3
+    - Name: 
+      Entry: 10
+      Data: 0
+    - Name: 
+      Entry: 10
+      Data: 1
+    - Name: 
+      Entry: 10
+      Data: 2
+    - Name: 
+      Entry: 10
+      Data: 3
+    - Name: 
+      Entry: 10
+      Data: 4
+    - Name: 
+      Entry: 10
+      Data: 5
+    - Name: 
+      Entry: 10
+      Data: 6
+    - Name: 
+      Entry: 10
+      Data: 7
+    - Name: 
+      Entry: 10
+      Data: 8
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: secondartTiles
+      Entry: 7
+      Data: 1|UnityEngine.Sprite[,], UnityEngine.CoreModule
+    - Name: 
+      Entry: 12
+      Data: 9
+    - Name: ranks
+      Entry: 1
+      Data: 3|3
+    - Name: 
+      Entry: 10
+      Data: 9
+    - Name: 
+      Entry: 10
+      Data: 10
+    - Name: 
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 10
+      Data: 11
+    - Name: 
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 10
+      Data: 12
+    - Name: 
+      Entry: 10
+      Data: 13
+    - Name: 
+      Entry: 10
+      Data: 14
+    - Name: 
+      Entry: 10
+      Data: 15
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+  TopOrientations: []
 --- !u!1 &829634919
 GameObject:
   m_ObjectHideFlags: 0
@@ -12025,7 +12178,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2018068463}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &865508116
 MonoBehaviour:
@@ -13713,7 +13866,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: c8180d2f249767d4590c68a683950fb4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 46768be55567d6f459ba6cd60f36b0e3, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -22621,7 +22774,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2018068463}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1529403101
 MonoBehaviour:
@@ -26614,7 +26767,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2018068463}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1818323843
 MonoBehaviour:
@@ -29661,6 +29814,7 @@ MonoBehaviour:
     - {fileID: 21300000, guid: a480a656d1d17114ea5a148c4c8c5d02, type: 3}
     - {fileID: 21300000, guid: b9a57dac12786dd4f88bfb2c31a71d57, type: 3}
     - {fileID: 21300000, guid: d85eca98fae065f49bcbce403335e329, type: 3}
+    - {fileID: 21300000, guid: 282a9ba19a39f434ba1c6449782bb3b3, type: 3}
     - {fileID: 21300000, guid: 4b6930033bb1a6d419498086e5cb27a3, type: 3}
     - {fileID: 21300000, guid: c9de1e7f7da17fc42a1b8f8244eb00a5, type: 3}
     - {fileID: 21300000, guid: 56ba32ffa72b516428a86b04de734299, type: 3}
@@ -29729,17 +29883,14 @@ MonoBehaviour:
       Entry: 10
       Data: 10
     - Name: 
-      Entry: 6
-      Data: 
-    - Name: 
       Entry: 10
       Data: 11
     - Name: 
-      Entry: 6
-      Data: 
-    - Name: 
       Entry: 10
       Data: 12
+    - Name: 
+      Entry: 6
+      Data: 
     - Name: 
       Entry: 10
       Data: 13
@@ -29749,6 +29900,9 @@ MonoBehaviour:
     - Name: 
       Entry: 10
       Data: 15
+    - Name: 
+      Entry: 10
+      Data: 16
     - Name: 
       Entry: 13
       Data: 
@@ -30345,6 +30499,7 @@ Transform:
   m_Children:
   - {fileID: 2078029693}
   - {fileID: 1939885515}
+  - {fileID: 780388938}
   - {fileID: 865508115}
   - {fileID: 1818323842}
   - {fileID: 1529403100}
@@ -30659,7 +30814,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5ce262a38be1713448633db06c5360f5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5395f30d58851c647ae3098b3bbaee7d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -30697,8 +30852,8 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 50, y: 48}
-  m_Spacing: {x: 2, y: 2}
+  m_CellSize: {x: 52, y: 50}
+  m_Spacing: {x: 0, y: 0}
   m_Constraint: 2
   m_ConstraintCount: 20
 --- !u!114 &2036727526
@@ -31443,7 +31598,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 17ea9b9c0937fed4a94de760ebf80fbb, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 56ba32ffa72b516428a86b04de734299, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -33362,7 +33517,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 17ea9b9c0937fed4a94de760ebf80fbb, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 56ba32ffa72b516428a86b04de734299, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -33513,7 +33668,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: c8180d2f249767d4590c68a683950fb4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 46768be55567d6f459ba6cd60f36b0e3, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
