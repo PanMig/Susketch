@@ -58,14 +58,16 @@ namespace TileMapLogic
                 }
             }
 
-            orientation[0, 0] = 'A';
-            orientation[0, 2] = 'A';
-            orientation[2, 2] = 'A';
-            orientation[2, 0] = 'A';
+            //orientation[0, 0] = 'A';
+            //orientation[0, 2] = 'A';
+            //orientation[2, 2] = 'A';
+            //orientation[2, 0] = 'A';
 
-            var tileMatrix = new OrientationMatrix(orientation);
-            TileOrientations.ruleTiles.TryGetValue(tileMatrix.GetOrientation(), out var tileSprite);
-        
+            //var tileMatrix = new OrientationMatrix(orientation);
+            TileOrientations.ruleTiles.TryGetValue(orientation, out var spriteDict);
+            
+            spriteDict.TryGetValue(orientation, out var tileSprite);
+
             tile.FormatTileSprite(this, tileSprite);
         }
 
