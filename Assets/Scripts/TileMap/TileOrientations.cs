@@ -15,8 +15,12 @@ public class TileOrientations : SerializedMonoBehaviour
     [TableMatrix(HorizontalTitle = "Main tiles matrix", SquareCells = false, Transpose = true)]
     public Sprite[,] secondartTiles = new Sprite[3, 3];
 
-    [TableMatrix(HorizontalTitle = "Main tiles matrix", SquareCells = false, Transpose = true)]
     public Sprite[,] diagonal = new Sprite[4, 4];
+    public Sprite[] diagonalTop = new Sprite[4];
+    public Sprite[] diagonalBottom = new Sprite[4];
+    public Sprite[] diagonalLeft = new Sprite[3];
+    public Sprite[] diagonalRight = new Sprite[3];
+    public Sprite[] middleTriplex = new Sprite[4];
 
     public static Dictionary<char[,], Dictionary<char[,], Sprite>> ruleTiles = new Dictionary<char[,], Dictionary<char[,], Sprite>>(new TemplateDictEC());
 
@@ -53,7 +57,7 @@ public class TileOrientations : SerializedMonoBehaviour
 
         char[,] LB = new char[,]
         {
-            {'A','P','A'},
+            {'A','P','P'},
             {'I','X','P'},
             {'A','I','A'}
         };
@@ -84,7 +88,7 @@ public class TileOrientations : SerializedMonoBehaviour
 
         char[,] RCB = new char[,]
         {
-            {'A', 'P', 'A'},
+            {'P', 'P', 'A'},
             {'P', 'X', 'I'},
             {'A', 'I', 'A'},
         };
@@ -98,7 +102,7 @@ public class TileOrientations : SerializedMonoBehaviour
 
         var dict_RB = new Dictionary<char[,], Sprite>(new SpriteDictEC());
         dict_RB.Add(RCB, mainTiles[2,2]);
-        //dict_RB.Add(RCB_L1, diagonal[0,1]);
+        dict_RB.Add(RCB_L1, diagonal[0,1]);
 
         char[,] rightCornerBottom = new char[,]
         {
@@ -116,7 +120,7 @@ public class TileOrientations : SerializedMonoBehaviour
         {
             {'A', 'I', 'A'},
             {'I', 'X', 'P'},
-            {'A', 'P', 'A'},
+            {'A', 'P', 'P'},
         };
 
         char[,] LCT_2 = new char[,]
@@ -128,6 +132,7 @@ public class TileOrientations : SerializedMonoBehaviour
 
         var dict_LCT = new Dictionary<char[,], Sprite>(new SpriteDictEC());
         dict_LCT.Add(LCT_1, mainTiles[0, 0]);
+        dict_LCT.Add(LCT_2, diagonal[0, 2]);
 
         char[,] leftCornerTop = new char[,]
         {
@@ -145,10 +150,18 @@ public class TileOrientations : SerializedMonoBehaviour
         {
             {'A', 'I', 'A'},
             {'P', 'X', 'I'},
-            {'A', 'P', 'A'},
+            {'P', 'P', 'A'},
+        };
+
+        char[,] RCT_2 = new char[,]
+        {
+            {'A', 'I', 'A'},
+            {'P', 'X', 'I'},
+            {'I', 'P', 'A'},
         };
         var dict_RCT = new Dictionary<char[,], Sprite>(new SpriteDictEC());
         dict_RCT.Add(RCT_1, mainTiles[0,2]);
+        dict_RCT.Add(RCT_2, diagonal[0,3]);
 
 
         char[,] rightCornerTop = new char[,]
@@ -165,12 +178,33 @@ public class TileOrientations : SerializedMonoBehaviour
 
         char[,] L_1 = new char[,]
         {
-            {'A', 'P', 'A'},
+            {'A', 'P', 'P'},
             {'I', 'X', 'P'},
-            {'A', 'P', 'A'},
+            {'A', 'P', 'P'},
+        };
+        char[,] L_T = new char[,]
+        {
+            {'A', 'P', 'I'},
+            {'I', 'X', 'P'},
+            {'A', 'P', 'P'},
+        };
+        char[,] L_B = new char[,]
+        {
+            {'A', 'P', 'P'},
+            {'I', 'X', 'P'},
+            {'A', 'P', 'I'},
+        };
+        char[,] L_TB = new char[,]
+        {
+            {'A', 'P', 'I'},
+            {'I', 'X', 'P'},
+            {'A', 'P', 'I'},
         };
         var dictLeft = new Dictionary<char[,], Sprite>(new SpriteDictEC());
         dictLeft.Add(L_1, mainTiles[1,0]);
+        dictLeft.Add(L_T, diagonalLeft[0]);
+        dictLeft.Add(L_B, diagonalLeft[1]);
+        dictLeft.Add(L_TB, diagonalLeft[2]);
 
         char[,] left = new char[,]
         {
@@ -208,12 +242,33 @@ public class TileOrientations : SerializedMonoBehaviour
 
         char[,] R_1 = new char[,]
         {
-            {'A', 'P', 'A'},
+            {'P', 'P', 'A'},
             {'P', 'X', 'I'},
-            {'A', 'P', 'A'},
+            {'P', 'P', 'A'},
+        };
+        char[,] R_T = new char[,]
+        {
+            {'I', 'P', 'A'},
+            {'P', 'X', 'I'},
+            {'P', 'P', 'A'},
+        };
+        char[,] R_B = new char[,]
+        {
+            {'P', 'P', 'A'},
+            {'P', 'X', 'I'},
+            {'I', 'P', 'A'},
+        };
+        char[,] R_TB = new char[,]
+        {
+            {'I', 'P', 'A'},
+            {'P', 'X', 'I'},
+            {'I', 'P', 'A'},
         };
         var dictRight = new Dictionary<char[,], Sprite>(new SpriteDictEC());
         dictRight.Add(R_1, mainTiles[1,2]);
+        dictRight.Add(R_T, diagonalRight[0]);
+        dictRight.Add(R_B, diagonalRight[1]);
+        dictRight.Add(R_TB, diagonalRight[2]);
 
         char[,] right = new char[,]
         {
@@ -248,15 +303,39 @@ public class TileOrientations : SerializedMonoBehaviour
 
         #region Top
 
-        char[,] Top_1 = new char[,]
+        char[,] Top = new char[,]
         {
             {'A', 'I', 'A'},
             {'P', 'X', 'P'},
-            {'A', 'P', 'A'},
+            {'P', 'P', 'P'},
+        };
+
+        char[,] Top_R = new char[,]
+        {
+            {'A', 'I', 'A'},
+            {'P', 'X', 'P'},
+            {'I', 'P', 'P'},
+        };
+
+        char[,] Top_L = new char[,]
+        {
+            {'A', 'I', 'A'},
+            {'P', 'X', 'P'},
+            {'P', 'P', 'I'},
+        };
+
+        char[,] Top_RL = new char[,]
+        {
+            {'A', 'I', 'A'},
+            {'P', 'X', 'P'},
+            {'I', 'P', 'I'},
         };
 
         var dictTop = new Dictionary<char[,], Sprite>(new SpriteDictEC());
-        dictTop.Add(Top_1, mainTiles[0,1]);
+        dictTop.Add(Top, mainTiles[0,1]);
+        dictTop.Add(Top_R, diagonalTop[0]);
+        dictTop.Add(Top_L, diagonalTop[1]);
+        dictTop.Add(Top_RL, diagonalTop[2]);
 
         char[,] top = new char[,]
         {
@@ -291,15 +370,39 @@ public class TileOrientations : SerializedMonoBehaviour
 
         #region Bottom
 
-        char[,] Bottom_1 = new char[,]
+        char[,] Bottom = new char[,]
         {
-            {'A', 'P', 'A'},
+            {'P', 'P', 'P'},
+            {'P', 'X', 'P'},
+            {'A', 'I', 'A'},
+        };
+
+        char[,] Bottom_R = new char[,]
+        {
+            {'P', 'P', 'I'},
+            {'P', 'X', 'P'},
+            {'A', 'I', 'A'},
+        };
+
+        char[,] Bottom_L = new char[,]
+        {
+            {'I', 'P', 'P'},
+            {'P', 'X', 'P'},
+            {'A', 'I', 'A'},
+        };
+
+        char[,] Bottom_RL = new char[,]
+        {
+            {'I', 'P', 'I'},
             {'P', 'X', 'P'},
             {'A', 'I', 'A'},
         };
 
         var dictBottom = new Dictionary<char[,], Sprite>((new SpriteDictEC()));
-        dictBottom.Add(Bottom_1, mainTiles[2,1]);
+        dictBottom.Add(Bottom, mainTiles[2,1]);
+        dictBottom.Add(Bottom_R, diagonalBottom[0]);
+        dictBottom.Add(Bottom_L, diagonalBottom[1]);
+        dictBottom.Add(Bottom_RL, diagonalBottom[2]);
 
         char[,] bottom = new char[,]
         {
@@ -378,12 +481,117 @@ public class TileOrientations : SerializedMonoBehaviour
 
         char[,] Empty_1 = new char[,]
         {
-            {'A', 'P', 'A'},
+            {'P', 'P', 'P'},
             {'P', 'X', 'P'},
-            {'A', 'P', 'A'},
+            {'P', 'P', 'P'},
+        };
+        char[,] Empty_2 = new char[,]
+        {
+            {'I', 'P', 'P'},
+            {'P', 'X', 'P'},
+            {'P', 'P', 'P'},
+        };
+        char[,] Empty_3 = new char[,]
+        {
+            {'P', 'P', 'I'},
+            {'P', 'X', 'P'},
+            {'P', 'P', 'P'},
+        };
+        char[,] Empty_4 = new char[,]
+        {
+            {'P', 'P', 'P'},
+            {'P', 'X', 'P'},
+            {'I', 'P', 'P'},
+        };
+        char[,] Empty_5 = new char[,]
+        {
+            {'P', 'P', 'P'},
+            {'P', 'X', 'P'},
+            {'P', 'P', 'I'},
+        };
+        char[,] Empty_6 = new char[,]
+        {
+            {'I', 'P', 'I'},
+            {'P', 'X', 'P'},
+            {'P', 'P', 'P'},
+        };
+        char[,] Empty_7 = new char[,]
+        {
+            {'I', 'P', 'P'},
+            {'P', 'X', 'P'},
+            {'P', 'P', 'I'},
+        };
+        char[,] Empty_8 = new char[,]
+        {
+            {'I', 'P', 'P'},
+            {'P', 'X', 'P'},
+            {'I', 'P', 'P'},
+        };
+        char[,] Empty_9 = new char[,]
+        {
+            {'P', 'P', 'I'},
+            {'P', 'X', 'P'},
+            {'P', 'P', 'I'},
+        };
+        char[,] Empty_10 = new char[,]
+        {
+            {'P', 'P', 'I'},
+            {'P', 'X', 'P'},
+            {'I', 'P', 'P'},
+        };
+        char[,] Empty_11 = new char[,]
+        {
+            {'I', 'P', 'I'},
+            {'P', 'X', 'P'},
+            {'I', 'P', 'I'},
+        };
+        char[,] Empty_12 = new char[,]
+        {
+            {'P', 'P', 'P'},
+            {'P', 'X', 'P'},
+            {'I', 'P', 'I'},
+        };
+        char[,] triplex_L = new char[,]
+        {
+            {'I', 'P', 'P'},
+            {'P', 'X', 'P'},
+            {'I', 'P', 'I'},
+        };
+        char[,] triplex_LReversed = new char[,]
+        {
+            {'P', 'P', 'I'},
+            {'P', 'X', 'P'},
+            {'I', 'P', 'I'},
+        };
+        char[,] triplex_G = new char[,]
+        {
+            {'I', 'P', 'I'},
+            {'P', 'X', 'P'},
+            {'I', 'P', 'P'},
+        };
+        char[,] triplex_GReversed = new char[,]
+        {
+            {'I', 'P', 'I'},
+            {'P', 'X', 'P'},
+            {'P', 'P', 'I'},
         };
         var dictEmpty = new Dictionary<char[,], Sprite>(new SpriteDictEC());
         dictEmpty.Add(Empty_1, mainTiles[1,1]);
+        dictEmpty.Add(Empty_2, diagonal[1,0]);
+        dictEmpty.Add(Empty_3, diagonal[1,1]);
+        dictEmpty.Add(Empty_4, diagonal[1,2]);
+        dictEmpty.Add(Empty_5, diagonal[1,3]);
+        dictEmpty.Add(Empty_6, diagonal[2,0]);
+        dictEmpty.Add(Empty_7, diagonal[2,1]);
+        dictEmpty.Add(Empty_8, diagonal[2,2]);
+        dictEmpty.Add(Empty_9, diagonal[2,3]);
+        dictEmpty.Add(Empty_10, diagonal[3,0]);
+        dictEmpty.Add(Empty_11, diagonal[3,1]);
+        dictEmpty.Add(Empty_12, diagonal[3,2]);
+        dictEmpty.Add(triplex_L, middleTriplex[0]);
+        dictEmpty.Add(triplex_LReversed, middleTriplex[1]);
+        dictEmpty.Add(triplex_G, middleTriplex[2]);
+        dictEmpty.Add(triplex_GReversed, middleTriplex[3]);
 
         char[,] empty = new char[,]
         {
@@ -700,7 +908,8 @@ public class SpriteDictEC : IEqualityComparer<char[,]>
         {
             for (int j = 0; j < 3; j++)
             {
-                if (obj[i, j] == 'A')
+                if (i == 0 & j == 0 || i == 0 && j == 2 ||
+                    i == 2 & j == 0 || i == 2 && j == 2)
                 {
                     continue;
                 }
