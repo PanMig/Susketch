@@ -34,6 +34,7 @@ public class PathManager : MonoBehaviour
     public enum Targets {health, armor, damage, stair, enemyBase};
     public int pathTargetBlue;
     public int pathTargetRed;
+    public int pathTarget;
 
     private void Awake()
     {
@@ -49,8 +50,12 @@ public class PathManager : MonoBehaviour
 
     private void Start()
     {
-        //EventManagerUI.onTileMapEdit += UnHighlightPaths;
         EventManagerUI.onTileMapEdit += PathHighlightListener;
+    }
+
+    public void SetPathTarget(int value)
+    {
+        pathTarget = value;
     }
 
     public void SetPathTargetBlue(int value)
@@ -95,19 +100,19 @@ public class PathManager : MonoBehaviour
 
     public void UpdateMovementSteps()
     {
-        CalculatePathBlueTarget(pathTargetBlue);
-        CalculatePathRedTarget(pathTargetRed);
+        CalculatePathBlueTarget(pathTarget);
+        CalculatePathRedTarget(pathTarget);
     }
 
     public void PathHighlightListener()
     {
         if (pathBlueProps.pathActive)
         {
-            CalculatePathBlueTarget(pathTargetBlue);
+            CalculatePathBlueTarget(pathTarget);
         }
         if (pathRedProps.pathActive)
         {
-            CalculatePathRedTarget(pathTargetRed);
+            CalculatePathRedTarget(pathTarget);
         }
     }
 

@@ -7,20 +7,26 @@ using UnityEngine;
 
 public class TileOrientations : SerializedMonoBehaviour
 {
-    public Sprite[] TopOrientations;
-
-    [TableMatrix(HorizontalTitle = "Main tiles matrix", SquareCells = false, Transpose = true)]
-    public Sprite[,] mainTiles = new Sprite[3, 3];
-
-    [TableMatrix(HorizontalTitle = "Main tiles matrix", SquareCells = false, Transpose = true)]
-    public Sprite[,] secondartTiles = new Sprite[3, 3];
-
-    public Sprite[,] diagonal = new Sprite[4, 4];
     public Sprite[] diagonalTop = new Sprite[4];
     public Sprite[] diagonalBottom = new Sprite[4];
     public Sprite[] diagonalLeft = new Sprite[3];
     public Sprite[] diagonalRight = new Sprite[3];
-    public Sprite[] middleTriplex = new Sprite[4];
+    public Sprite[] Bidirectional = new Sprite[2];
+
+    [TableMatrix(HorizontalTitle = "Main Quad tiles", SquareCells = false, Transpose = true)]
+    public Sprite[,] mainTiles = new Sprite[3, 3];
+
+    [TableMatrix(HorizontalTitle = "Full borders tiles", SquareCells = false, Transpose = true)]
+    public Sprite[,] fullBorderTiles = new Sprite[3, 3];
+
+    [TableMatrix(HorizontalTitle = "Empty With Border One", SquareCells = true, Transpose = true)]
+    public Sprite[,] empty_1 = new Sprite[1, 4];
+
+    [TableMatrix(HorizontalTitle = "Empty With Border Two", SquareCells = false, Transpose = true)]
+    public Sprite[,] empty_2b = new Sprite[2, 4];
+
+    [TableMatrix(HorizontalTitle = "Empty With Border Three", SquareCells = true, Transpose = true)]
+    public Sprite[,] empty_3 = new Sprite[1, 4];
 
     public static Dictionary<char[,], Dictionary<char[,], Sprite>> ruleTiles = new Dictionary<char[,], Dictionary<char[,], Sprite>>(new TemplateDictEC());
 
@@ -71,7 +77,7 @@ public class TileOrientations : SerializedMonoBehaviour
 
         var dict_LB = new Dictionary<char[,], Sprite>(new SpriteDictEC());
         dict_LB.Add(LB, mainTiles[2,0]);
-        dict_LB.Add(LCB_R1, diagonal[0,0]);
+        dict_LB.Add(LCB_R1, fullBorderTiles[2,0]);
 
         //main dict template
         char[,] leftCornerBottom = new char[,]
@@ -102,7 +108,7 @@ public class TileOrientations : SerializedMonoBehaviour
 
         var dict_RB = new Dictionary<char[,], Sprite>(new SpriteDictEC());
         dict_RB.Add(RCB, mainTiles[2,2]);
-        dict_RB.Add(RCB_L1, diagonal[0,1]);
+        dict_RB.Add(RCB_L1, fullBorderTiles[2,2]);
 
         char[,] rightCornerBottom = new char[,]
         {
@@ -132,7 +138,7 @@ public class TileOrientations : SerializedMonoBehaviour
 
         var dict_LCT = new Dictionary<char[,], Sprite>(new SpriteDictEC());
         dict_LCT.Add(LCT_1, mainTiles[0, 0]);
-        dict_LCT.Add(LCT_2, diagonal[0, 2]);
+        dict_LCT.Add(LCT_2, fullBorderTiles[0, 0]);
 
         char[,] leftCornerTop = new char[,]
         {
@@ -161,7 +167,7 @@ public class TileOrientations : SerializedMonoBehaviour
         };
         var dict_RCT = new Dictionary<char[,], Sprite>(new SpriteDictEC());
         dict_RCT.Add(RCT_1, mainTiles[0,2]);
-        dict_RCT.Add(RCT_2, diagonal[0,3]);
+        dict_RCT.Add(RCT_2, fullBorderTiles[0,2]);
 
 
         char[,] rightCornerTop = new char[,]
@@ -226,7 +232,7 @@ public class TileOrientations : SerializedMonoBehaviour
         };
 
         var dictLeftFull = new Dictionary<char[,], Sprite>(new SpriteDictEC());
-        dictLeftFull.Add(LF_1, secondartTiles[1,0]);
+        dictLeftFull.Add(LF_1, fullBorderTiles[1,0]);
 
         char[,] left_full = new char[,]
         {
@@ -289,7 +295,7 @@ public class TileOrientations : SerializedMonoBehaviour
             {'A', 'I', 'A'},
         };
         var dict_RF = new Dictionary<char[,], Sprite>(new SpriteDictEC());
-        dict_RF.Add(RF_1, secondartTiles[1,2]);
+        dict_RF.Add(RF_1, fullBorderTiles[1,2]);
 
         char[,] right_full = new char[,]
         {
@@ -356,7 +362,7 @@ public class TileOrientations : SerializedMonoBehaviour
             {'A', 'P', 'A'},
         };
         Dictionary<char[,], Sprite> dictTopFull = new Dictionary<char[,], Sprite>(new SpriteDictEC());
-        dictTopFull.Add(TF_1, secondartTiles[0,1]);
+        dictTopFull.Add(TF_1, fullBorderTiles[0,1]);
 
         char[,] top_full = new char[,]
         {
@@ -423,7 +429,7 @@ public class TileOrientations : SerializedMonoBehaviour
             {'A', 'I', 'A'},
         };
         var dictBF = new Dictionary<char[,], Sprite>((new SpriteDictEC()));
-        dictBF.Add(BF_1, secondartTiles[2,1]);
+        dictBF.Add(BF_1, fullBorderTiles[2,1]);
 
         char[,] bottom_full = new char[,]
         {
@@ -444,7 +450,7 @@ public class TileOrientations : SerializedMonoBehaviour
             {'A', 'P', 'A'},
         };
         var dictRL = new Dictionary<char[,], Sprite>(new SpriteDictEC());
-        dictRL.Add(RL, secondartTiles[2, 2]);
+        dictRL.Add(RL, Bidirectional[1]);
 
         char[,] rightLeft = new char[,]
         {
@@ -465,7 +471,7 @@ public class TileOrientations : SerializedMonoBehaviour
             {'A', 'I', 'A'},
         };
         var dictTopBottom = new Dictionary<char[,], Sprite>(new SpriteDictEC());
-        dictTopBottom.Add(TP_1, secondartTiles[0,0]);
+        dictTopBottom.Add(TP_1, Bidirectional[0]);
 
         char[,] topBottom = new char[,]
         {
@@ -577,21 +583,21 @@ public class TileOrientations : SerializedMonoBehaviour
         };
         var dictEmpty = new Dictionary<char[,], Sprite>(new SpriteDictEC());
         dictEmpty.Add(Empty_1, mainTiles[1,1]);
-        dictEmpty.Add(Empty_2, diagonal[1,0]);
-        dictEmpty.Add(Empty_3, diagonal[1,1]);
-        dictEmpty.Add(Empty_4, diagonal[1,2]);
-        dictEmpty.Add(Empty_5, diagonal[1,3]);
-        dictEmpty.Add(Empty_6, diagonal[2,0]);
-        dictEmpty.Add(Empty_7, diagonal[2,1]);
-        dictEmpty.Add(Empty_8, diagonal[2,2]);
-        dictEmpty.Add(Empty_9, diagonal[2,3]);
-        dictEmpty.Add(Empty_10, diagonal[3,0]);
-        dictEmpty.Add(Empty_11, diagonal[3,1]);
-        dictEmpty.Add(Empty_12, diagonal[3,2]);
-        dictEmpty.Add(triplex_L, middleTriplex[0]);
-        dictEmpty.Add(triplex_LReversed, middleTriplex[1]);
-        dictEmpty.Add(triplex_G, middleTriplex[2]);
-        dictEmpty.Add(triplex_GReversed, middleTriplex[3]);
+        dictEmpty.Add(Empty_2, empty_1[0,0]);
+        dictEmpty.Add(Empty_3, empty_1[0,1]);
+        dictEmpty.Add(Empty_4, empty_1[0,2]);
+        dictEmpty.Add(Empty_5, empty_1[0,3]);
+        dictEmpty.Add(Empty_6, empty_2b[0,0]);
+        dictEmpty.Add(Empty_7, empty_2b[0,1]);
+        dictEmpty.Add(Empty_8, empty_2b[0,2]);
+        dictEmpty.Add(Empty_9, empty_2b[0,3]);
+        dictEmpty.Add(Empty_10, empty_2b[1,0]);
+        dictEmpty.Add(Empty_11, empty_2b[1,1]);
+        dictEmpty.Add(Empty_12, empty_2b[1,2]);
+        dictEmpty.Add(triplex_L, empty_3[0,0]);
+        dictEmpty.Add(triplex_LReversed, empty_3[0,1]);
+        dictEmpty.Add(triplex_G, empty_3[0,2]);
+        dictEmpty.Add(triplex_GReversed, empty_3[0,3]);
 
         char[,] empty = new char[,]
         {
@@ -614,7 +620,7 @@ public class TileOrientations : SerializedMonoBehaviour
         };
 
         var dictFull = new Dictionary<char[,], Sprite>(new SpriteDictEC());
-        dictFull.Add(Full_1, secondartTiles[2,0]);
+        dictFull.Add(Full_1, fullBorderTiles[1,1]);
 
         char[,] full = new char[,]
         {

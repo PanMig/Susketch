@@ -242,7 +242,7 @@ public class AuthoringTool : MonoBehaviour
     {
         if (!MapSuggestionMng.classBalanceTaskBusy && TileMapPlayable())
         {
-            balanced_classes = await GetBalancedMatchUpAsynchronous(FPSClasses.matchups, GetInputMap(tileMapMain));
+            balanced_classes = await GetBalancedMatchUpAsynchronous(FPSClasses.distinctMatches, GetInputMap(tileMapMain));
             KillRatioListener();
             onclassBalanceReady?.Invoke(balanced_classes);
         }

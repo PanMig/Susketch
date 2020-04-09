@@ -12,34 +12,52 @@ public class FPSClasses : MonoBehaviour
     public CharacterParams heavyParams;
     public CharacterParams demoManParams;
 
-    public static List<CharacterParams[]> matchups = new List<CharacterParams[]>();
+    public static List<CharacterParams[]> distinctMatches = new List<CharacterParams[]>();
+    public static List<CharacterParams[]> EqualMatches = new List<CharacterParams[]>();
 
     public void Awake()
     {
+        InitDistinctMatches();
+    }
+
+    public void InitDistinctMatches()
+    {
         //scout
-        matchups.Add(new CharacterParams[2] { scoutParams, sniperParams });
-        matchups.Add(new CharacterParams[2] { scoutParams, soldierParams });
-        matchups.Add(new CharacterParams[2] { scoutParams, heavyParams });
-        matchups.Add(new CharacterParams[2] { scoutParams, demoManParams });
+        distinctMatches.Add(new CharacterParams[2] { scoutParams, sniperParams });
+        distinctMatches.Add(new CharacterParams[2] { scoutParams, soldierParams });
+        distinctMatches.Add(new CharacterParams[2] { scoutParams, heavyParams });
+        distinctMatches.Add(new CharacterParams[2] { scoutParams, demoManParams });
         //sniper
-        matchups.Add(new CharacterParams[2] {sniperParams, scoutParams });
-        //matchups.Add(new CharacterParams[2] {sniperParams, soldierParams });
-        matchups.Add(new CharacterParams[2] {sniperParams, heavyParams });
-        matchups.Add(new CharacterParams[2] {sniperParams, demoManParams});
+        distinctMatches.Add(new CharacterParams[2] { sniperParams, scoutParams });
+        distinctMatches.Add(new CharacterParams[2] { sniperParams, heavyParams });
+        distinctMatches.Add(new CharacterParams[2] { sniperParams, demoManParams });
         //heavy
-        matchups.Add(new CharacterParams[2] { heavyParams, scoutParams });
-        matchups.Add(new CharacterParams[2] { heavyParams, soldierParams });
-        matchups.Add(new CharacterParams[2] { heavyParams, sniperParams });
-        matchups.Add(new CharacterParams[2] { heavyParams, demoManParams });
+        distinctMatches.Add(new CharacterParams[2] { heavyParams, scoutParams });
+        distinctMatches.Add(new CharacterParams[2] { heavyParams, soldierParams });
+        distinctMatches.Add(new CharacterParams[2] { heavyParams, sniperParams });
+        distinctMatches.Add(new CharacterParams[2] { heavyParams, demoManParams });
         //soldier
-        matchups.Add(new CharacterParams[2] { soldierParams, scoutParams });
-        //matchups.Add(new CharacterParams[2] { soldierParams, sniperParams });
-        matchups.Add(new CharacterParams[2] { soldierParams, demoManParams });
-        matchups.Add( new CharacterParams[2] {soldierParams, heavyParams });
+        distinctMatches.Add(new CharacterParams[2] { soldierParams, scoutParams });
+        distinctMatches.Add(new CharacterParams[2] { soldierParams, demoManParams });
+        distinctMatches.Add(new CharacterParams[2] { soldierParams, heavyParams });
         //demolition man
-        matchups.Add(new CharacterParams[2] { demoManParams, scoutParams });
-        matchups.Add(new CharacterParams[2] { demoManParams, sniperParams });
-        matchups.Add(new CharacterParams[2] { demoManParams, soldierParams });
-        matchups.Add(new CharacterParams[2] { demoManParams, heavyParams });
+        distinctMatches.Add(new CharacterParams[2] { demoManParams, scoutParams });
+        distinctMatches.Add(new CharacterParams[2] { demoManParams, sniperParams });
+        distinctMatches.Add(new CharacterParams[2] { demoManParams, soldierParams });
+        distinctMatches.Add(new CharacterParams[2] { demoManParams, heavyParams });
+    }
+
+    public void InitEqualMatches()
+    {
+        //scout
+        distinctMatches.Add(new CharacterParams[2] {scoutParams, scoutParams});
+        //sniper
+        distinctMatches.Add(new CharacterParams[2] {sniperParams, sniperParams});
+        //heavy
+        distinctMatches.Add(new CharacterParams[2] {heavyParams, heavyParams});
+        //soldier
+        distinctMatches.Add(new CharacterParams[2] {soldierParams, soldierParams});
+        //demolition man
+        distinctMatches.Add(new CharacterParams[2] {demoManParams, demoManParams});
     }
 }
