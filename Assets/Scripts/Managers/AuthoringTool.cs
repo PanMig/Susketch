@@ -91,8 +91,10 @@ public class AuthoringTool : MonoBehaviour
         // Color the team regions
         Color blueColor = new Color(0, 0, 255, 0.6f);
         Color redColor = new Color(255, 0, 0, 0.6f);
-        tileMapMain.PaintRegion(3, 0, blueColor);
-        tileMapMain.PaintRegion(0, 3, redColor);
+        //tileMapMain.PaintRegion(3, 0, blueColor);
+        //tileMapMain.PaintRegion(0, 3, redColor);
+        tileMapMain.PaintRegion(3, 0, 4);
+        tileMapMain.PaintRegion(0, 3, 5);
     }
 
     public static void CheckTileMapListener()

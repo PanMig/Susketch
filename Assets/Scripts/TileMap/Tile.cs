@@ -60,8 +60,14 @@ public class Tile
 
     public void SetDecoration(Decoration dec)
     {
+        
         decorationImage.sprite = dec.sprite;
         decID = dec.decorationID;
+        if (dec.decorationID == TileEnums.Decorations.stairs)
+        {
+            ResizeDecoration(this.gameObj.transform.GetChild(0).gameObject, 1.0f);
+            Debug.Log("resized");
+        }
     }
 
     public void FormatTileSprite(TileMap tileMap, Sprite sprite)
@@ -101,13 +107,13 @@ public class Tile
         if(team == 0)
         {
             GameObject decorationObj = GameObject.Instantiate(Brush.Instance.highlightPrefabRed, gameObj.transform);
-            ResizeDecoration(decorationObj, 0.5f);
+            ResizeDecoration(decorationObj, 0.4f);
             SetDirection(decorationObj, direction);
         }
         else
         {
             GameObject decorationObj = GameObject.Instantiate(Brush.Instance.highlightPrefabBlue, gameObj.transform);
-            ResizeDecoration(decorationObj, 0.5f);
+            ResizeDecoration(decorationObj, 0.4f);
             SetDirection(decorationObj, direction);
         }
     }
@@ -161,8 +167,16 @@ public class Tile
 
     public void ResizeDecoration(GameObject decoration, float removePercent)
     {
-        decoration.GetComponent<RectTransform>().sizeDelta =
-            new Vector2(gameObj.GetComponent<RectTransform>().sizeDelta.x * removePercent, gameObj.GetComponent<RectTransform>().sizeDelta.y * removePercent);
+        if (decID == TileEnums.Decorations.stairs)
+        {
+            decoration.GetComponent<RectTransform>().sizeDelta =
+                new Vector2(gameObj.GetComponent<RectTransform>().sizeDelta.x * (removePercent - 0.25f), gameObj.GetComponent<RectTransform>().sizeDelta.y * removePercent);
+        }
+        else
+        {
+            decoration.GetComponent<RectTransform>().sizeDelta =
+                new Vector2(gameObj.GetComponent<RectTransform>().sizeDelta.x * removePercent, gameObj.GetComponent<RectTransform>().sizeDelta.y * removePercent);
+        }
     }
 
     private void SetDirection(GameObject decoration, int direction)
