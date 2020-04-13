@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7425108ad51f47f4ea731fa7ba560b01, type: 3}
-  m_Name: Helth Pack
+  m_Name: Health Pack
   m_EditorClassIdentifier: 
   prefab: {fileID: 5431582249001786066, guid: 9a2ebd9edc569ab4096282b334421299, type: 3}
   sprite: {fileID: 21300052, guid: 5163ae49a0de665458bba61cd20c99b1, type: 3}

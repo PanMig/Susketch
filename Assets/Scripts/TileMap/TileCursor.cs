@@ -166,6 +166,16 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
             // zero index is always the empty decoration, that's why we add plus one to current brush index.
             int index = Brush.Instance.currDecBrush;
             tile.SetDecoration(Brush.Instance.decorations[index]);
+            if (tile.decID == TileEnums.Decorations.stairs || tile.decID == TileEnums.Decorations.empty)
+            {
+                for (int i = 0; i < 20; i++)
+                {
+                    for (int j = 0; j < 20; j++)
+                    {
+                        tileMapMain.FormatTileOrientation(i, j);
+                    }
+                }
+            }
             EventManagerUI.onTileMapEdit?.Invoke();
         }
     }
@@ -189,19 +199,6 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
     void Update()
     {
     }
-
-    //void OnGUI()
-    //{
-    //    if (isSelecting)
-    //    {
-    //        // Create a rect from both mouse positions
-    //        var rect = Utils.GetScreenRect(startMousePos, Input.mousePosition);
-    //        Utils.DrawScreenRect(rect, new Color(0.8f, 0.8f, 0.95f, 0.25f));
-    //        Utils.DrawScreenRectBorder(rect, 2, new Color(0.8f, 0.8f, 0.95f));
-    //    }
-    //}
-
-
 
     #endregion
 }

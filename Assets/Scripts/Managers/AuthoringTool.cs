@@ -58,6 +58,7 @@ public class AuthoringTool : MonoBehaviour
 
         // When minimap is applied.
         MiniMap.onMiniMapApply += InvokeMetrics;
+        MiniMap.onMiniMapApply += PaintTeamRegions;
     }
 
     private void OnDisable()
@@ -70,6 +71,7 @@ public class AuthoringTool : MonoBehaviour
         CharacterClassMng.onClassSelectorEdit -= CalculateBalancedPickUpsAsync;
         CharacterClassMng.onClassSelectorEdit -= CalculateClassBalanceAsync;
         MiniMap.onMiniMapApply -= InvokeMetrics;
+        MiniMap.onMiniMapApply -= PaintTeamRegions;
     }
 
     // Start is called before the first frame update
@@ -88,13 +90,12 @@ public class AuthoringTool : MonoBehaviour
 
     private static void PaintTeamRegions()
     {
-        // Color the team regions
-        Color blueColor = new Color(0, 0, 255, 0.6f);
-        Color redColor = new Color(255, 0, 0, 0.6f);
-        //tileMapMain.PaintRegion(3, 0, blueColor);
-        //tileMapMain.PaintRegion(0, 3, redColor);
-        tileMapMain.PaintRegion(3, 0, 4);
-        tileMapMain.PaintRegion(0, 3, 5);
+        tileMapMain.PaintRegionBorders(3,0,4);
+        Color blueColor = new Color(255, 255, 255, 0.6f);
+        tileMapMain.PaintRegion(3, 0, blueColor);
+        tileMapMain.PaintRegionBorders(0, 3, 5);
+        Color redColor = new Color(255, 255, 255, 0.6f);
+        tileMapMain.PaintRegion(0, 3, redColor);
     }
 
     public static void CheckTileMapListener()
@@ -137,6 +138,7 @@ public class AuthoringTool : MonoBehaviour
         randomMap = null;
         Destroy(tempView);
         CheckTileMapListener();
+        PaintTeamRegions();
         InvokeMetrics();
     }
 
@@ -144,6 +146,7 @@ public class AuthoringTool : MonoBehaviour
     {
         tileMapMain.SetDefaultMap(0,0, tileMapViewMain.gridRect.transform);
         CheckTileMapListener();
+        PaintTeamRegions();
     }
 
     public void InvokeMetrics()

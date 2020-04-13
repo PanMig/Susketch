@@ -12,6 +12,7 @@ public class TileOrientations : SerializedMonoBehaviour
     public Sprite[] diagonalLeft = new Sprite[3];
     public Sprite[] diagonalRight = new Sprite[3];
     public Sprite[] Bidirectional = new Sprite[2];
+    public Sprite[] stairsDirection = new Sprite[4];
 
     [TableMatrix(HorizontalTitle = "Main Quad tiles", SquareCells = false, Transpose = true)]
     public Sprite[,] mainTiles = new Sprite[3, 3];
@@ -28,33 +29,33 @@ public class TileOrientations : SerializedMonoBehaviour
     [TableMatrix(HorizontalTitle = "Empty With Border Three", SquareCells = true, Transpose = true)]
     public Sprite[,] empty_3 = new Sprite[1, 4];
 
+
     public static Dictionary<char[,], Dictionary<char[,], Sprite>> ruleTiles = new Dictionary<char[,], Dictionary<char[,], Sprite>>(new TemplateDictEC());
+    public static Dictionary<StairDirection,Sprite> stairTiles = new Dictionary<StairDirection, Sprite>();
 
     public static Dictionary<char[,], Sprite> sections = new Dictionary<char[,], Sprite>(new SpriteDictEC());
+
+    public enum StairDirection
+    {
+        up,
+        down,
+        left,
+        right
+    };
 
 
     private void Awake()
     {
         InitDictOfTileRules();
+        InitDictOfStairs();
+    }
 
-        //add extra rules procedurally.
-        //foreach (var key in ruleTiles.Keys)
-        //{
-        //    var copyP = (char[,])key.Clone();
-        //    var copyI = (char[,])key.Clone();
-
-        //    for (int i = 0; i < 3; i++)
-        //    {
-        //        for (int j = 0; j < 3; j++)
-        //        {
-        //            if (key[i, j] == 'A')
-        //            {
-        //                copyP[i, j] = 'P';
-        //            }
-        //            ruleTiles.Add(copyP, ruleTiles[key]);
-        //        }
-        //    }
-        //}
+    public void InitDictOfStairs()
+    {
+        stairTiles.Add(StairDirection.up, stairsDirection[0]);
+        stairTiles.Add(StairDirection.down, stairsDirection[1]);
+        stairTiles.Add(StairDirection.right, stairsDirection[2]);
+        stairTiles.Add(StairDirection.left, stairsDirection[3]);
     }
 
     public void InitDictOfTileRules()
@@ -632,209 +633,6 @@ public class TileOrientations : SerializedMonoBehaviour
 
         #endregion
     }
-
-
-    //public void InitDictOfTileRules()
-    //{
-    //    char[,] leftCornerBottom = new char[,]
-    //    {
-    //            {'A','P','P'},
-    //            {'I','X','P'},
-    //            {'A','I','A'}
-    //    };
-    //    ruleTiles.Add("leftCornerBottom", leftCornerBottom);
-
-    //    char[,] leftCornerBottomDot = new char[,]
-    //    {
-    //            {'A','P','I'},
-    //            {'I','X','P'},
-    //            {'A','I','A'}
-    //    };
-    //    ruleTiles.Add("leftCornerBottomDot", leftCornerBottomDot);
-
-    //    char[,] leftCornerTop = new char[,]
-    //    {
-    //            {'A', 'I', 'A'},
-    //            {'I', 'X', 'P'},
-    //            {'A', 'P', 'P'},
-    //    };
-    //    ruleTiles.Add("leftCornerTop", leftCornerTop);
-
-    //    char[,] leftCornerTopDot = new char[,]
-    //    {
-    //            {'A', 'I', 'A'},
-    //            {'I', 'X', 'P'},
-    //            {'A', 'P', 'I'},
-    //    };
-    //    ruleTiles.Add("leftCornerTopDot", leftCornerTopDot);
-
-    //    char[,] rightCornerBottom = new char[,]
-    //    {
-    //            {'P', 'P', 'A'},
-    //            {'P', 'X', 'I'},
-    //            {'A', 'I', 'A'},
-    //    };
-    //    ruleTiles.Add("rightCornerBottom", rightCornerBottom);
-
-    //    char[,] rightCornerBottomDot = new char[,]
-    //    {
-    //            {'I', 'P', 'A'},
-    //            {'P', 'X', 'I'},
-    //            {'A', 'I', 'A'},
-    //    };
-    //    ruleTiles.Add("rightCornerBottomDot", rightCornerBottomDot);
-
-    //    char[,] rightCornerTop = new char[,]
-    //    {
-    //            {'A', 'I', 'A'},
-    //            {'P', 'X', 'I'},
-    //            {'P', 'P', 'A'},
-    //    };
-    //    ruleTiles.Add("rightCornerTop", rightCornerTop);
-
-    //    char[,] rightCornerTopDot = new char[,]
-    //    {
-    //            {'A', 'I', 'A'},
-    //            {'P', 'X', 'I'},
-    //            {'I', 'P', 'A'},
-    //    };
-    //    ruleTiles.Add("rightCornerTopDot", rightCornerTopDot);
-
-    //    char[,] left = new char[,]
-    //    {
-    //            {'A', 'P', 'A'},
-    //            {'I', 'X', 'P'},
-    //            {'A', 'P', 'A'},
-    //    };
-    //    ruleTiles.Add("left", left);
-
-    //    char[,] right = new char[,]
-    //    {
-    //            {'A', 'P', 'A'},
-    //            {'P', 'X', 'I'},
-    //            {'A', 'P', 'A'},
-    //    };
-    //    ruleTiles.Add("right", right);
-
-    //    char[,] top = new char[,]
-    //    {
-    //            {'A', 'I', 'A'},
-    //            {'P', 'X', 'P'},
-    //            {'A', 'P', 'A'},
-    //    };
-    //    ruleTiles.Add("top", top);
-
-    //    char[,] bottom = new char[,]
-    //    {
-    //            {'A', 'P', 'A'},
-    //            {'P', 'X', 'P'},
-    //            {'A', 'I', 'A'},
-    //    };
-    //    ruleTiles.Add("bottom", bottom);
-
-    //    char[,] rightLeft = new char[,]
-    //    {
-    //            {'A', 'P', 'A'},
-    //            {'I', 'X', 'I'},
-    //            {'A', 'P', 'A'},
-    //    };
-    //    ruleTiles.Add("rightLeft", rightLeft);
-
-    //    char[,] topBottom = new char[,]
-    //    {
-    //            {'A', 'I', 'A'},
-    //            {'P', 'X', 'P'},
-    //            {'A', 'I', 'A'},
-    //    };
-    //    ruleTiles.Add("topBottom", topBottom);
-
-    //    char[,] empty = new char[,]
-    //    {
-    //            {'A', 'P', 'A'},
-    //            {'P', 'X', 'P'},
-    //            {'A', 'P', 'A'},
-    //    };
-    //    ruleTiles.Add("empty", empty);
-
-    //    char[,] emptyLeftTopDot = new char[,]
-    //    {
-    //            {'I', 'P', 'A'},
-    //            {'P', 'X', 'P'},
-    //            {'A', 'P', 'A'},
-    //    };
-    //    ruleTiles.Add("emptyLeftTopDot", emptyLeftTopDot);
-
-    //    char[,] emptyLeftBottomDot = new char[,]
-    //    {
-    //            {'A', 'P', 'A'},
-    //            {'P', 'X', 'P'},
-    //            {'I', 'P', 'A'},
-    //    };
-    //    ruleTiles.Add("emptyLeftBottomDot", emptyLeftBottomDot);
-
-    //    char[,] emptyRightTopDot = new char[,]
-    //    {
-    //            {'A', 'P', 'I'},
-    //            {'P', 'X', 'P'},
-    //            {'A', 'P', 'A'},
-    //    };
-    //    ruleTiles.Add("emptyRightTopDot", emptyRightTopDot);
-
-    //    char[,] emptyRightBottom = new char[,]
-    //    {
-    //            {'A', 'P', 'A'},
-    //            {'P', 'X', 'P'},
-    //            {'A', 'P', 'I'},
-    //    };
-    //    ruleTiles.Add("emptyRightBottom", emptyRightBottom);
-
-    //    char[,] full = new char[,]
-    //    {
-    //            {'A', 'I', 'A'},
-    //            {'I', 'X', 'I'},
-    //            {'A', 'I', 'A'},
-    //    };
-    //    ruleTiles.Add("full", full);
-
-    //    char[,] fullDot = new char[,]
-    //    {
-    //            {'I', 'P', 'I'},
-    //            {'P', 'X', 'P'},
-    //            {'I', 'P', 'I'},
-    //    };
-    //    ruleTiles.Add("fullDot", fullDot);
-    //}
-
-    //foreach (var key in ruleTiles.Keys.ToList())
-    //{
-    //    var shallowCopyP = (char[,])key.Clone();
-    //    var shallowCopyI = (char[,])key.Clone();
-
-    //    for (int i = 0; i < 3; i++)
-    //    {
-    //        for (int j = 0; j < 3; j++)
-    //        {
-    //            if (key[i, j] == 'A')
-    //            {
-    //                shallowCopyP[i, j] = 'P';
-    //            }
-    //        }
-    //    }
-
-    //    for (int i = 0; i < 3; i++)
-    //    {
-    //        for (int j = 0; j < 3; j++)
-    //        {
-    //            if (key[i, j] == 'A')
-    //            {
-    //                shallowCopyI[i, j] = 'I';
-    //            }
-    //        }
-    //    }
-    //    ruleTiles.Add(shallowCopyP, ruleTiles[key]);
-    //    ruleTiles.Add(shallowCopyI, ruleTiles[key]);
-    //    ruleTiles.Remove(key);
-    //}
 }
 
 

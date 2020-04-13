@@ -90,6 +90,16 @@ namespace TileMapLogic
             }
         }
 
+        public void PaintRegionBorders(int regionRowIdx, int regionColIdx, int brushIndex)
+        {
+            var region = regions[regionRowIdx, regionColIdx];
+            var perimtTiles = region.GetPerimetricTiles();
+            for (int i = 0; i < perimtTiles.Count; i++)
+            {
+                perimtTiles[i].SetTheme(Brush.Instance.brushThemes[brushIndex]);
+            }
+        }
+
         public void PaintTiles(Transform parent, float decorationScale)
         {
             for (int i = 0; i < rows; i++)
@@ -376,7 +386,6 @@ namespace TileMapLogic
 
         public void ReadCSVToTileMap(string fileName)
         {
-            //Tile[,] map = new Tile[20, 20];
             TextAsset datafile = Resources.Load<TextAsset>(fileName);
             using (var sr = new StreamReader(new MemoryStream(datafile.bytes)))
             {
