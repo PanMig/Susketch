@@ -18,6 +18,7 @@ public class FPSClasses : MonoBehaviour
     public void Awake()
     {
         InitDistinctMatches();
+        InitEqualMatches();
     }
 
     public void InitDistinctMatches()
@@ -50,14 +51,14 @@ public class FPSClasses : MonoBehaviour
     public void InitEqualMatches()
     {
         //scout
-        distinctMatches.Add(new CharacterParams[2] {scoutParams, scoutParams});
+        EqualMatches.Add(new CharacterParams[2] {scoutParams, scoutParams});
         //sniper
-        distinctMatches.Add(new CharacterParams[2] {sniperParams, sniperParams});
+        EqualMatches.Add(new CharacterParams[2] {sniperParams, sniperParams});
         //heavy
-        distinctMatches.Add(new CharacterParams[2] {heavyParams, heavyParams});
+        EqualMatches.Add(new CharacterParams[2] {heavyParams, heavyParams});
         //soldier
-        distinctMatches.Add(new CharacterParams[2] {soldierParams, soldierParams});
+        EqualMatches.Add(new CharacterParams[2] {soldierParams, soldierParams});
         //demolition man
-        distinctMatches.Add(new CharacterParams[2] {demoManParams, demoManParams});
+        EqualMatches.Add(new CharacterParams[2] {demoManParams, demoManParams});
     }
 }

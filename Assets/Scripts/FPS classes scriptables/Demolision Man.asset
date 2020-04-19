@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e2e8aa420c72754da64b48467523478, type: 3}
   m_Name: Demolision Man
   m_EditorClassIdentifier: 
-  className: Demolition Man
+  className: Demolision Man
   class_params:
   - 0.285714285714286
   - 0.285714285714286

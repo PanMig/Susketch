@@ -27,6 +27,10 @@ public class OnHoverHighlight : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (gameObject.layer == 1 << 8)
+        {
+            return;
+        }
         if (TileCursor.currentCursorType == TileCursor.CursorType.decoration && Brush.Instance.currDecBrush == 0)
         {
             _highlightImg.sprite = _eraseColor;

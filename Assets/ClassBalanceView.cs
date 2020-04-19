@@ -4,8 +4,15 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum classBalanceType
+{
+    distinct,
+    same
+}
+
 public class ClassBalanceView : MonoBehaviour
 {
+    [SerializeField] private classBalanceType type;
     [SerializeField] private GameObject _killRatioBar;
     [SerializeField] private TextMeshProUGUI _bluePercent;
     [SerializeField] private TextMeshProUGUI _redPercent;
@@ -16,8 +23,16 @@ public class ClassBalanceView : MonoBehaviour
 
     public void OnEnable()
     {
-        AuthoringTool.onclassBalanceReady += SetClassBalanceView;
-        //MapSuggestionMng.onCharactersBalanced += SetButtonState;
+        if (type == classBalanceType.distinct)
+        {
+            AuthoringTool.onclassBalanceDistinct += SetClassBalanceView;
+        }
+        else
+        {
+            AuthoringTool.onclassBalanceSame += SetClassBalanceView;
+        }
+
+        _btn.GetComponent<Button>().onClick.AddListener(ApplySuggestedClasses);
     }
 
     private void SetButtonState(bool value)
@@ -27,8 +42,7 @@ public class ClassBalanceView : MonoBehaviour
 
     public void OnDisable()
     {
-        AuthoringTool.onclassBalanceReady -= SetClassBalanceView;
-        //MapSuggestionMng.onCharactersBalanced -= SetButtonState;
+        AuthoringTool.onclassBalanceDistinct -= SetClassBalanceView;
     }
 
     private void SetClassBalanceView(KeyValuePair<CharacterParams[], float> balancedmatch)

@@ -21,8 +21,6 @@ public class AuthoringTool : MonoBehaviour
     // Network input
     private NDArray input_map;
     private NDArray input_weapons;
-    // Character classes
-    private KeyValuePair<CharacterParams[],float> balanced_classes;
     //Events
     public delegate void OnMapInitEnded();
     public static event OnMapInitEnded onMapInitEnded;
@@ -30,11 +28,12 @@ public class AuthoringTool : MonoBehaviour
     public delegate void OnMapSuggestionsReady(List<KeyValuePair<TileMap,float>> balancedMaps);
     public static event OnMapSuggestionsReady onMapSuggestionsReady;
 
-    public delegate void OnClassBalanceReady(KeyValuePair<CharacterParams[],float> balancedMatch);
-    public static event OnClassBalanceReady onclassBalanceReady;
+    public delegate void OnClassBalanceDistinct(KeyValuePair<CharacterParams[],float> balancedMatch);
+    public static event OnClassBalanceDistinct onclassBalanceDistinct;
+    public static event OnClassBalanceDistinct onclassBalanceSame;
 
     // Task shedulers
-    public bool heatmapTaskBusy = false;
+    public bool  heatmapTaskBusy = false;
     private bool daTaskBusy;
     private bool cpTaskBusy;
     private bool krTaskBusy;
@@ -247,9 +246,11 @@ public class AuthoringTool : MonoBehaviour
     {
         if (!MapSuggestionMng.classBalanceTaskBusy && TileMapPlayable())
         {
-            balanced_classes = await GetBalancedMatchUpAsynchronous(FPSClasses.distinctMatches, GetInputMap(tileMapMain));
+            var balanced_classes = await GetBalancedMatchUpAsynchronous(FPSClasses.distinctMatches, GetInputMap(tileMapMain));
+            onclassBalanceDistinct?.Invoke(balanced_classes);
+            var same_classes = await GetBalancedMatchUpAsynchronous(FPSClasses.EqualMatches, GetInputMap(tileMapMain));
+            onclassBalanceSame?.Invoke(same_classes);
             KillRatioListener();
-            onclassBalanceReady?.Invoke(balanced_classes);
         }
     }
 
