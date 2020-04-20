@@ -94,6 +94,14 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
             GetIndexFromCoordinates(eventData, out index_row, out index_col);
             var oldColor = (int) tileMapMain.GetTileWithIndex(index_row, index_col).envTileID;
             Brush.Instance.FillRegion(index_row, index_col, Brush.Instance.brushThemes[Brush.Instance.currTileBrush], Brush.Instance.brushThemes[oldColor]);
+            for (int i = 0; i < 20; i++)
+            {
+                for (int j = 0; j < 20; j++)
+                {
+                    tileMapMain.FormatTileOrientation(i, j);
+                }
+            }
+            EventManagerUI.onTileMapEdit?.Invoke();
         }
 
     }
