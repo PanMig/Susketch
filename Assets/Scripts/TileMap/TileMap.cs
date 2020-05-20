@@ -14,7 +14,7 @@ namespace TileMapLogic
         public static readonly int columns = 20;
         private static readonly int CELL_PER_REGION = 5;
         private Tile[,] tileMap;
-        private readonly Region[,] regions = new Region[4, 4];
+        public Region[,] Regions = new Region[4, 4];
 
 
         public TileMap()
@@ -50,7 +50,7 @@ namespace TileMapLogic
                 for (int j = 0; j < 4; j++)
                 {
                     stepY = j * 5;
-                    regions[i, j] = new Region(FillRegion(stepX, stepY));
+                    Regions[i, j] = new Region(FillRegion(stepX, stepY));
                 }
             }
         }
@@ -74,7 +74,7 @@ namespace TileMapLogic
             {
                 for (int j = 0; j < CELL_PER_REGION; j++)
                 {
-                    regions[row, column].tileSet[i, j].SetTheme(Brush.Instance.brushThemes[brushIndex]);
+                    Regions[row, column].tileSet[i, j].SetTheme(Brush.Instance.brushThemes[brushIndex]);
                 }
             }
         }
@@ -85,14 +85,14 @@ namespace TileMapLogic
             {
                 for (int j = 0; j < CELL_PER_REGION; j++)
                 {
-                    regions[row, column].tileSet[i, j].SetColor(color);
+                    Regions[row, column].tileSet[i, j].SetColor(color);
                 }
             }
         }
 
         public void PaintRegionBorders(int regionRowIdx, int regionColIdx, int brushIndex)
         {
-            var region = regions[regionRowIdx, regionColIdx];
+            var region = Regions[regionRowIdx, regionColIdx];
             var perimtTiles = region.GetPerimetricTiles();
             for (int i = 0; i < perimtTiles.Count; i++)
             {
@@ -219,6 +219,39 @@ namespace TileMapLogic
 
         }
 
+        public Tuple<int, int> GetRandomRegion(int removeX, int removeY)
+        {
+            var rand = new System.Random();
+            int row, col = 0;
+            if (removeY != -1 && removeX != -1)
+            {
+                var rangeX = Enumerable.Range(0, 4).Where(i => i != removeY);
+                var rangeY = Enumerable.Range(0, 4).Where(i => i != removeX);
+
+                int row_index = rand.Next(0, 3);
+                row = rangeX.ElementAt(row_index);
+                int col_index = rand.Next(0, 3);
+                col = rangeY.ElementAt(col_index);
+                return new Tuple<int, int>(row, col);
+            }
+            else
+            {
+                row = rand.Next(0, 3);
+                col = rand.Next(0, 3);
+                return new Tuple<int, int>(row, col);
+            }
+        }
+
+        public Tuple<int,int> GetTileRegion(int tile_X, int tile_Y)
+        {
+            int step = 5;
+            int regions = 4;
+
+            int row_idx = tile_X / step;
+            int col_idx = tile_Y / step;
+            return new Tuple<int, int>(row_idx, col_idx);
+        }
+
         public Tile GetRandomRegionCell(int regionNumX, int regionNumY, System.Random RNG)
         {
             int xRange = regionNumX * 5;
@@ -227,7 +260,9 @@ namespace TileMapLogic
             int row = RNG.Next(xRange - 5, xRange - 1);
             int column = RNG.Next(yRange - 5, yRange - 1);
 
-            return GetTileWithIndex(row, column);
+            var tile = GetTileWithIndex(row, column);
+
+            return tile;
         }
 
         public Tile[,] GetTileMap()

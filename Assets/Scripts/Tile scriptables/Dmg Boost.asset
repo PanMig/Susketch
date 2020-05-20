@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Dmg Boost
   m_EditorClassIdentifier: 
   prefab: {fileID: 3400604539612006850, guid: 816d36c3bd6ffa14eace465ab9897277, type: 3}
-  sprite: {fileID: 21300020, guid: 5163ae49a0de665458bba61cd20c99b1, type: 3}
+  sprite: {fileID: 21300000, guid: a14860977fd595d45916cffd0a046fb7, type: 3}
   decorationID: 3

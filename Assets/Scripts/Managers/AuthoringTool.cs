@@ -89,12 +89,14 @@ public class AuthoringTool : MonoBehaviour
 
     private static void PaintTeamRegions()
     {
-        tileMapMain.PaintRegionBorders(3,0,4);
         Color blueColor = new Color(255, 255, 255, 0.6f);
-        tileMapMain.PaintRegion(3, 0, blueColor);
-        tileMapMain.PaintRegionBorders(0, 3, 5);
+        //tileMapMain.PaintRegion(3, 0, blueColor);
         Color redColor = new Color(255, 255, 255, 0.6f);
-        tileMapMain.PaintRegion(0, 3, redColor);
+        //tileMapMain.PaintRegion(0, 3, redColor);
+        tileMapMain.PaintRegion(3,0,0);
+        tileMapMain.PaintRegion(0,3,0);
+        tileMapMain.PaintRegionBorders(3, 0, 4);
+        tileMapMain.PaintRegionBorders(0, 3, 5);
     }
 
     public static void CheckTileMapListener()

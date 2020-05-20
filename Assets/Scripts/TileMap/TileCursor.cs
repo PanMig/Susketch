@@ -154,6 +154,8 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
             Tile tile = tileMapMain.GetTileWithIndex(index_row, index_col);
             int index = Brush.Instance.currTileBrush;
             tile.SetTheme(Brush.Instance.brushThemes[index]);
+            var region = tileMapMain.GetTileRegion(index_row, index_col);
+            var test = tileMapMain.GetRandomRegion(region.Item1, region.Item2);
             for (int i = 0; i < 20; i++)
             {
                 for (int j = 0; j < 20; j++)

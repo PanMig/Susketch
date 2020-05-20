@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Armor
   m_EditorClassIdentifier: 
   prefab: {fileID: 3400604539612006850, guid: a286db7e6bd00e640ad971ec7412b117, type: 3}
-  sprite: {fileID: 21300000, guid: 138796f6771a1ba4c9a72797e7dabeb6, type: 3}
+  sprite: {fileID: 21300000, guid: 44cdd12a7a9a13d48a26f2fd971096f6, type: 3}
   decorationID: 2

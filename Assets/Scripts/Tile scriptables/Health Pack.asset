@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Health Pack
   m_EditorClassIdentifier: 
   prefab: {fileID: 5431582249001786066, guid: 9a2ebd9edc569ab4096282b334421299, type: 3}
-  sprite: {fileID: 21300052, guid: 5163ae49a0de665458bba61cd20c99b1, type: 3}
+  sprite: {fileID: 21300000, guid: 774a5e10614f0ed42a2d585301bbd308, type: 3}
   decorationID: 1
