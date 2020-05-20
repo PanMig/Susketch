@@ -56,7 +56,7 @@ public class MiniMap : MonoBehaviour
         {
             for (int j = 0; j < 20; j++)
             {
-                _map.FormatTileOrientation(i, j);
+                _map.FormatTileOrientation(i, j, TileEnums.EnviromentTiles.ground);
             }
         }
         Destroy(MapSuggestionMng.tempView);

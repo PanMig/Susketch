@@ -21,9 +21,7 @@ namespace TileMapLogic
 
     public partial class TileMap
     {
-        private TileEnums.EnviromentTiles firstFloor = TileEnums.EnviromentTiles.level_1;
-
-        public void FormatTileOrientation(int x, int y)
+        public void FormatTileOrientation(int x, int y, TileEnums.EnviromentTiles tileType)
         {
             Tile tile = GetTileWithIndex(x, y);
             if (tile.decID == TileEnums.Decorations.stairs)
@@ -31,7 +29,7 @@ namespace TileMapLogic
                 SetStairsOrientationTile(tile);
                 return;
             }
-            else if (tile.envTileID != firstFloor)
+            else if (tile.envTileID != tileType)
             {
                 return;
             }
@@ -52,7 +50,7 @@ namespace TileMapLogic
                         orientation[i, j] = 'I';
                         continue;
                     }
-                    if (neighbours[i, j].envTileID == firstFloor || neighbours[i, j].decID == TileEnums.Decorations.stairs)
+                    if (neighbours[i, j].envTileID == tileType || neighbours[i, j].decID == TileEnums.Decorations.stairs)
                     {
                         orientation[i, j] = 'P';
                     }
@@ -74,7 +72,7 @@ namespace TileMapLogic
         private void SetStairsOrientationTile(Tile tile)
         {
             var stairNeighbours = PathUtils.GetNeighboursCross(tile, this);
-            float removePercent = 0.7f;
+            float removePercent = 0.9f;
             if (stairNeighbours[0].envTileID == TileEnums.EnviromentTiles.level_1)
             {
                 TileOrientations.stairTiles.TryGetValue(TileOrientations.StairDirection.down, out var decSprite);

@@ -80,7 +80,8 @@ public class AuthoringTool : MonoBehaviour
         tileMapViewMain = GameObject.FindGameObjectWithTag("tileMapViewMain").GetComponent<TileMapView>();
         tileMapMain.PaintTiles(tileMapViewMain.gridRect.transform, 0.28f);
         tileMapMain.InitRegions();
-        PaintTeamRegions();
+        //PaintTeamRegions();
+        SetTileOrientation();
         CheckTileMapListener();
 
         //Fire event for ready map.
@@ -93,10 +94,10 @@ public class AuthoringTool : MonoBehaviour
         //tileMapMain.PaintRegion(3, 0, blueColor);
         Color redColor = new Color(255, 255, 255, 0.6f);
         //tileMapMain.PaintRegion(0, 3, redColor);
-        tileMapMain.PaintRegion(3,0,0);
-        tileMapMain.PaintRegion(0,3,0);
-        tileMapMain.PaintRegionBorders(3, 0, 4);
-        tileMapMain.PaintRegionBorders(0, 3, 5);
+        //tileMapMain.PaintRegion(3,0,0);
+        //tileMapMain.PaintRegion(0,3,0);
+        //tileMapMain.PaintRegionBorders(3, 0, 4);
+        //tileMapMain.PaintRegionBorders(0, 3, 5);
     }
 
     public static void CheckTileMapListener()
@@ -129,18 +130,23 @@ public class AuthoringTool : MonoBehaviour
         int index = Random.Range(1, 10);
         randomMap.ReadCSVToTileMap("Map Files/mapFile" + index);
         tileMapMain.SetTileMap(randomMap.GetTileMap());
-        for (int i = 0; i < 20; i++)
-        {
-            for (int j = 0; j < 20; j++)
-            {
-                tileMapMain.FormatTileOrientation(i,j);
-            }
-        }
+        SetTileOrientation();
         randomMap = null;
         Destroy(tempView);
         CheckTileMapListener();
         PaintTeamRegions();
         InvokeMetrics();
+    }
+
+    public static void SetTileOrientation()
+    {
+        for (int i = 0; i < 20; i++)
+        {
+            for (int j = 0; j < 20; j++)
+            {
+                tileMapMain.FormatTileOrientation(i, j, TileEnums.EnviromentTiles.ground);
+            }
+        }
     }
 
     public void EmptyMapListener()
