@@ -26,7 +26,8 @@ public class AuthoringTool : MonoBehaviour
     public static event OnMapInitEnded onMapInitEnded;
 
     public delegate void OnMapSuggestionsReady(List<KeyValuePair<TileMap,float>> balancedMaps);
-    public static event OnMapSuggestionsReady onMapSuggestionsReady;
+    public static event OnMapSuggestionsReady onMapMutationRandom;
+    public static event OnMapSuggestionsReady onMapMutationRegionShift;
 
     public delegate void OnClassBalanceDistinct(KeyValuePair<CharacterParams[],float> balancedMatch);
     public static event OnClassBalanceDistinct onclassBalanceDistinct;
@@ -39,6 +40,9 @@ public class AuthoringTool : MonoBehaviour
     private bool krTaskBusy;
     private bool durationTaskBusy;
 
+    // UI
+    private int mapIndex = 0;
+    private const int PREDEFINED_MAPS = 20;
 
     private void OnEnable()
     {
@@ -127,8 +131,16 @@ public class AuthoringTool : MonoBehaviour
         randomMap.Init();
         randomMap.PaintTiles(tempView.transform,1.0f);
 
-        int index = Random.Range(1, 10);
-        randomMap.ReadCSVToTileMap("Map Files/mapFile" + index);
+        if (mapIndex <= PREDEFINED_MAPS)
+        {
+            mapIndex++ ;
+            Debug.Log("map index: " +  mapIndex);
+        }
+        else
+        {
+            mapIndex = 1;
+        }
+        randomMap.ReadCSVToTileMap($"Daniel files/custom_{mapIndex}");
         tileMapMain.SetTileMap(randomMap.GetTileMap());
         SetTileOrientation();
         randomMap = null;
@@ -152,6 +164,7 @@ public class AuthoringTool : MonoBehaviour
     public void EmptyMapListener()
     {
         tileMapMain.SetDefaultMap(0,0, tileMapViewMain.gridRect.transform);
+        SetTileOrientation();
         CheckTileMapListener();
         PaintTeamRegions();
     }
@@ -266,8 +279,10 @@ public class AuthoringTool : MonoBehaviour
     {
         if (!MapSuggestionMng.pickUpsTaskBusy && TileMapPlayable())
         {
-            var generatedMaps = await SpawnPickupsAsynchronous(tileMapMain);
-            onMapSuggestionsReady?.Invoke(generatedMaps);
+            var randomMutation = await SpawnPickupsAsynchronous(tileMapMain, Enums.PowerUpPlacement.random);
+            onMapMutationRandom?.Invoke(randomMutation);
+            var regionShift = await SpawnPickupsAsynchronous(tileMapMain, Enums.PowerUpPlacement.regionShift);
+            onMapMutationRegionShift?.Invoke(regionShift);
         }
     }
 }

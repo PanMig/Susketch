@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Linq;
 using NumSharp;
 using System;
+using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using Google.Protobuf.WellKnownTypes;
 using static TFModel;
@@ -77,12 +78,23 @@ public class MapSuggestionMng : MonoBehaviour
         return resultIdx;
     }
 
-    public static async Task<List<KeyValuePair<TileMap, float>>> SpawnPickupsAsynchronous(TileMap tilemapMain)
+    public static async Task<List<KeyValuePair<TileMap, float>>> SpawnPickupsAsynchronous(TileMap tilemapMain, Enums.PowerUpPlacement replaceType)
     {
         pickUpsTaskBusy = true;
         onPickUpsGenerated?.Invoke(false);
-        //var maps = await SpawnRandomPickUps(tilemapMain);
-        var maps = await ChangePickUpsLocation(tilemapMain);
+        List<KeyValuePair<TileMap, float>> maps;
+        if (replaceType == Enums.PowerUpPlacement.random)
+        {
+            maps = await SpawnRandomPickUps(tilemapMain);
+        }
+        else if(replaceType == Enums.PowerUpPlacement.regionShift)
+        {
+            maps = await ChangePickUpsLocation(tilemapMain);
+        }
+        else
+        {
+            maps = await ChangePickUpsLocation(tilemapMain);
+        }
         onPickUpsGenerated?.Invoke(true);
         pickUpsTaskBusy = false;
         return maps;
@@ -95,7 +107,7 @@ public class MapSuggestionMng : MonoBehaviour
         TileMap map;
         Dictionary<TileMap, float> mapsDict = new Dictionary<TileMap, float>();
 
-        for (int m = 0; m < 20; m++)
+        for (int m = 0; m < 12; m++)
         {
             map = new TileMap();
             map.Init();
@@ -176,7 +188,7 @@ public class MapSuggestionMng : MonoBehaviour
         TileMap map;
         var maps = new Dictionary<TileMap, float>();
 
-        for (int m = 0; m < 20; m++)
+        for (int m = 0; m < 12; m++)
         {
             map = new TileMap();
             map.Init();

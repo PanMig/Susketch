@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using System;
 using static AuthoringTool;
 using Michsky.UI.ModernUIPack;
+using Sirenix.OdinInspector.Editor;
 using UnityEngine.EventSystems;
 using TMPro;
 
@@ -15,6 +16,7 @@ public class MiniMap : MonoBehaviour
     private TileMap _map;
     private MiniMapView _mapView;
     [SerializeField] private int _index;
+    [SerializeField] private Enums.PowerUpPlacement type;
     private float _newBlueAmount = 0;
     private float _newRedAmount= 0;
 
@@ -24,7 +26,18 @@ public class MiniMap : MonoBehaviour
     public void OnEnable()
     {
         AuthoringTool.onMapInitEnded += Init;
-        AuthoringTool.onMapSuggestionsReady += SetMiniMap;
+        switch (type)
+        {
+            case Enums.PowerUpPlacement.random:
+                AuthoringTool.onMapMutationRandom += SetMiniMap;
+                break;
+            case Enums.PowerUpPlacement.regionShift:
+                AuthoringTool.onMapMutationRegionShift += SetMiniMap;
+                break;
+            case Enums.PowerUpPlacement.typeReplace:
+                AuthoringTool.onMapMutationRegionShift += SetMiniMap;
+                break;
+        }
     }
 
     public void Init()
@@ -81,12 +94,12 @@ public class MiniMap : MonoBehaviour
         var result = MetricsManager.CalculateRatioDifference(percent, currKillRatio);
         if (result < 0)
         {
-            _mapView.ResultsText.text = $"+{Mathf.Abs(result).ToString($"F1")} % balance gain";
+            _mapView.ResultsText.text = $"+{Mathf.Abs(result).ToString($"F0")} % balance gain";
             _mapView.ResultsText.color = Color.green;
         }
         else
         {
-            _mapView.ResultsText.text = $"-{result.ToString($"F1")} % balance loss";
+            _mapView.ResultsText.text = $"-{result.ToString($"F0")} % balance loss";
             _mapView.ResultsText.color = Color.red;
         }
 

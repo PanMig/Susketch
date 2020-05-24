@@ -62,11 +62,6 @@ public class Tile
     {
         decorationImage.sprite = dec.sprite;
         decID = dec.decorationID;
-        //if (dec.decorationID == TileEnums.Decorations.stairs)
-        //{
-        //    ResizeDecoration(this.gameObj.transform.GetChild(0).gameObject, 1.0f);
-        //    Debug.Log("resized");
-        //}
     }
 
     public void FormatTileSprite(TileMap tileMap, Sprite sprite)

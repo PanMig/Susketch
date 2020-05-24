@@ -78,10 +78,13 @@ public class CharacterClassMng : MonoBehaviour
     public IEnumerator CoWaitForPosition()
     {
         yield return new WaitForEndOfFrame();
+        Color redColor = new Color(1, 0, 0.08627451f, 1);
+        Color blueColor = new Color(0, 0.2313726f, 1, 1);
         redSpawnPoint = AuthoringTool.tileMapMain.GetTileWithIndex(2, 17).gameObj.GetComponent<RectTransform>();
         redClassImage = GameObject.Instantiate(imagePrefab, redSpawnPoint.position, Quaternion.identity, AuthoringTool.tileMapViewMain.transform).GetComponent<Image>();
         redSpawnPoint.GetComponent<RectTransform>().position = redSpawnPoint.localPosition;
         redClassImage.sprite = sprites[redSelector.index];
+        redClassImage.color = redColor;
         redClassImage.preserveAspect = true;
 
         //same process for blue. Dublicate code I know.
@@ -89,6 +92,7 @@ public class CharacterClassMng : MonoBehaviour
         blueClassImage = GameObject.Instantiate(imagePrefab, blueSpawnPoint.position, Quaternion.identity, AuthoringTool.tileMapViewMain.transform).GetComponent<Image>();
         blueSpawnPoint.GetComponent<RectTransform>().position = blueSpawnPoint.localPosition;
         blueClassImage.sprite = sprites[blueSelector.index];
+        blueClassImage.color = blueColor;
         blueClassImage.preserveAspect = true;
     }
 

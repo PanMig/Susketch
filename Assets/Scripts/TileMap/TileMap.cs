@@ -40,7 +40,6 @@ namespace TileMapLogic
             }
         }
 
-
         public void InitRegions()
         {
             int stepX = 0, stepY = 0;

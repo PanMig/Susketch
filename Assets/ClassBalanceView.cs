@@ -59,12 +59,12 @@ public class ClassBalanceView : MonoBehaviour
         var result = MetricsManager.CalculateRatioDifference(percent, AuthoringTool.currKillRatio);
         if (result < 0)
         {
-            _resultsText.text = $"+{Mathf.Abs(result).ToString($"F1")} % gain";
+            _resultsText.text = $"+{Mathf.Abs(result).ToString($"F0")} % gain";
             _resultsText.color = Color.green;
         }
         else
         {
-            _resultsText.text = $"-{Mathf.Abs(result).ToString($"F1")} % loss";
+            _resultsText.text = $"-{Mathf.Abs(result).ToString($"F0")} % loss";
             _resultsText.color = Color.red;
         }
         _btn.SetActive(true);
