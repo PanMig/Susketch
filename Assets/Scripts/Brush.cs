@@ -12,6 +12,7 @@ public class Brush : MonoBehaviour
 
     public TileThemes[] brushThemes;
     public Decoration[] decorations;
+    public TileThemes[] miniMapThemes;
     public GameObject highlightPrefabRed;
     public GameObject highlightPrefabBlue;
     public enum Brushes

@@ -82,15 +82,15 @@ public class MetricsManager : MonoBehaviour
         float timeSecs = (value * 450) + 150; 
         if (value < 0.28f)
         {
-            GameDurationText.text = (Mathf.Floor(timeSecs) / 60.0f).ToString("F1") + " / 10 min \n (Short)";
+            GameDurationText.text = (Mathf.Floor(timeSecs) / 60.0f).ToString("F0") + " / 10 min \n (Short)";
         }
         else if (value >= 0.28f && value < 0.43f)
         {
-            GameDurationText.text = (Mathf.Floor(timeSecs) / 60.0f).ToString("F1") + "/ 10 min \n (Medioum)";
+            GameDurationText.text = (Mathf.Floor(timeSecs) / 60.0f).ToString("F0") + "/ 10 min \n (Medium)";
         }
         else
         {
-            GameDurationText.text = (Mathf.Floor(timeSecs) / 60.0f).ToString("F1") + "/ 10 min \n (Long)";
+            GameDurationText.text = (Mathf.Floor(timeSecs) / 60.0f).ToString("F0") + "/ 10 min \n (Long)";
         }
         GameDurationRadialBar.fillAmount = timeSecs / 600.0f;
     }

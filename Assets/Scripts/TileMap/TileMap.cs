@@ -13,7 +13,7 @@ namespace TileMapLogic
         public static readonly int rows = 20;
         public static readonly int columns = 20;
         private static readonly int CELL_PER_REGION = 5;
-        private Tile[,] tileMap;
+        protected Tile[,] tileMap;
         public Region[,] Regions = new Region[4, 4];
 
 
@@ -22,7 +22,7 @@ namespace TileMapLogic
             Init();
         }
 
-        public void Init()
+        public virtual void Init()
         {
             tileMap = new Tile[rows, columns];
             TileThemes tileTheme;
@@ -99,7 +99,7 @@ namespace TileMapLogic
             }
         }
 
-        public void PaintTiles(Transform parent, float decorationScale)
+        public virtual void PaintTiles(Transform parent, float decorationScale)
         {
             for (int i = 0; i < rows; i++)
             {
@@ -111,7 +111,7 @@ namespace TileMapLogic
             }
         }
 
-        public void Render()
+        public virtual void Render()
         {
             for (int i = 0; i < rows; i++)
             {
@@ -264,18 +264,17 @@ namespace TileMapLogic
             return tile;
         }
 
-        public Tile[,] GetTileMap()
+        public virtual Tile[,] GetTileMap()
         {
             return tileMap;
         }
 
-        public void SetTileMap(Tile[,] map)
+        public virtual void SetTileMap(Tile[,] map)
         {
             for (int i = 0; i < rows; i++)
             {
                 for (int j = 0; j < columns; j++)
                 {
-                    //tileMap[i, j] = map[i, j];
                     tileMap[i, j].SetTile(map[i, j]);
                 }
             }

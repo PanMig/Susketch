@@ -107,7 +107,7 @@ public class MapSuggestionMng : MonoBehaviour
         TileMap map;
         Dictionary<TileMap, float> mapsDict = new Dictionary<TileMap, float>();
 
-        for (int m = 0; m < 12; m++)
+        for (int m = 0; m < 6; m++)
         {
             map = new TileMap();
             map.Init();
@@ -188,20 +188,21 @@ public class MapSuggestionMng : MonoBehaviour
         TileMap map;
         var maps = new Dictionary<TileMap, float>();
 
-        for (int m = 0; m < 12; m++)
+        for (int m = 0; m < 6; m++)
         {
             map = new TileMap();
             map.Init();
             map.InitRegions();
             map.PaintTiles(tempView.transform, 1.0f);
             map.SetTileMap(tempMap);
-            map = await ChangePickUpsRegion(map, RNG).ConfigureAwait(false);
+            map = await ChangePickUpsType(map, RNG).ConfigureAwait(false);
             //map = await ChangePickUpsType(map, RNG).ConfigureAwait(false);
             score = await PredictKillRatio(GetInputMap(map), GetInputWeapons(CharacterClassMng.Instance.BlueClass, CharacterClassMng.Instance.RedClass));
-            if (TileMapRepair.HasAccesiblePowerUps(map))
-            {
-                maps.Add(map, score);
-            }
+            //if (TileMapRepair.HasAccesiblePowerUps(map))
+            //{
+            //    maps.Add(map, score);
+            //}
+            maps.Add(map, score);
             await new WaitForEndOfFrame();
         }
 
@@ -281,7 +282,7 @@ public class MapSuggestionMng : MonoBehaviour
                 {
                     var tile = map.GetTileWithIndex((int)value.x,(int) value.y);
 
-                    var randomGuess = RNG.Next(0, 4);
+                    var randomGuess = RNG.Next(0, 3);
                     switch (randomGuess)
                     {
                         case 0:
@@ -292,9 +293,6 @@ public class MapSuggestionMng : MonoBehaviour
                             break;
                         case 2:
                             tile.decID = TileEnums.Decorations.damageBoost;
-                            break;
-                        case 3:
-                            tile.decID = TileEnums.Decorations.empty;
                             break;
                     }
                 }

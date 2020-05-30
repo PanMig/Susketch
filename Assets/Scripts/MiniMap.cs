@@ -2,18 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TileMapLogic;
-using UnityEngine.UI;
-using System;
 using static AuthoringTool;
-using Michsky.UI.ModernUIPack;
-using Sirenix.OdinInspector.Editor;
-using UnityEngine.EventSystems;
-using TMPro;
 
 public class MiniMap : MonoBehaviour
 {
     private TileMapView _tileMapView;
-    private TileMap _map;
+    private MiniTileMap _map;
     private MiniMapView _mapView;
     [SerializeField] private int _index;
     [SerializeField] private Enums.PowerUpPlacement type;
@@ -43,7 +37,7 @@ public class MiniMap : MonoBehaviour
     public void Init()
     {
         _tileMapView = GetComponent<TileMapView>();
-        _map = new TileMap();
+        _map = new MiniTileMap();
         _map.Init();
         _map.PaintTiles(_tileMapView.gridRect.transform,0.1f);
         _mapView = GetComponent<MiniMapView>();

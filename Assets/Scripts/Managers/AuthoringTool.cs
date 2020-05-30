@@ -82,7 +82,7 @@ public class AuthoringTool : MonoBehaviour
     {
         tileMapMain = new TileMap();
         tileMapViewMain = GameObject.FindGameObjectWithTag("tileMapViewMain").GetComponent<TileMapView>();
-        tileMapMain.PaintTiles(tileMapViewMain.gridRect.transform, 0.28f);
+        tileMapMain.PaintTiles(tileMapViewMain.gridRect.transform, 0.6f);
         tileMapMain.InitRegions();
         //PaintTeamRegions();
         SetTileOrientation();

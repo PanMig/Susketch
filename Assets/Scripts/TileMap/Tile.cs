@@ -33,7 +33,7 @@ public class Tile
         gameObj.name = "X: " + this.X + " Y: " + this.Y;
         image = gameObj.GetComponent<Image>();
         decorationImage = gameObj.transform.GetChild(0).GetComponent<Image>();
-        ResizeDecoration(gameObj.transform.GetChild(0).gameObject, decorationScale);
+        //ResizeDecoration(gameObj.transform.GetChild(0).gameObject, decorationScale);
         SetTheme(tileTheme);
         SetDecoration(dec);
     }
@@ -165,6 +165,7 @@ public class Tile
     //    tileMap.SetTileMapTile(this);
     //}
 
+    //Resizes the gameobject withing the parent object. Only for decorations.
     public void ResizeDecoration(GameObject decoration, float removePercent)
     {
         decoration.GetComponent<RectTransform>().sizeDelta =

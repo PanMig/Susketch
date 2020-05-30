@@ -176,7 +176,12 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
             // zero index is always the empty decoration, that's why we add plus one to current brush index.
             int index = Brush.Instance.currDecBrush;
             tile.SetDecoration(Brush.Instance.decorations[index]);
-            if (tile.decID == TileEnums.Decorations.stairs || tile.decID == TileEnums.Decorations.empty)
+            if (tile.decID == TileEnums.Decorations.stairs)
+            {
+                
+                tileMapMain.SetStairsOrientationTile(tile);
+            }
+            else if (tile.decID == TileEnums.Decorations.empty)
             {
                 for (int i = 0; i < 20; i++)
                 {
