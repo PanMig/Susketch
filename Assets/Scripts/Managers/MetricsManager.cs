@@ -82,16 +82,18 @@ public class MetricsManager : MonoBehaviour
         float timeSecs = (value * 450) + 150; 
         if (value < 0.28f)
         {
-            GameDurationText.text = (Mathf.Floor(timeSecs) / 60.0f).ToString("F0") + " / 10 min \n (Short)";
+            GameDurationText.text = (Mathf.Floor(timeSecs) / 60.0f).ToString("F0") + "  (Short)";
         }
         else if (value >= 0.28f && value < 0.43f)
         {
-            GameDurationText.text = (Mathf.Floor(timeSecs) / 60.0f).ToString("F0") + "/ 10 min \n (Medium)";
+            GameDurationText.text = (Mathf.Floor(timeSecs) / 60.0f).ToString("F0") + "  (Medium)";
         }
         else
         {
-            GameDurationText.text = (Mathf.Floor(timeSecs) / 60.0f).ToString("F0") + "/ 10 min \n (Long)";
+            GameDurationText.text = (Mathf.Floor(timeSecs) / 60.0f).ToString("F0") + "  (Long)";
         }
+
+        // total amount of match duration is 600 secs.
         GameDurationRadialBar.fillAmount = timeSecs / 600.0f;
     }
 

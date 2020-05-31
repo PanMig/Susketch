@@ -27,7 +27,7 @@ namespace TileMapLogic
             if (tile.decID == TileEnums.Decorations.stairs)
             {
                 SetStairsOrientationTile(tile);
-                return;
+                //return;
             }
             else if (tile.envTileID != tileType)
             {

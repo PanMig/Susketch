@@ -9211,8 +9211,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 38.735, y: -22.63501}
-  m_SizeDelta: {x: -197.18, y: -58.13}
+  m_AnchoredPosition: {x: 56.2, y: -22.63501}
+  m_SizeDelta: {x: -162.2, y: -58.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &648430039
 MonoBehaviour:
@@ -9232,7 +9232,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Long
+  m_text: 5 (Medium)
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -9267,7 +9267,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 24
   m_fontStyle: 1
-  m_textAlignment: 258
+  m_textAlignment: 514
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -9301,10 +9301,10 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 648430039}
-    characterCount: 4
+    characterCount: 10
     spriteCount: 0
-    spaceCount: 0
-    wordCount: 1
+    spaceCount: 1
+    wordCount: 2
     linkCount: 0
     lineCount: 1
     pageCount: 1
@@ -32930,7 +32930,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   metricsMng: {fileID: 1818323843}
   suggestionsMng: {fileID: 0}
-  heatmapTaskBusy: 0
+  _heatmapTaskBusy: 0
 --- !u!114 &2018068465
 MonoBehaviour:
   m_ObjectHideFlags: 0

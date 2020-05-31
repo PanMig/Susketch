@@ -226,7 +226,7 @@ public class MapSuggestionMng : MonoBehaviour
                 {
                     int tries = 0;
                     
-                    while (tries < 4)
+                    while (tries < 3)
                     {
                         tries++;
                         // get a random tile in another region.

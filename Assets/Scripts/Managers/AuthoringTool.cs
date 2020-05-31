@@ -25,6 +25,9 @@ public class AuthoringTool : MonoBehaviour
     public delegate void OnMapInitEnded();
     public static event OnMapInitEnded onMapInitEnded;
 
+    public delegate void OnMapLoaded();
+    public static event OnMapLoaded onMapLoaded;
+
     public delegate void OnMapSuggestionsReady(List<KeyValuePair<TileMap,float>> balancedMaps);
     public static event OnMapSuggestionsReady onMapMutationRandom;
     public static event OnMapSuggestionsReady onMapMutationRegionShift;
@@ -34,11 +37,12 @@ public class AuthoringTool : MonoBehaviour
     public static event OnClassBalanceDistinct onclassBalanceSame;
 
     // Task shedulers
-    public bool  heatmapTaskBusy = false;
-    private bool daTaskBusy;
-    private bool cpTaskBusy;
-    private bool krTaskBusy;
-    private bool durationTaskBusy;
+    public bool  _heatmapTaskBusy;
+    private bool _daTaskBusy;
+    private bool _cpTaskBusy;
+    private bool _krTaskBusy;
+    private bool _durationTaskBusy;
+    private bool _loadingMapTaskBusy;
 
     // UI
     private int mapIndex = 0;
@@ -125,29 +129,35 @@ public class AuthoringTool : MonoBehaviour
 
     public void LoadMap()
     {
-        // create a temp parent to save all instantiated tiles
-        GameObject tempView = new GameObject("TempView");
-        var randomMap = new TileMap();
-        randomMap.Init();
-        randomMap.PaintTiles(tempView.transform,1.0f);
+        if (!_loadingMapTaskBusy)
+        {
+            _loadingMapTaskBusy = true;
+            // create a temp parent to save all instantiated tiles
+            GameObject tempView = new GameObject("TempView");
+            var randomMap = new TileMap();
+            randomMap.Init();
+            randomMap.PaintTiles(tempView.transform, 1.0f);
 
-        if (mapIndex <= PREDEFINED_MAPS)
-        {
-            mapIndex++ ;
-            Debug.Log("map index: " +  mapIndex);
+            if (mapIndex <= PREDEFINED_MAPS)
+            {
+                mapIndex++;
+                Debug.Log("map index: " + mapIndex);
+            }
+            else
+            {
+                mapIndex = 1;
+            }
+            randomMap.ReadCSVToTileMap($"Daniel files/custom_{mapIndex}");
+            tileMapMain.SetTileMap(randomMap.GetTileMap());
+            SetTileOrientation();
+            Destroy(tempView);
+            CheckTileMapListener();
+            //PaintTeamRegions();
+            InvokeMetrics();
+            CalculateClassBalanceAsync();
+            CalculateBalancedPickUpsAsync();
+            onMapLoaded?.Invoke();
         }
-        else
-        {
-            mapIndex = 1;
-        }
-        randomMap.ReadCSVToTileMap($"Daniel files/custom_{mapIndex}");
-        tileMapMain.SetTileMap(randomMap.GetTileMap());
-        SetTileOrientation();
-        randomMap = null;
-        Destroy(tempView);
-        CheckTileMapListener();
-        PaintTeamRegions();
-        InvokeMetrics();
     }
 
     public static void SetTileOrientation()
@@ -189,34 +199,34 @@ public class AuthoringTool : MonoBehaviour
 
     public async void DeathHeatmapListenerSmall()
     {
-        if (!heatmapTaskBusy && TileMapPlayable())
+        if (!_heatmapTaskBusy && TileMapPlayable())
         {
-            heatmapTaskBusy = true;
+            _heatmapTaskBusy = true;
             SetModelInput();
             var results = await PredictDeathHeatmap(input_map, input_weapons);
             var heatmap = ArrayParsingUtils.Make2DArray(results, 4, 4);
             metricsMng.GenerateDeathHeatmap(heatmap);
-            heatmapTaskBusy = false;
+            _heatmapTaskBusy = false;
         }
     }
 
     public async void DramaticArcListener()
     {
-        if (!daTaskBusy && TileMapPlayable())
+        if (!_daTaskBusy && TileMapPlayable())
         {
-            daTaskBusy = true;
+            _daTaskBusy = true;
             SetModelInput();
             var results = await PredictDramaticArc(input_map, input_weapons);
             metricsMng.GenerateDramaticArcGraph(results);
-            daTaskBusy = false;
+            _daTaskBusy = false;
         }
     }
 
     public async void CombatPaceListener()
     {
-        if(!cpTaskBusy && TileMapPlayable())
+        if(!_cpTaskBusy && TileMapPlayable())
         {
-            cpTaskBusy = true;
+            _cpTaskBusy = true;
             SetModelInput();
             var results = await PredictCombatPace(input_map, input_weapons);
             for (int i = 0; i < results.Length; i++)
@@ -225,34 +235,34 @@ public class AuthoringTool : MonoBehaviour
             }
 
             metricsMng.GenerateCombatPaceGraph(results);
-            cpTaskBusy = false;
+            _cpTaskBusy = false;
         }
     }
 
     public async void KillRatioListener()
     {
-        if (!krTaskBusy && TileMapPlayable())
+        if (!_krTaskBusy && TileMapPlayable())
         {
-            krTaskBusy = true;
+            _krTaskBusy = true;
             SetModelInput();
             //result returns the kills of player one (red) divided by the total kills.
             var results = await PredictKillRatio(input_map, input_weapons);
             currKillRatio = results;
             metricsMng.SetKillRatioProgressBar(results);
-            krTaskBusy = false;
+            _krTaskBusy = false;
         }
     }
 
     public async void GameDurationListener()
     {
-        if (!durationTaskBusy && TileMapPlayable())
+        if (!_durationTaskBusy && TileMapPlayable())
         {
-            durationTaskBusy = true;
+            _durationTaskBusy = true;
             SetModelInput();
             var results = await PredictGameDuration(input_map, input_weapons);
             currDuration = results;
             metricsMng.SetGameDurationText(results);
-            durationTaskBusy = false;
+            _durationTaskBusy = false;
         }
     }
 
@@ -283,6 +293,7 @@ public class AuthoringTool : MonoBehaviour
             onMapMutationRandom?.Invoke(randomMutation);
             var regionShift = await SpawnPickupsAsynchronous(tileMapMain, Enums.PowerUpPlacement.regionShift);
             onMapMutationRegionShift?.Invoke(regionShift);
+            _loadingMapTaskBusy = false;
         }
     }
 }
