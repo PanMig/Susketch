@@ -24,8 +24,8 @@ public class MetricsManager : MonoBehaviour
 
     public void Start()
     {
-        classBalanceBtn.interactable = false;
-        pickUpsBalanceBtn.interactable = false;
+        //classBalanceBtn.interactable = false;
+        //pickUpsBalanceBtn.interactable = false;
     }
 
     public void DeathHeatmapButtonListener(float[,] heatmap)

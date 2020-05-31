@@ -177,6 +177,10 @@ public class AuthoringTool : MonoBehaviour
         SetTileOrientation();
         CheckTileMapListener();
         PaintTeamRegions();
+        InvokeMetrics();
+        CalculateClassBalanceAsync();
+        CalculateBalancedPickUpsAsync();
+        onMapLoaded?.Invoke();
     }
 
     public void InvokeMetrics()
@@ -277,11 +281,13 @@ public class AuthoringTool : MonoBehaviour
     {
         if (!MapSuggestionMng.classBalanceTaskBusy && TileMapPlayable())
         {
+            onCharactersBalanced?.Invoke(false);
             var balanced_classes = await GetBalancedMatchUpAsynchronous(FPSClasses.distinctMatches, GetInputMap(tileMapMain));
             onclassBalanceDistinct?.Invoke(balanced_classes);
             var same_classes = await GetBalancedMatchUpAsynchronous(FPSClasses.EqualMatches, GetInputMap(tileMapMain));
             onclassBalanceSame?.Invoke(same_classes);
             KillRatioListener();
+            onCharactersBalanced?.Invoke(true);
         }
     }
 

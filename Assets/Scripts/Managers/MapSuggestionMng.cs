@@ -27,17 +27,16 @@ public class MapSuggestionMng : MonoBehaviour
     #region events
 
     public delegate void OnCharactersBalanced(bool value);
-    public static event OnCharactersBalanced onCharactersBalanced;
+    public static OnCharactersBalanced onCharactersBalanced;
 
     public delegate void OnPickUpsGenerated(bool value);
     public static event OnPickUpsGenerated onPickUpsGenerated;
 
     #endregion
 
-    // Old implementation with the Task System.
-    public static async Task<KeyValuePair<CharacterParams[],float>> GetBalancedMatchup(List<CharacterParams[]> classMatchups, NDArray inputMap)
+    public static Task<KeyValuePair<CharacterParams[],float>> GetBalancedMatchup(List<CharacterParams[]> classMatchups, NDArray inputMap)
     {
-        return await Task.Run(async () =>
+        return Task.Run(async () =>
         {
              var classes = new CharacterParams[2];
              var thresshold = 0.5f;
@@ -61,12 +60,8 @@ public class MapSuggestionMng : MonoBehaviour
 
     public static async Task<KeyValuePair<CharacterParams[], float>> GetBalancedMatchUpAsynchronous(List<CharacterParams[]> classMatchups, NDArray input_map)
     {
-        //Debug.Log("Balanced classes started");
         classBalanceTaskBusy = true;
-        onCharactersBalanced?.Invoke(false);
         var characterClasses = await GetBalancedMatchup(classMatchups, input_map).ConfigureAwait(false);
-        //Debug.Log("Balanced classes ended");
-        onCharactersBalanced?.Invoke(true);
         classBalanceTaskBusy = false;
         return characterClasses;
     }
@@ -196,12 +191,7 @@ public class MapSuggestionMng : MonoBehaviour
             map.PaintTiles(tempView.transform, 1.0f);
             map.SetTileMap(tempMap);
             map = await ChangePickUpsType(map, RNG).ConfigureAwait(false);
-            //map = await ChangePickUpsType(map, RNG).ConfigureAwait(false);
             score = await PredictKillRatio(GetInputMap(map), GetInputWeapons(CharacterClassMng.Instance.BlueClass, CharacterClassMng.Instance.RedClass));
-            //if (TileMapRepair.HasAccesiblePowerUps(map))
-            //{
-            //    maps.Add(map, score);
-            //}
             maps.Add(map, score);
             await new WaitForEndOfFrame();
         }

@@ -32,6 +32,7 @@ public class ClassBalanceView : MonoBehaviour
             AuthoringTool.onclassBalanceSame += SetClassBalanceView;
         }
 
+        MapSuggestionMng.onCharactersBalanced += SetButtonState;
         _btn.GetComponent<Button>().onClick.AddListener(ApplySuggestedClasses);
     }
 
@@ -43,6 +44,7 @@ public class ClassBalanceView : MonoBehaviour
     public void OnDisable()
     {
         AuthoringTool.onclassBalanceDistinct -= SetClassBalanceView;
+        AuthoringTool.onclassBalanceSame -= SetClassBalanceView;
     }
 
     private void SetClassBalanceView(KeyValuePair<CharacterParams[], float> balancedmatch)

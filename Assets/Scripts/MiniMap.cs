@@ -51,6 +51,7 @@ public class MiniMap : MonoBehaviour
             _mapView.Btn.SetActive(false);
         }
         onMiniMapApply?.Invoke();
+        EventManagerUI.onMapReadyForPrediction?.Invoke();
     }
 
     public void SetMiniMap(List<KeyValuePair<TileMap, float>> balancedMaps)
