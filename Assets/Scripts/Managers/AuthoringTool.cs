@@ -42,7 +42,7 @@ public class AuthoringTool : MonoBehaviour
     private bool _cpTaskBusy;
     private bool _krTaskBusy;
     private bool _durationTaskBusy;
-    private bool _loadingMapTaskBusy;
+    private static bool _loadingMapTaskBusy;
 
     // UI
     private int mapIndex = 0;
@@ -113,9 +113,11 @@ public class AuthoringTool : MonoBehaviour
         if (TileMapRepair.CheckTileMap(tileMapMain))
         {
             TileMapRepair.onPlayableMap?.Invoke();
+            _loadingMapTaskBusy = false;
             return;
         }
         TileMapRepair.onUnPlayableMap?.Invoke();
+        _loadingMapTaskBusy = false;
     }
 
     public bool TileMapPlayable()
@@ -301,5 +303,10 @@ public class AuthoringTool : MonoBehaviour
             onMapMutationRegionShift?.Invoke(regionShift);
             _loadingMapTaskBusy = false;
         }
+    }
+
+    public void ApplicationExit()
+    {
+        Application.Quit();
     }
 }
