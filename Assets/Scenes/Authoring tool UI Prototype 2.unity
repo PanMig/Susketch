@@ -22020,6 +22020,11 @@ PrefabInstance:
       propertyPath: itemList.Array.data[4].onValueChanged.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 3592835195357670329, guid: 6428c0cecf155c442a5da65e668b380d,
+        type: 3}
+      propertyPath: itemList.Array.data[4].itemTitle
+      value: Opponent base
+      objectReference: {fileID: 0}
     - target: {fileID: 3592835195357670330, guid: 6428c0cecf155c442a5da65e668b380d,
         type: 3}
       propertyPath: m_PreferredWidth
