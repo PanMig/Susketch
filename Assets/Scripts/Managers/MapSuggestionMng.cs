@@ -4,7 +4,9 @@ using UnityEngine;
 using System.Linq;
 using NumSharp;
 using System;
+using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
+using Google.Protobuf.WellKnownTypes;
 using static TFModel;
 using TileMapLogic;
 using static AuthoringTool;
@@ -13,49 +15,54 @@ using UnityEngine.UI;
 public class MapSuggestionMng : MonoBehaviour
 {
     private enum pickups { none, health, armor, damage };
-    public static bool x;
+    public static Task<TileMap> pickUpsTask;
+    public static bool pickUpsTaskBusy;
+    public static bool classBalanceTaskBusy;
+    public static GameObject tempView;
+
+    private readonly static System.Random RNG = new System.Random();
+    readonly static float thresshold = 0.5f;
+    private static float score = 0.0f;
 
     #region events
 
     public delegate void OnCharactersBalanced(bool value);
-    public static event OnCharactersBalanced OnBalancedCharacters;
+    public static OnCharactersBalanced onCharactersBalanced;
 
     public delegate void OnPickUpsGenerated(bool value);
-    public static event OnPickUpsGenerated OnGeneratedPickUps;
+    public static event OnPickUpsGenerated onPickUpsGenerated;
 
     #endregion
 
-    // Old implementation with the Task System.
-    public static Task<CharacterParams[]> GetBalancedMatchup(List<CharacterParams[]> classMatchups, NDArray input_map)
+    public static Task<KeyValuePair<CharacterParams[],float>> GetBalancedMatchup(List<CharacterParams[]> classMatchups, NDArray inputMap)
     {
-        return Task.Run(() =>
+        return Task.Run(async () =>
         {
-            var classes = new CharacterParams[2];
-            var thresshold = 0.5f;
-            float score = 0;
-            var scores = new List<float>();
-            foreach (var matchup in classMatchups)
-            {
-                var input_weapons = GetInputWeapons(matchup[0], matchup[1]);
-                score = TFModel.PredictKillRatio(input_map, input_weapons);
-                scores.Add(score);
-            }
+             var classes = new CharacterParams[2];
+             var thresshold = 0.5f;
+             float score = 0;
+             var scores = new List<float>();
+             foreach (var matchup in classMatchups)
+             {
+                 var input_weapons = GetInputWeapons(matchup[0], matchup[1]);
+                 score = await PredictKillRatio(inputMap, input_weapons);
+                 scores.Add(score);
+             }
 
-            int resultIdx = GetClosestIdxToThresshold(thresshold, scores);
+             int resultIdx = GetClosestIdxToThresshold(thresshold, scores);
 
-            classes[0] = classMatchups[resultIdx][0]; // red team.
-            classes[1] = classMatchups[resultIdx][1]; // blue team.
-
-            return classes;
-        });
+             classes[0] = classMatchups[resultIdx][0]; // red team.
+             classes[1] = classMatchups[resultIdx][1]; // blue team.
+             var classPair = new KeyValuePair<CharacterParams[],float>(classes,scores[resultIdx]);
+             return classPair;
+         });
     }
 
-    public static async Task<CharacterParams[]> GetBalancedMatchUpAsynchronous(List<CharacterParams[]> classMatchups, NDArray input_map)
+    public static async Task<KeyValuePair<CharacterParams[], float>> GetBalancedMatchUpAsynchronous(List<CharacterParams[]> classMatchups, NDArray input_map)
     {
-        Debug.Log("Balanced classes started");
+        classBalanceTaskBusy = true;
         var characterClasses = await GetBalancedMatchup(classMatchups, input_map).ConfigureAwait(false);
-        Debug.Log("Balanced classes ended");
-        OnBalancedCharacters?.Invoke(true);
+        classBalanceTaskBusy = false;
         return characterClasses;
     }
 
@@ -66,38 +73,45 @@ public class MapSuggestionMng : MonoBehaviour
         return resultIdx;
     }
 
-    public static async Task<Tile[,]> SpawnPickupsAsynchronous(TileMap tilemapMain)
+    public static async Task<List<KeyValuePair<TileMap, float>>> SpawnPickupsAsynchronous(TileMap tilemapMain, Enums.PowerUpPlacement replaceType)
     {
-
-        x = true;
-        Debug.Log("Spawn Pickups started");
-        OnGeneratedPickUps?.Invoke(false);
-        var map = await SpawnBalancedPickUps(tilemapMain);
-        Debug.Log("Spawn Pickups ended");
-        OnGeneratedPickUps?.Invoke(true);
-        x = false;
-        return map;
+        pickUpsTaskBusy = true;
+        onPickUpsGenerated?.Invoke(false);
+        List<KeyValuePair<TileMap, float>> maps;
+        if (replaceType == Enums.PowerUpPlacement.random)
+        {
+            maps = await SpawnRandomPickUps(tilemapMain);
+        }
+        else if(replaceType == Enums.PowerUpPlacement.regionShift)
+        {
+            maps = await ChangePickUpsLocation(tilemapMain);
+        }
+        else
+        {
+            maps = await ChangePickUpsLocation(tilemapMain);
+        }
+        onPickUpsGenerated?.Invoke(true);
+        pickUpsTaskBusy = false;
+        return maps;
     }
 
-    // TODO : More than one tile are spawned inside the region.
-    public static async Task<Tile[,]> SpawnBalancedPickUps(TileMap tilemapMain)
+    public static async Task<List<KeyValuePair<TileMap,float>>> SpawnRandomPickUps(TileMap tilemapMain)
     {
+        tempView = new GameObject("TempView");
+        var tempMap = tilemapMain.GetTileMap();
         TileMap map;
-        GameObject tempView = new GameObject("TempView");
         Dictionary<TileMap, float> mapsDict = new Dictionary<TileMap, float>();
-        float thresshold = 0.5f;
-        float score = 0.0f;
-        System.Random RNG = new System.Random();
 
-        // randomly select a region to spawn a pickups
-        for (int m = 0; m < 50; m++)
+        for (int m = 0; m < 6; m++)
         {
-            // this will erase all previous decorations on the main map.
             map = new TileMap();
-            map.InitTileMap(tempView.transform);
-            map.SetTileMap(tilemapMain.GetTileMap());
+            map.Init();
+            map.PaintTiles(tempView.transform, 1.0f);
+            map.SetTileMap(tempMap);
+            // this will erase all previous decorations on the main map.
+            map.RemoveDecorations();
             map = await SetPickUpsLocations(map, RNG).ConfigureAwait(false);
-            score = PredictKillRatio(GetInputMap(map), GetInputWeapons(blueClass, redClass));
+            score = await PredictKillRatio(GetInputMap(map), GetInputWeapons(CharacterClassMng.Instance.BlueClass, CharacterClassMng.Instance.RedClass));
             if (TileMapRepair.HasAccesiblePowerUps(map))
             {
                 mapsDict.Add(map, score);
@@ -105,16 +119,15 @@ public class MapSuggestionMng : MonoBehaviour
             await new WaitForEndOfFrame();
         }
 
-        var valueslist = mapsDict.Values.ToList();
-        var bestMatch = valueslist[GetClosestIdxToThresshold(thresshold, valueslist)];
-        var balancedMap = mapsDict.FirstOrDefault(x => x.Value == bestMatch);
-        Destroy(tempView);
-        return balancedMap.Key.GetTileMap();
+        var balancedMaps = (from pair in mapsDict
+                            orderby Math.Abs(pair.Value - thresshold)
+                            select pair).ToList();
+        return balancedMaps;
     }
 
     private static Task<TileMap> SetPickUpsLocations(TileMap map, System.Random RNG)
     {
-        return Task.Run(() =>
+        pickUpsTask = Task.Run(() =>
         {
             int diceRoll;
             //iterate regions.
@@ -126,10 +139,9 @@ public class MapSuggestionMng : MonoBehaviour
                     if (diceRoll == (int)pickups.health)
                     {
                         Tile fillTile = map.GetRandomRegionCell(i, j, RNG);
-                        if(fillTile.envTileID != TileEnums.EnviromentTiles.level_2)
+                        if (fillTile.envTileID != TileEnums.EnviromentTiles.level_2)
                         {
                             fillTile.decID = TileEnums.Decorations.healthPack;
-                            map.SetTileMapTile(fillTile);
                         }
                     }
                     else if (diceRoll == (int)pickups.armor)
@@ -138,7 +150,6 @@ public class MapSuggestionMng : MonoBehaviour
                         if (fillTile.envTileID != TileEnums.EnviromentTiles.level_2)
                         {
                             fillTile.decID = TileEnums.Decorations.armorVest;
-                            map.SetTileMapTile(fillTile);
                         }
                     }
                     else if (diceRoll == (int)pickups.damage)
@@ -147,7 +158,6 @@ public class MapSuggestionMng : MonoBehaviour
                         if (fillTile.envTileID != TileEnums.EnviromentTiles.level_2)
                         {
                             fillTile.decID = TileEnums.Decorations.damageBoost;
-                            map.SetTileMapTile(fillTile);
                         }
                     }
                     else
@@ -156,7 +166,6 @@ public class MapSuggestionMng : MonoBehaviour
                         if (fillTile.envTileID != TileEnums.EnviromentTiles.level_2)
                         {
                             fillTile.decID = TileEnums.Decorations.empty;
-                            map.SetTileMapTile(fillTile);
                         }
                             
                     }
@@ -164,5 +173,124 @@ public class MapSuggestionMng : MonoBehaviour
             }
             return map;
         });
+        return pickUpsTask;
+    }
+
+    public static async Task<List<KeyValuePair<TileMap, float>>> ChangePickUpsLocation(TileMap tilemapMain)
+    {
+        tempView = new GameObject("TempView");
+        var tempMap = tilemapMain.GetTileMap();
+        TileMap map;
+        var maps = new Dictionary<TileMap, float>();
+
+        for (int m = 0; m < 6; m++)
+        {
+            map = new TileMap();
+            map.Init();
+            map.InitRegions();
+            map.PaintTiles(tempView.transform, 1.0f);
+            map.SetTileMap(tempMap);
+            map = await ChangePickUpsType(map, RNG).ConfigureAwait(false);
+            score = await PredictKillRatio(GetInputMap(map), GetInputWeapons(CharacterClassMng.Instance.BlueClass, CharacterClassMng.Instance.RedClass));
+            maps.Add(map, score);
+            await new WaitForEndOfFrame();
+        }
+
+        var balancedMaps = (from pair in maps
+            orderby Math.Abs(pair.Value - thresshold)
+            select pair).ToList();
+        return balancedMaps;
+    }
+
+    private static Task<TileMap> ChangePickUpsRegion(TileMap map, System.Random RNG)
+    {
+        pickUpsTask = Task.Run(() =>
+        {
+            var pickups = map.GetDecorations();
+            
+            foreach (var pickup in pickups)
+            {
+                string key = "";
+                key = pickup.Key;
+                foreach (var value in pickup.Value)
+                {
+                    int tries = 0;
+                    
+                    while (tries < 3)
+                    {
+                        tries++;
+                        // get a random tile in another region.
+                        var regionNum = map.GetTileRegion((int) value[0], (int) value[1]);
+                        var randomRegion = map.GetRandomRegion(regionNum.Item1, regionNum.Item2);
+                        // count in GetRandomRegionCell starts from 1 so we increment by one.
+                        var randomTile = map.GetRandomRegionCell(randomRegion.Item1 + 1, randomRegion.Item2 + 1, RNG);
+
+                        var pickupsNum = map.Regions[randomRegion.Item1, randomRegion.Item2].GetPickUpsNumber();
+                        if (randomTile.envTileID != TileEnums.EnviromentTiles.level_2 &&
+                            randomTile.decID != TileEnums.Decorations.stairs && pickupsNum == 0)
+                        {
+                            switch (key)
+                            {
+                                case "healthPack":
+                                    randomTile.decID = TileEnums.Decorations.healthPack;
+                                    map.GetTileWithIndex((int)value[0], (int)value[1]).decID = TileEnums.Decorations.empty;
+                                    break;
+                                case "armorVest":
+                                    randomTile.decID = TileEnums.Decorations.armorVest;
+                                    map.GetTileWithIndex((int)value[0], (int)value[1]).decID = TileEnums.Decorations.empty;
+                                    break;
+                                case "damageBoost":
+                                    randomTile.decID = TileEnums.Decorations.damageBoost;
+                                    map.GetTileWithIndex((int)value[0], (int)value[1]).decID = TileEnums.Decorations.empty;
+                                    break;
+                            }
+
+                            //exit while statement
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return map;
+        });
+
+        return pickUpsTask;
+    }
+
+    private static Task<TileMap> ChangePickUpsType(TileMap map, System.Random RNG)
+    {
+        pickUpsTask = Task.Run(() =>
+        {
+            var pickups = map.GetDecorations();
+
+            foreach (var pickup in pickups)
+            {
+                string key = "";
+                key = pickup.Key;
+                foreach (var value in pickup.Value)
+                {
+                    var tile = map.GetTileWithIndex((int)value.x,(int) value.y);
+
+                    var randomGuess = RNG.Next(0, 3);
+                    switch (randomGuess)
+                    {
+                        case 0:
+                            tile.decID = TileEnums.Decorations.healthPack;
+                            break;
+                        case 1:
+                            tile.decID = TileEnums.Decorations.armorVest;
+                            break;
+                        case 2:
+                            tile.decID = TileEnums.Decorations.damageBoost;
+                            break;
+                    }
+                }
+            }
+
+            return map;
+        });
+
+        return pickUpsTask;
     }
 }

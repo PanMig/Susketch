@@ -6,7 +6,7 @@ using static Tensorflow.Binding;
 using NumSharp;
 using static TileMapLogic.TileMap;
 using TileMapLogic;
-
+using System.Threading.Tasks;
 
 public class TFModel : MonoBehaviour
 {
@@ -18,10 +18,11 @@ public class TFModel : MonoBehaviour
 
     public void Start()
     {
-        //heatmapGraph = InitGraph(heatmapGraph, "death_heatmap");
+        heatmapGraph = InitGraph(heatmapGraph, "death_heatmap");
         killRatioGraph = InitGraph(heatmapGraph, "kill_ratio");
         dArcGraph = InitGraph(dArcGraph, "dramatic_arc");
-        Debug.Log("graphs loaded");
+        gameDurationGraph = InitGraph(gameDurationGraph, "game_duration");
+        combatPaceGraph = InitGraph(combatPaceGraph, "combat_pace");
     }
 
     private Graph InitGraph(Graph graph, string pbFile)
@@ -32,124 +33,189 @@ public class TFModel : MonoBehaviour
         return graph;
     }
 
-    public static float[] PredictDeathHeatmap(NDArray map, NDArray weapons)
+    public static Task<float[]> PredictDeathHeatmap(NDArray map, NDArray weapons)
     {
-        var graph = new Graph();
-        var model_file = Resources.Load<TextAsset>("death_heatmap").bytes;
-        graph.Import(model_file);
-        graph.as_default();
-        Tensor input_maps = graph.OperationByName("input_layer");
-        Tensor input_weapons = graph.OperationByName("input_1");
-        Tensor output = graph.OperationByName("output_layer/BiasAdd");
-
-        using (var sess = tf.Session())
+        Task<float[]> heatmapTask;
+        heatmapTask = Task.Run(() =>
         {
-            var results = sess.run(output, new FeedItem[]
+            heatmapGraph.as_default();
+            Tensor input_maps = heatmapGraph.OperationByName("input_layer");
+            Tensor input_weapons = heatmapGraph.OperationByName("input_1");
+            Tensor output = heatmapGraph.OperationByName("output_layer/BiasAdd");
+
+            using (var sess = tf.Session())
             {
+                var results = sess.run(output, new FeedItem[]
+                {
                 new FeedItem(input_maps, map),
                 new FeedItem(input_weapons, weapons)
-            });
-            Debug.Log("session 2");
+                });
 
-            var x = results.ToArray<float>();
-            Debug.Log("Model inference ok");
-            return x;
-        }
+                var x = results.ToArray<float>();
+                return x;
+            }
+        });
+        return heatmapTask;
     }
 
-    public static float PredictKillRatio(NDArray map, NDArray weapons)
+    public static Task<float> PredictKillRatio(NDArray map, NDArray weapons)
     {
-        map = ConcatCoverChannel(map);
-        killRatioGraph.as_default();
-        Tensor input_maps = killRatioGraph.OperationByName("input_layer");
-        Tensor input_weapons = killRatioGraph.OperationByName("input_12");
-        Tensor output = killRatioGraph.OperationByName("output_layer/BiasAdd");
-
-        using (var sess = tf.Session())
+        return Task.Run(() =>
         {
-            var results = sess.run(output, new FeedItem[]
+            map = ConcatCoverChannel(map);
+            killRatioGraph.as_default();
+            Tensor input_maps = killRatioGraph.OperationByName("input_layer");
+            Tensor input_weapons = killRatioGraph.OperationByName("input_12");
+            Tensor output = killRatioGraph.OperationByName("output_layer/BiasAdd");
+
+            using (var sess = tf.Session())
             {
+                var results = sess.run(output, new FeedItem[]
+                {
                 new FeedItem(input_maps, map),
                 new FeedItem(input_weapons, weapons)
-            });
+                });
 
-            var x = results.ToArray<float>();
-            return x[0];
-        }
+                var x = results.ToArray<float>();
+                return x[0];
+            }
+        });
     }
 
-    public static float PredictGameDuration(NDArray map, NDArray weapons)
+    public static Task<float> PredictGameDuration(NDArray map, NDArray weapons)
     {
-        map = ConcatCoverChannel(map);
-        killRatioGraph.as_default();
-        Tensor input_maps = killRatioGraph.OperationByName("input_layer");
-        Tensor input_weapons = killRatioGraph.OperationByName("input_8");
-        Tensor output = killRatioGraph.OperationByName("output_layer/BiasAdd");
-
-        using (var sess = tf.Session())
+        return Task.Run(() =>
         {
-            var results = sess.run(output, new FeedItem[]
+            map = ConcatCoverChannel(map);
+            gameDurationGraph.as_default();
+            Tensor input_maps = gameDurationGraph.OperationByName("input_layer");
+            Tensor input_weapons = gameDurationGraph.OperationByName("input_8");
+            Tensor output = gameDurationGraph.OperationByName("output_layer/BiasAdd");
+
+            using (var sess = tf.Session())
             {
+                var results = sess.run(output, new FeedItem[]
+                {
                 new FeedItem(input_maps, map),
                 new FeedItem(input_weapons, weapons)
-            });
+                });
 
-            var x = results.ToArray<float>();
-            return x[0];
-        }
+                var x = results.ToArray<float>();
+                return x[0];
+            }
+        });
     }
 
-    public static float[] PredictDramaticArc(NDArray map, NDArray weapons)
+    public static Task<float[]> PredictDramaticArc(NDArray map, NDArray weapons)
     {
-        dArcGraph.as_default();
-        Tensor input_maps = dArcGraph.OperationByName("input_layer");
-        Tensor input_weapons = dArcGraph.OperationByName("input_1");
-        Tensor output = dArcGraph.OperationByName("output_0/BiasAdd");
-        Tensor output2 = dArcGraph.OperationByName("output_1/BiasAdd");
-        Tensor output3 = dArcGraph.OperationByName("output_2/BiasAdd");
-        Tensor output4 = dArcGraph.OperationByName("output_3/BiasAdd");
-        Tensor output5 = dArcGraph.OperationByName("output_4/BiasAdd");
-
-        using (var sess = tf.Session())
+        return Task.Run(() =>
         {
-            var output_1 = sess.run(output, new FeedItem[]
+            dArcGraph.as_default();
+            Tensor input_maps = dArcGraph.OperationByName("input_layer");
+            Tensor input_weapons = dArcGraph.OperationByName("input_1");
+            Tensor output = dArcGraph.OperationByName("output_0/BiasAdd");
+            Tensor output2 = dArcGraph.OperationByName("output_1/BiasAdd");
+            Tensor output3 = dArcGraph.OperationByName("output_2/BiasAdd");
+            Tensor output4 = dArcGraph.OperationByName("output_3/BiasAdd");
+            Tensor output5 = dArcGraph.OperationByName("output_4/BiasAdd");
+
+            using (var sess = tf.Session())
             {
+                var output_1 = sess.run(output, new FeedItem[]
+                {
                 new FeedItem(input_maps, map),
                 new FeedItem(input_weapons, weapons)
-            });
+                });
 
-            var output_2 = sess.run(output2, new FeedItem[]
-            {
+                var output_2 = sess.run(output2, new FeedItem[]
+                {
                 new FeedItem(input_maps, map),
                 new FeedItem(input_weapons, weapons)
-            });
+                });
 
-            var output_3 = sess.run(output3, new FeedItem[]
-            {
+                var output_3 = sess.run(output3, new FeedItem[]
+                {
                 new FeedItem(input_maps, map),
                 new FeedItem(input_weapons, weapons)
-            });
+                });
 
-            var output_4 = sess.run(output4, new FeedItem[]
-            {
+                var output_4 = sess.run(output4, new FeedItem[]
+                {
                 new FeedItem(input_maps, map),
                 new FeedItem(input_weapons, weapons)
-            });
+                });
 
-            var output_5 = sess.run(output5, new FeedItem[]
-            {
+                var output_5 = sess.run(output5, new FeedItem[]
+                {
                 new FeedItem(input_maps, map),
                 new FeedItem(input_weapons, weapons)
-            });
+                });
 
-            float[] values = new float[5];
-            values[0] = output_1.ToArray<float>()[0];
-            values[1] = output_2.ToArray<float>()[0];
-            values[2] = output_3.ToArray<float>()[0];
-            values[3] = output_4.ToArray<float>()[0];
-            values[4] = output_5.ToArray<float>()[0];
-            return values;
-        }
+                float[] values = new float[5];
+                values[0] = output_1.ToArray<float>()[0];
+                values[1] = output_2.ToArray<float>()[0];
+                values[2] = output_3.ToArray<float>()[0];
+                values[3] = output_4.ToArray<float>()[0];
+                values[4] = output_5.ToArray<float>()[0];
+                return values;
+            }
+        });
+    }
+
+    public static Task<float[]> PredictCombatPace(NDArray map, NDArray weapons)
+    {
+        return Task.Run(() =>
+        {
+            combatPaceGraph.as_default();
+            Tensor input_maps = combatPaceGraph.OperationByName("input_layer");
+            Tensor input_weapons = combatPaceGraph.OperationByName("input_1");
+            Tensor output = combatPaceGraph.OperationByName("output_0/BiasAdd");
+            Tensor output2 = combatPaceGraph.OperationByName("output_1/BiasAdd");
+            Tensor output3 = combatPaceGraph.OperationByName("output_2/BiasAdd");
+            Tensor output4 = combatPaceGraph.OperationByName("output_3/BiasAdd");
+            Tensor output5 = combatPaceGraph.OperationByName("output_4/BiasAdd");
+
+            using (var sess = tf.Session())
+            {
+                var output_1 = sess.run(output, new FeedItem[]
+                {
+                new FeedItem(input_maps, map),
+                new FeedItem(input_weapons, weapons)
+                });
+
+                var output_2 = sess.run(output2, new FeedItem[]
+                {
+                new FeedItem(input_maps, map),
+                new FeedItem(input_weapons, weapons)
+                });
+
+                var output_3 = sess.run(output3, new FeedItem[]
+                {
+                new FeedItem(input_maps, map),
+                new FeedItem(input_weapons, weapons)
+                });
+
+                var output_4 = sess.run(output4, new FeedItem[]
+                {
+                new FeedItem(input_maps, map),
+                new FeedItem(input_weapons, weapons)
+                });
+
+                var output_5 = sess.run(output5, new FeedItem[]
+                {
+                new FeedItem(input_maps, map),
+                new FeedItem(input_weapons, weapons)
+                });
+
+                float[] values = new float[5];
+                values[0] = output_1.ToArray<float>()[0];
+                values[1] = output_2.ToArray<float>()[0];
+                values[2] = output_3.ToArray<float>()[0];
+                values[3] = output_4.ToArray<float>()[0];
+                values[4] = output_5.ToArray<float>()[0];
+                return values;
+            }
+        });
     }
 
     public static NDArray GetInputWeapons(CharacterParams blueClass, CharacterParams redClass)

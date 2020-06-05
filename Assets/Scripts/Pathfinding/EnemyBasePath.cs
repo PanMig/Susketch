@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static TileMapLogic.TileMap;
@@ -18,7 +19,10 @@ public class EnemyBasePath : IPathFinding
         playerProps.highlightedTiles = PathUtils.BFSGetShortestPath(tileMapMain.GetTileWithIndex((int)start.x, (int)start.y),
             tileMapMain.GetTileWithIndex((int)goal.x, (int)goal.y), tileMapMain);
 
-        PathManager.Instance.HighlightPath(playerProps);
+        if (playerProps.pathActive)
+        {
+            PathManager.Instance.HighlightPath(playerProps);
+        }
         playerProps.movementSteps = playerProps.highlightedTiles.Count;
     }
 }
@@ -33,16 +37,28 @@ public class HealthPath : IPathFinding
             playerProps.highlightedTiles.Clear();
         }
         int count = 0;
-        var healthDict = tileMapMain.GetDecoration(TileEnums.Decorations.healthPack);
-        foreach (var healthPack in healthDict)
+        try
         {
-            var tilePath = PathUtils.BFSGetShortestPath(tileMapMain.GetTileWithIndex((int)start.x, (int)start.y),
-            tileMapMain.GetTileWithIndex(healthPack.X, healthPack.Y), tileMapMain);
-            playerProps.highlightedTiles.AddRange(tilePath);
-            count++;
+            var healthDict = tileMapMain.GetDecoration(TileEnums.Decorations.healthPack);
+            foreach (var healthPack in healthDict)
+            {
+                var tilePath = PathUtils.BFSGetShortestPath(tileMapMain.GetTileWithIndex((int)start.x, (int)start.y),
+                    tileMapMain.GetTileWithIndex(healthPack.X, healthPack.Y), tileMapMain);
+                playerProps.highlightedTiles.AddRange(tilePath);
+                count++;
+            }
+
+            if (playerProps.pathActive)
+            {
+                PathManager.Instance.HighlightPath(playerProps);
+            }
+            playerProps.movementSteps = count > 0 ? playerProps.highlightedTiles.Count / count : 0;
         }
-        PathManager.Instance.HighlightPath(playerProps);
-        playerProps.movementSteps = count > 0 ? playerProps.highlightedTiles.Count / count : 0;
+        catch (Exception e)
+        {
+            return;
+        }
+
     }
 }
 
@@ -65,7 +81,10 @@ public class ArmorPath : IPathFinding
             playerProps.highlightedTiles.AddRange(tilePath);
             count ++;
         }
-        PathManager.Instance.HighlightPath(playerProps);
+        if (playerProps.pathActive)
+        {
+            PathManager.Instance.HighlightPath(playerProps);
+        }
         playerProps.movementSteps = count > 0 ? playerProps.highlightedTiles.Count / count : 0;
     }
 }
@@ -88,7 +107,10 @@ public class DamagePath : IPathFinding
             playerProps.highlightedTiles.AddRange(tilePath);
             count++;
         }
-        PathManager.Instance.HighlightPath(playerProps);
+        if (playerProps.pathActive)
+        {
+            PathManager.Instance.HighlightPath(playerProps);
+        }
         playerProps.movementSteps = count > 0 ? playerProps.highlightedTiles.Count / count : 0;
     }
 }
@@ -111,7 +133,10 @@ public class StairsPath : IPathFinding
             playerProps.highlightedTiles.AddRange(tilePath);
             count++;
         }
-        PathManager.Instance.HighlightPath(playerProps);
+        if (playerProps.pathActive)
+        {
+            PathManager.Instance.HighlightPath(playerProps);
+        }
         playerProps.movementSteps = count > 0 ? playerProps.highlightedTiles.Count / count : 0;
     }
 }

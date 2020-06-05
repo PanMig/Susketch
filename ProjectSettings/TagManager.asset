@@ -8,6 +8,8 @@ TagManager:
   - TileMap
   - tileMapView
   - modalTextContent
+  - tileMapViewMain
+  - authoring tool
   layers:
   - Default
   - TransparentFX
@@ -18,8 +20,8 @@ TagManager:
   - 
   - 
   - Dropdown
-  - 
-  - 
+  - Metrics Panel
+  - Tools Panel
   - 
   - 
   - 

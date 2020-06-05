@@ -43,6 +43,7 @@ public static class PathUtils
         while (frontier.Count > 0)
         {
             var current = frontier.Dequeue();
+            if(current.gameObj == goal.gameObj) { break; }
             List<Tile> neighbours = GetNeighbours(current, tileMap);
             foreach (var next in neighbours)
             {
@@ -121,6 +122,62 @@ public static class PathUtils
         return neighbours;
     }
 
+    public static Tile[,] GetNeighboursToArray(Tile tile, TileMap tileMap)
+    {
+        Tile[,] neighbours = new Tile[3,3];
+
+        //down
+        if (tile.X + 1 >= 0 && tile.X + 1 < 20 && tile.Y >= 0 & tile.Y < 20)
+        {
+            Tile temp = tileMap.GetTileWithIndex(tile.X + 1, tile.Y);
+            neighbours[2, 1] = temp;
+        }
+        //up
+        if (tile.X - 1 >= 0 && tile.X - 1 < 20 && tile.Y >= 0 & tile.Y < 20)
+        {
+            Tile temp = tileMap.GetTileWithIndex(tile.X - 1, tile.Y);
+            neighbours[0, 1] = temp;
+        }
+        //right
+        if (tile.X >= 0 && tile.X < 20 && tile.Y + 1 >= 0 & tile.Y + 1 < 20)
+        {
+            Tile temp = tileMap.GetTileWithIndex(tile.X, tile.Y + 1);
+            neighbours[1, 2] = temp;
+        }
+        //left
+        if (tile.X >= 0 && tile.X < 20 && tile.Y - 1 >= 0 & tile.Y - 1 < 20)
+        {
+            Tile temp = tileMap.GetTileWithIndex(tile.X, tile.Y - 1);
+            neighbours[1, 0] = temp;
+        }
+        // diagonal down right
+        if (tile.X + 1 >= 0 && tile.X + 1 < 20 && tile.Y + 1 >= 0 & tile.Y + 1 < 20)
+        {
+            Tile temp = tileMap.GetTileWithIndex(tile.X + 1, tile.Y + 1);
+            neighbours[2, 2] = temp;
+        }
+        // diagonal down left
+        if (tile.X + 1 >= 0 && tile.X + 1 < 20 && tile.Y - 1 >= 0 & tile.Y - 1 < 20)
+        {
+            Tile temp = tileMap.GetTileWithIndex(tile.X + 1, tile.Y - 1);
+            neighbours[2, 0] = temp;
+        }
+        // diagonal top right
+        if (tile.X - 1 >= 0 && tile.X - 1 < 20 && tile.Y + 1 >= 0 & tile.Y + 1 < 20)
+        {
+            Tile temp = tileMap.GetTileWithIndex(tile.X - 1, tile.Y + 1);
+            neighbours[0, 2] = temp;
+        }
+        // diagonal top left
+        if (tile.X - 1 >= 0 && tile.X - 1 < 20 && tile.Y - 1 >= 0 & tile.Y - 1 < 20)
+        {
+            Tile temp = tileMap.GetTileWithIndex(tile.X - 1, tile.Y - 1);
+            neighbours[0, 0] = temp;
+        }
+
+        return neighbours;
+    }
+
     private static void AddNeighbour(Tile tile, List<Tile> neighbours, Tile temp)
     {
         if (temp.envTileID != TileEnums.EnviromentTiles.level_1 && temp.envTileID != TileEnums.EnviromentTiles.level_2 ||
@@ -131,6 +188,12 @@ public static class PathUtils
         }
     }
 
+    /// <summary>
+    /// Returns the neighbours of the given Tile in the following orientation : D, U, R, L 
+    /// </summary>
+    /// <param name="tile"></param>
+    /// <param name="tileMap"></param>
+    /// <returns></returns>
     public static List<Tile> GetNeighboursCross(Tile tile, TileMap tileMap)
     {
         List<Tile> neighbours = new List<Tile>();

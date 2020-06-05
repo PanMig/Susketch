@@ -1,197 +1,312 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System.Threading;
-using UnityEngine.UI;
+﻿using UnityEngine;
 using NumSharp;
 using TileMapLogic;
 using static MapSuggestionMng;
 using static TFModel;
 using Michsky.UI.ModernUIPack;
+using System.Collections.Generic;
 
 // Change it with the TEMPLATE METHOD pattern.
 public class AuthoringTool : MonoBehaviour
 {
-    private FPSClasses fpsClasses;
+    // Managers
     public MetricsManager metricsMng;
     public MapSuggestionMng suggestionsMng;
-    public static TileMapView tileMapView;
+    // Tilemap
+    public static TileMapView tileMapViewMain;
     public static TileMap tileMapMain;
-
+    private Tile[,] generatedMap = null;
+    public static float currKillRatio;
+    public static float currDuration;
+    // Network input
     private NDArray input_map;
     private NDArray input_weapons;
+    //Events
+    public delegate void OnMapInitEnded();
+    public static event OnMapInitEnded onMapInitEnded;
 
-    public HorizontalSelector blueSelector;
-    public HorizontalSelector redSelector;
-    public static CharacterParams blueClass;
-    public static CharacterParams redClass;
-    public Text arc_text;
-    private CharacterParams[] balanced_classes;
-    private Tile[,] generatedMap;
+    public delegate void OnMapLoaded();
+    public static event OnMapLoaded onMapLoaded;
+
+    public delegate void OnMapSuggestionsReady(List<KeyValuePair<TileMap,float>> balancedMaps);
+    public static event OnMapSuggestionsReady onMapMutationRandom;
+    public static event OnMapSuggestionsReady onMapMutationRegionShift;
+
+    public delegate void OnClassBalanceDistinct(KeyValuePair<CharacterParams[],float> balancedMatch);
+    public static event OnClassBalanceDistinct onclassBalanceDistinct;
+    public static event OnClassBalanceDistinct onclassBalanceSame;
+
+    // Task shedulers
+    public bool  _heatmapTaskBusy;
+    private bool _daTaskBusy;
+    private bool _cpTaskBusy;
+    private bool _krTaskBusy;
+    private bool _durationTaskBusy;
+    private static bool _loadingMapTaskBusy;
+
+    // UI
+    private int mapIndex = 0;
+    private const int PREDEFINED_MAPS = 20;
 
     private void OnEnable()
     {
+        //onTileMapEdit is fired when a tile or decoration is added to the map.
         EventManagerUI.onTileMapEdit += PaintTeamRegions;
-        EventManagerUI.onTileMapEdit += CheckTileMap;
-        EventManagerUI.onTileMapEdit += CalculateBalancedPickUpsAsync;
+        EventManagerUI.onTileMapEdit += CheckTileMapListener;
+        
+        //onMapReadyForPrediction is fired on End of drag and pointer up.
+        EventManagerUI.onMapReadyForPrediction += InvokeMetrics;
+        EventManagerUI.onMapReadyForPrediction += CalculateBalancedPickUpsAsync;
+        EventManagerUI.onMapReadyForPrediction += CalculateClassBalanceAsync;
+
+        // CharacterClassMng is fired when the class selector is edited.
+        CharacterClassMng.onClassSelectorEdit += InvokeMetrics;
+        CharacterClassMng.onClassSelectorEdit += CalculateClassBalanceAsync;
+
+        // When minimap is applied.
+        MiniMap.onMiniMapApply += InvokeMetrics;
+        MiniMap.onMiniMapApply += PaintTeamRegions;
     }
 
     private void OnDisable()
     {
         EventManagerUI.onTileMapEdit -= PaintTeamRegions;
-        EventManagerUI.onTileMapEdit -= CheckTileMap;
-        EventManagerUI.onTileMapEdit -= CalculateBalancedPickUpsAsync;
-
+        EventManagerUI.onTileMapEdit -= CheckTileMapListener;
+        EventManagerUI.onMapReadyForPrediction -= InvokeMetrics;
+        EventManagerUI.onMapReadyForPrediction -= CalculateClassBalanceAsync;
+        CharacterClassMng.onClassSelectorEdit -= InvokeMetrics;
+        CharacterClassMng.onClassSelectorEdit -= CalculateBalancedPickUpsAsync;
+        CharacterClassMng.onClassSelectorEdit -= CalculateClassBalanceAsync;
+        MiniMap.onMiniMapApply -= InvokeMetrics;
+        MiniMap.onMiniMapApply -= PaintTeamRegions;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        fpsClasses = GetComponentInChildren<FPSClasses>();
-        SetClassParams();
-
         tileMapMain = new TileMap();
-        tileMapView = GameObject.FindGameObjectWithTag("tileMapView").GetComponent<TileMapView>();
-        tileMapMain.InitTileMap(tileMapView.gridRect.transform);
+        tileMapViewMain = GameObject.FindGameObjectWithTag("tileMapViewMain").GetComponent<TileMapView>();
+        tileMapMain.PaintTiles(tileMapViewMain.gridRect.transform, 0.6f);
         tileMapMain.InitRegions();
-        PaintTeamRegions();
-        CheckTileMap();
+        //PaintTeamRegions();
+        SetTileOrientation();
+        CheckTileMapListener();
+
+        //Fire event for ready map.
+        onMapInitEnded?.Invoke();
     }
 
     private static void PaintTeamRegions()
     {
-        // Color the team regions
-        Color blueColor = new Color(0, 0, 255, 0.6f);
-        Color redColor = new Color(255, 0, 0, 0.6f);
-        tileMapMain.PaintRegion(3, 0, blueColor);
-        tileMapMain.PaintRegion(0, 3, redColor);
+        Color blueColor = new Color(255, 255, 255, 0.6f);
+        //tileMapMain.PaintRegion(3, 0, blueColor);
+        Color redColor = new Color(255, 255, 255, 0.6f);
+        //tileMapMain.PaintRegion(0, 3, redColor);
+        //tileMapMain.PaintRegion(3,0,0);
+        //tileMapMain.PaintRegion(0,3,0);
+        //tileMapMain.PaintRegionBorders(3, 0, 4);
+        //tileMapMain.PaintRegionBorders(0, 3, 5);
     }
 
-    public static void CheckTileMap()
+    public static void CheckTileMapListener()
     {
         if (TileMapRepair.CheckTileMap(tileMapMain))
         {
             TileMapRepair.onPlayableMap?.Invoke();
+            _loadingMapTaskBusy = false;
             return;
         }
         TileMapRepair.onUnPlayableMap?.Invoke();
+        _loadingMapTaskBusy = false;
+    }
+
+    public bool TileMapPlayable()
+    {
+        if (TileMapRepair.CheckTileMap(tileMapMain))
+        {
+            return true;
+        }
+        return false;
     }
 
     public void LoadMap()
     {
-        // create a temp parent to save all instantiated tiles
-        GameObject tempView = new GameObject("TempView");
-        var randomMap = new TileMap();
-        randomMap.InitTileMap(tempView.transform);
+        if (!_loadingMapTaskBusy)
+        {
+            _loadingMapTaskBusy = true;
+            // create a temp parent to save all instantiated tiles
+            GameObject tempView = new GameObject("TempView");
+            var randomMap = new TileMap();
+            randomMap.Init();
+            randomMap.PaintTiles(tempView.transform, 1.0f);
 
-        int index = Random.Range(1, 10);
-        randomMap.ReadCSVToTileMap("Map Files/mapFile" + index);
-        tileMapMain.SetTileMap(randomMap.GetTileMap());
-        randomMap = null;
-        Destroy(tempView);
-        tileMapMain.RenderTileMap();
-        CheckTileMap();
+            if (mapIndex <= PREDEFINED_MAPS)
+            {
+                mapIndex++;
+                Debug.Log("map index: " + mapIndex);
+            }
+            else
+            {
+                mapIndex = 1;
+            }
+            randomMap.ReadCSVToTileMap($"Daniel files/custom_{mapIndex}");
+            tileMapMain.SetTileMap(randomMap.GetTileMap());
+            SetTileOrientation();
+            Destroy(tempView);
+            CheckTileMapListener();
+            //PaintTeamRegions();
+            InvokeMetrics();
+            CalculateClassBalanceAsync();
+            CalculateBalancedPickUpsAsync();
+            onMapLoaded?.Invoke();
+        }
+    }
+
+    public static void SetTileOrientation()
+    {
+        for (int i = 0; i < 20; i++)
+        {
+            for (int j = 0; j < 20; j++)
+            {
+                tileMapMain.FormatTileOrientation(i, j, TileEnums.EnviromentTiles.ground);
+            }
+        }
     }
 
     public void EmptyMapListener()
     {
-        tileMapMain.SetDefaultMap(0,0);
+        tileMapMain.SetDefaultMap(0,0, tileMapViewMain.gridRect.transform);
+        SetTileOrientation();
+        CheckTileMapListener();
+        PaintTeamRegions();
+        InvokeMetrics();
+        CalculateClassBalanceAsync();
+        CalculateBalancedPickUpsAsync();
+        onMapLoaded?.Invoke();
     }
 
-    private void Invokes()
+    public void InvokeMetrics()
     {
-        InvokeRepeating("OnDeathHeatmap", 1.0f, 60.0f);
-        InvokeRepeating("DramaticArcButtonHandler", 1.0f, 60.0f);
-        InvokeRepeating("KillRatioButtonHandler", 1.0f, 60.0f);
+        DeathHeatmapListenerSmall();
+        DramaticArcListener();
+        CombatPaceListener();
+        KillRatioListener();
+        GameDurationListener();
     }
 
-    private void Update()
-    {
-        //tileMapMain.PaintRegion(3, 0, 4);
-        //tileMapMain.PaintRegion(0, 3, 5);
-    }
-
-    public void SetClassParams()
-    {
-        blueClass = fpsClasses.characters[blueSelector.index];
-        redClass = fpsClasses.characters[redSelector.index];
-    }
-
-    public void DeathHeatmapButtonHandler()
+    public async void DeathHeatmapListenerOverlay()
     {
         SetModelInput();
-        var results = PredictDeathHeatmap(input_map, input_weapons);
+        var results = await PredictDeathHeatmap(input_map, input_weapons);
         var heatmap = ArrayParsingUtils.Make2DArray(results, 4, 4);
         metricsMng.DeathHeatmapButtonListener(heatmap);
-    }
-
-    public void OnDeathHeatmap()
-    {
-        SetModelInput();
-        var results = PredictDeathHeatmap(input_map, input_weapons);
-        var heatmap = ArrayParsingUtils.Make2DArray(results, 4, 4);
         metricsMng.GenerateDeathHeatmap(heatmap);
     }
 
-    public void DramaticArcButtonHandler()
+    public async void DeathHeatmapListenerSmall()
     {
-        SetModelInput();
-        var results = PredictDramaticArc(input_map, input_weapons);
-        metricsMng.GenerateDramaticArcGraph(results);
+        if (!_heatmapTaskBusy && TileMapPlayable())
+        {
+            _heatmapTaskBusy = true;
+            SetModelInput();
+            var results = await PredictDeathHeatmap(input_map, input_weapons);
+            var heatmap = ArrayParsingUtils.Make2DArray(results, 4, 4);
+            metricsMng.GenerateDeathHeatmap(heatmap);
+            _heatmapTaskBusy = false;
+        }
     }
 
-    public void KillRatioButtonHandler()
+    public async void DramaticArcListener()
     {
-        SetModelInput();
-        var results = PredictKillRatio(input_map, input_weapons);
-        metricsMng.SetKillRatioProgressBar(results * 100);
+        if (!_daTaskBusy && TileMapPlayable())
+        {
+            _daTaskBusy = true;
+            SetModelInput();
+            var results = await PredictDramaticArc(input_map, input_weapons);
+            metricsMng.GenerateDramaticArcGraph(results);
+            _daTaskBusy = false;
+        }
     }
 
-    public void GameDurationButtonHandler()
+    public async void CombatPaceListener()
     {
-        SetModelInput();
-        var results = PredictKillRatio(input_map, input_weapons);
-        metricsMng.SetGameDurationText(results);
+        if(!_cpTaskBusy && TileMapPlayable())
+        {
+            _cpTaskBusy = true;
+            SetModelInput();
+            var results = await PredictCombatPace(input_map, input_weapons);
+            for (int i = 0; i < results.Length; i++)
+            {
+                results[i] = results[i] * 20.0f;
+            }
+
+            metricsMng.GenerateCombatPaceGraph(results);
+            _cpTaskBusy = false;
+        }
+    }
+
+    public async void KillRatioListener()
+    {
+        if (!_krTaskBusy && TileMapPlayable())
+        {
+            _krTaskBusy = true;
+            SetModelInput();
+            //result returns the kills of player one (red) divided by the total kills.
+            var results = await PredictKillRatio(input_map, input_weapons);
+            currKillRatio = results;
+            metricsMng.SetKillRatioProgressBar(results);
+            _krTaskBusy = false;
+        }
+    }
+
+    public async void GameDurationListener()
+    {
+        if (!_durationTaskBusy && TileMapPlayable())
+        {
+            _durationTaskBusy = true;
+            SetModelInput();
+            var results = await PredictGameDuration(input_map, input_weapons);
+            currDuration = results;
+            metricsMng.SetGameDurationText(results);
+            _durationTaskBusy = false;
+        }
     }
 
     private void SetModelInput()
     {
         input_map = GetInputMap(tileMapMain);
-        input_weapons = GetInputWeapons(fpsClasses.characters[blueSelector.index], 
-            fpsClasses.characters[redSelector.index]);
-        Debug.Log("Got input");
+        // red player is player 1.
+        input_weapons = GetInputWeapons(CharacterClassMng.Instance.BlueClass, CharacterClassMng.Instance.RedClass);
     }
 
     public async void CalculateClassBalanceAsync()
     {
-        //balanced_classes = await GetBalancedMatchUpAsynchronous(fpsClasses.matchups, GetInputMap(tileMapMain));
-        balanced_classes = await GetBalancedMatchUpAsynchronous(fpsClasses.matchups, GetInputMap(tileMapMain));
+        if (!MapSuggestionMng.classBalanceTaskBusy && TileMapPlayable())
+        {
+            onCharactersBalanced?.Invoke(false);
+            var balanced_classes = await GetBalancedMatchUpAsynchronous(FPSClasses.distinctMatches, GetInputMap(tileMapMain));
+            onclassBalanceDistinct?.Invoke(balanced_classes);
+            var same_classes = await GetBalancedMatchUpAsynchronous(FPSClasses.EqualMatches, GetInputMap(tileMapMain));
+            onclassBalanceSame?.Invoke(same_classes);
+            KillRatioListener();
+            onCharactersBalanced?.Invoke(true);
+        }
     }
 
     public async void CalculateBalancedPickUpsAsync()
     {
-        if(x == false)
+        if (!MapSuggestionMng.pickUpsTaskBusy && TileMapPlayable())
         {
-            generatedMap = await SpawnPickupsAsynchronous(tileMapMain);
-        }
-        else
-        {
-            Debug.Log("wait for thread");
+            var randomMutation = await SpawnPickupsAsynchronous(tileMapMain, Enums.PowerUpPlacement.random);
+            onMapMutationRandom?.Invoke(randomMutation);
+            var regionShift = await SpawnPickupsAsynchronous(tileMapMain, Enums.PowerUpPlacement.regionShift);
+            onMapMutationRegionShift?.Invoke(regionShift);
+            _loadingMapTaskBusy = false;
         }
     }
 
-    public void FindClassBalance()
+    public void ApplicationExit()
     {
-        redClass = balanced_classes[0];
-        blueClass = balanced_classes[1];
-        Debug.Log($"blue: {blueClass}" + $"red: {redClass}");
-        blueSelector.index = 3;
-        blueSelector.index = 0;
-    }
-
-    public void GeneratePickUps()
-    {
-        tileMapMain.SetTileMap(generatedMap);
-        tileMapMain.RenderTileMap();
+        Application.Quit();
     }
 }

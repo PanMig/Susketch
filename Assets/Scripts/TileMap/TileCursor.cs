@@ -7,10 +7,11 @@ using UnityEngine.EventSystems;
 using TileMapLogic;
 using static AuthoringTool;
 
-public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
+public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler
 {
     private Color startcolor;
     private Tile selectedTile;
+    private bool dragging = false;
 
     public enum CursorType
     {
@@ -25,6 +26,10 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
         if (currentCursorType == CursorType.tile)
         {
             DrawTile(eventData);
@@ -37,6 +42,8 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
         {
             FillBoundedArea(eventData);
         }
+        // fire predictions event.
+        if(dragging == false) { EventManagerUI.onMapReadyForPrediction?.Invoke(); }
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -53,23 +60,28 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        //HighlightHoveredTile(eventData);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        //UnHighlightHoveredTile();
     }
 
     private void UnHighlightHoveredTile()
     {
-        selectedTile.PaintTile(startcolor);
+        selectedTile.SetColor(startcolor);
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        dragging = true;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        dragging = false;
+        EventManagerUI.onMapReadyForPrediction?.Invoke();
     }
 
     #endregion
@@ -82,6 +94,14 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
             GetIndexFromCoordinates(eventData, out index_row, out index_col);
             var oldColor = (int) tileMapMain.GetTileWithIndex(index_row, index_col).envTileID;
             Brush.Instance.FillRegion(index_row, index_col, Brush.Instance.brushThemes[Brush.Instance.currTileBrush], Brush.Instance.brushThemes[oldColor]);
+            for (int i = 0; i < 20; i++)
+            {
+                for (int j = 0; j < 20; j++)
+                {
+                    tileMapMain.FormatTileOrientation(i, j, TileEnums.EnviromentTiles.ground);
+                }
+            }
+            EventManagerUI.onTileMapEdit?.Invoke();
         }
 
     }
@@ -103,7 +123,7 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
             GetIndexFromCoordinates(eventData, out index_row, out index_col);
             selectedTile = tileMapMain.GetTileWithIndex(index_row, index_col);
             startcolor = selectedTile.image.color;
-            selectedTile.PaintTile(Color.red);
+            selectedTile.SetColor(Color.red);
     }
 
     private void DrawTile(PointerEventData eventData)
@@ -133,12 +153,16 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
             // column, row.
             Tile tile = tileMapMain.GetTileWithIndex(index_row, index_col);
             int index = Brush.Instance.currTileBrush;
-            tile.PaintTile(Brush.Instance.brushThemes[index], tileMapMain);
-            //if(tile.envTileID == TileEnums.EnviromentTiles.level_1)
-            //{
-            //    tileMapMain.FormatTileOrientation(tile.X, tile.Y, new HashSet<Tile>());
-            //}
-            //Debug.Log(tile.gameObj.name + "_" + tile.envTileID + " " + tile.decID);
+            tile.SetTheme(Brush.Instance.brushThemes[index]);
+            var region = tileMapMain.GetTileRegion(index_row, index_col);
+            var test = tileMapMain.GetRandomRegion(region.Item1, region.Item2);
+            for (int i = 0; i < 20; i++)
+            {
+                for (int j = 0; j < 20; j++)
+                {
+                    tileMapMain.FormatTileOrientation(i,j, TileEnums.EnviromentTiles.ground);
+                }
+            }
             EventManagerUI.onTileMapEdit?.Invoke();
         }
     }
@@ -151,7 +175,22 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
             Tile tile = tileMapMain.GetTileWithIndex(index_row, index_col);
             // zero index is always the empty decoration, that's why we add plus one to current brush index.
             int index = Brush.Instance.currDecBrush;
-            tile.PaintDecoration(Brush.Instance.decorations[index], tileMapMain);
+            tile.SetDecoration(Brush.Instance.decorations[index]);
+            if (tile.decID == TileEnums.Decorations.stairs)
+            {
+                
+                tileMapMain.SetStairsOrientationTile(tile);
+            }
+            else if (tile.decID == TileEnums.Decorations.empty)
+            {
+                for (int i = 0; i < 20; i++)
+                {
+                    for (int j = 0; j < 20; j++)
+                    {
+                        tileMapMain.FormatTileOrientation(i, j, TileEnums.EnviromentTiles.ground);
+                    }
+                }
+            }
             EventManagerUI.onTileMapEdit?.Invoke();
         }
     }
@@ -162,8 +201,6 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
         else if (type == 1) currentCursorType = CursorType.decoration;
         else if (type == 2) currentCursorType = CursorType.fill;
     }
-
-
 
     #region MonoBehaviour callbacks
 
@@ -177,21 +214,6 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
     void Update()
     {
     }
-
-
-
-    //void OnGUI()
-    //{
-    //    if (isSelecting)
-    //    {
-    //        // Create a rect from both mouse positions
-    //        var rect = Utils.GetScreenRect(startMousePos, Input.mousePosition);
-    //        Utils.DrawScreenRect(rect, new Color(0.8f, 0.8f, 0.95f, 0.25f));
-    //        Utils.DrawScreenRectBorder(rect, 2, new Color(0.8f, 0.8f, 0.95f));
-    //    }
-    //}
-
-
 
     #endregion
 }
@@ -245,3 +267,142 @@ public static class Utils
         Utils.DrawScreenRect(new Rect(rect.xMin, rect.yMax - thickness, rect.width, thickness), color);
     }
 }
+
+//    private const TileEnums.EnviromentTiles firstFloor = TileEnums.EnviromentTiles.level_1;
+//    public enum orientation { standalone, top, bottom, middle };
+
+//    public void FormatTileOrientation(int x, int y, HashSet<Tile> orientedTiles, orientation Orientation)
+//    {
+
+//        Tile tile = GetTileWithIndex(x, y);
+//        if (tile.envTileID != firstFloor || orientedTiles.Contains(tile))
+//        {
+//            return;
+//        }
+
+//        // 4 Neighbours in oder D , U, R, L.
+//        var neighbours = PathUtils.GetNeighboursCross(tile, this);
+
+//        //Standalone Tile : all neighbours not first floor.
+//        if (neighbours[0].envTileID != firstFloor && neighbours[1].envTileID != firstFloor &&
+//            neighbours[2].envTileID != firstFloor && neighbours[3].envTileID != firstFloor)
+//        {
+//            // Set Tile Standalone
+//            tile.FormatTileSprite(this, TileOrientations.Instance.MiddleOrientations[3]);
+//        }
+//        //Top tile : No first floor on top.
+//        else if (neighbours[0].envTileID == firstFloor && neighbours[1].envTileID != firstFloor)
+//        {
+//            // Set Tile top
+//            tile.FormatTileSprite(this, TileOrientations.Instance.TopOrientations[0]);
+//            orientedTiles.Add(tile);
+//            FormatTileOrientation(tile.X + 1, tile.Y, orientedTiles, orientation.top);
+//        }
+//        //Bottom tile : No first floor below.
+//        else if (neighbours[1].envTileID == firstFloor && neighbours[0].envTileID != firstFloor)
+//        {
+//            // Set Tile top
+//            tile.FormatTileSprite(this, TileOrientations.Instance.BottomOrientations[0]);
+//            orientedTiles.Add(tile);
+//            FormatTileOrientation(tile.X - 1, tile.Y, orientedTiles, orientation.bottom);
+//        }
+//        //Middle tile
+//        else if (neighbours[0].envTileID == firstFloor && neighbours[1].envTileID == firstFloor)
+//        {
+//            // Set Tile middle.
+//            tile.FormatTileSprite(this, TileOrientations.Instance.MiddleOrientations[0]);
+//            orientedTiles.Add(tile);
+//            //FormatTileOrientation(tile.X, tile.Y - 1, orientedTiles, orientation.middle);
+//            //FormatTileOrientation(tile.X, tile.Y + 1, orientedTiles, orientation.middle);
+//            //FormatTileOrientation(tile.X - 1, tile.Y, orientedTiles, orientation.middle);
+//            //FormatTileOrientation(tile.X + 1, tile.Y, orientedTiles, orientation.middle);
+//        }
+//        //Right
+//        if (neighbours[3].envTileID == firstFloor && neighbours[2].envTileID != firstFloor)
+//        {
+//            orientedTiles.Add(tile);
+//            var orientation = GetLeftTileOrientation(tile);
+//            //top right tile
+//            if (orientation == orientation.top)
+//            {
+//                tile.FormatTileSprite(this, TileOrientations.Instance.TopOrientations[2]);
+//                var leftTile = GetTileWithIndex(tile.X, tile.Y - 1);
+//                leftTile.FormatTileSprite(this, TileOrientations.Instance.TopOrientations[0]);
+//                FormatTileOrientation(tile.X + 1, tile.Y, orientedTiles, 0);
+//                FormatTileOrientation(tile.X - 1, tile.Y, orientedTiles, 0);
+//            }
+//            else if (orientation == orientation.bottom)
+//            {
+//                tile.FormatTileSprite(this, TileOrientations.Instance.BottomOrientations[2]);
+//                var leftTile = GetTileWithIndex(tile.X, tile.Y - 1);
+//                leftTile.FormatTileSprite(this, TileOrientations.Instance.BottomOrientations[0]);
+//                FormatTileOrientation(tile.X + 1, tile.Y, orientedTiles, 0);
+//                FormatTileOrientation(tile.X - 1, tile.Y, orientedTiles, 0);
+//            }
+//            else if (orientation == orientation.middle)
+//            {
+//                tile.FormatTileSprite(this, TileOrientations.Instance.MiddleOrientations[2]);
+//                var leftTile = GetTileWithIndex(tile.X, tile.Y - 1);
+//                leftTile.FormatTileSprite(this, TileOrientations.Instance.MiddleOrientations[0]);
+//                FormatTileOrientation(tile.X + 1, tile.Y, orientedTiles, 0);
+//                FormatTileOrientation(tile.X - 1, tile.Y, orientedTiles, 0);
+//            }
+//        }
+//        //left
+//        //else if (neighbours[2].envTileID == firstFloor && neighbours[3].envTileID != firstFloor)
+//        //{
+//        //    orientedTiles.Add(tile);
+//        //    var orientation = GetRightTileOrientation(tile);
+//        //    //top right tile
+//        //    if (orientation == orientation.top)
+//        //    {
+//        //        tile.FormatTileSprite(this, TileOrientations.Instance.TopOrientations[3]);
+//        //        var rightTile = GetTileWithIndex(tile.X, tile.Y + 1);
+//        //        rightTile.FormatTileSprite(this, TileOrientations.Instance.TopOrientations[0]);
+//        //    }
+//        //    else if (orientation == orientation.bottom)
+//        //    {
+//        //        tile.FormatTileSprite(this, TileOrientations.Instance.BottomOrientations[3]);
+//        //        var rightTile = GetTileWithIndex(tile.X, tile.Y + 1);
+//        //        rightTile.FormatTileSprite(this, TileOrientations.Instance.BottomOrientations[0]);
+//        //    }
+//        //    else if (orientation == orientation.middle)
+//        //    {
+//        //        tile.FormatTileSprite(this, TileOrientations.Instance.MiddleOrientations[3]);
+//        //        var rightTile = GetTileWithIndex(tile.X, tile.Y + 1);
+//        //        rightTile.FormatTileSprite(this, TileOrientations.Instance.MiddleOrientations[0]);
+//        //    }
+//        //}
+//    }
+
+//    private orientation GetLeftTileOrientation(Tile tile)
+//    {
+//        var left = PathUtils.GetNeighbours(tile, this)[3];
+//        var neighbours = PathUtils.GetNeighbours(left, this);
+//        if (neighbours[1].envTileID != firstFloor)
+//        {
+//            return orientation.top;
+//        }
+//        if (neighbours[0].envTileID != firstFloor)
+//        {
+//            return orientation.bottom;
+//        }
+//        return orientation.middle;
+//    }
+
+//    private orientation GetRightTileOrientation(Tile tile)
+//    {
+//        var right = PathUtils.GetNeighbours(tile, this)[2];
+//        var neighbours = PathUtils.GetNeighbours(right, this);
+//        if (neighbours[1].envTileID != firstFloor)
+//        {
+//            return orientation.top;
+//        }
+//        if (neighbours[0].envTileID != firstFloor)
+//        {
+//            return orientation.bottom;
+//        }
+//        return orientation.middle;
+//    }
+//}
+

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Stairs
   m_EditorClassIdentifier: 
   prefab: {fileID: 3768011750906037406, guid: a1b44120dc6fb804d83952ecf752dab4, type: 3}
-  sprite: {fileID: 21300002, guid: 2d36d676af707e94ead5901df984275e, type: 3}
+  sprite: {fileID: 21300000, guid: 69b335c6ab0024e419ce8317f8721a2d, type: 3}
   decorationID: 4

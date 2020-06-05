@@ -4,57 +4,101 @@ using UnityEngine;
 
 namespace TileMapLogic
 {
+    public struct OrientationMatrix
+    {
+        private char[,] _orientation;
+
+        public OrientationMatrix(char[,] orientation)
+        {
+            this._orientation = orientation;
+        }
+
+        public char[,] GetOrientation()
+        {
+            return _orientation;
+        }
+    }
+
     public partial class TileMap
     {
-        public void FormatTileOrientation(int x, int y, HashSet<Tile> orientedTiles)
+        public void FormatTileOrientation(int x, int y, TileEnums.EnviromentTiles tileType)
         {
-            var firstFloor = TileEnums.EnviromentTiles.level_1;
             Tile tile = GetTileWithIndex(x, y);
-            if(tile.envTileID != firstFloor || orientedTiles.Contains(tile))
+            if (tile.decID == TileEnums.Decorations.stairs)
+            {
+                SetStairsOrientationTile(tile);
+                //return;
+            }
+            else if (tile.envTileID != tileType)
             {
                 return;
             }
-            var neighbours = PathUtils.GetNeighboursCross(tile, this);
-            //Standalone
-            if(neighbours[1].envTileID != firstFloor && neighbours[0].envTileID != firstFloor)
+
+            var neighbours = PathUtils.GetNeighboursToArray(tile, this);
+            var orientation = new char[3,3];
+            for (int i = 0; i < 3; i++)
             {
-                // Set Tile Standalone
-                Debug.Log("Standalone");
-                tile.FormatTileSprite(this, TileOrientations.Instance.firstFloorOrientations[0]);
+                for (int j = 0; j < 3; j++)
+                {
+                    if(i == 1 && j == 1)
+                    {
+                        orientation[i, j] = 'X';
+                        continue;
+                    }
+                    if (neighbours[i, j] == null)
+                    {
+                        orientation[i, j] = 'I';
+                        continue;
+                    }
+                    if (neighbours[i, j].envTileID == tileType || neighbours[i, j].decID == TileEnums.Decorations.stairs)
+                    {
+                        orientation[i, j] = 'P';
+                    }
+                    else
+                    {
+                        orientation[i, j] = 'I';
+                    }
+                }
             }
-            //Top tile
-            else if(neighbours[0].envTileID == firstFloor && neighbours[1].envTileID != firstFloor)
-            {
-                // Set Tile top
-                Debug.Log("Top tile");
-                tile.FormatTileSprite(this, TileOrientations.Instance.firstFloorOrientations[1]);
-                orientedTiles.Add(tile);
-                FormatTileOrientation(tile.X + 1, tile.Y, orientedTiles);
-            }
-            //Bottom tile
-            else if (neighbours[1].envTileID == firstFloor && neighbours[0].envTileID != firstFloor)
-            {
-                // Set Tile bottom
-                Debug.Log("Bottom tile");
-                tile.FormatTileSprite(this, TileOrientations.Instance.firstFloorOrientations[2]);
-                orientedTiles.Add(tile);
-                FormatTileOrientation(tile.X - 1, tile.Y, orientedTiles);
-            }
-            //Middle tile
-            else if (neighbours[0].envTileID == firstFloor && neighbours[1].envTileID == firstFloor)
-            {
-                // Set Tile middle
-                Debug.Log("middle tile");
-                tile.FormatTileSprite(this, TileOrientations.Instance.firstFloorOrientations[3]);
-                orientedTiles.Add(tile);
-                FormatTileOrientation(tile.X + 1, tile.Y, orientedTiles);
-                FormatTileOrientation(tile.X - 1, tile.Y, orientedTiles);
-            }
+
+            //var tileMatrix = new OrientationMatrix(orientation);
+            TileOrientations.ruleTiles.TryGetValue(orientation, out var spriteDict);
+            
+            spriteDict.TryGetValue(orientation, out var tileSprite);
+
+            tile.FormatTileSprite(this, tileSprite);
         }
 
-        private void RecursiveOrientationCall(int x , int y)
+        public void SetStairsOrientationTile(Tile tile)
         {
-            
+            var stairNeighbours = PathUtils.GetNeighboursCross(tile, this);
+            float removePercent = 0.8f;
+            if (stairNeighbours[0].envTileID == TileEnums.EnviromentTiles.level_1)
+            {
+                TileOrientations.stairTiles.TryGetValue(TileOrientations.StairDirection.down, out var decSprite);
+                tile.FormatDecorationSprite(this, decSprite);
+                //tile.ResizeDecoration(tile.gameObj.transform.GetChild(0).gameObject, removePercent, 1.0f);
+            }
+            else if (stairNeighbours[1].envTileID == TileEnums.EnviromentTiles.level_1)
+            {
+                TileOrientations.stairTiles.TryGetValue(TileOrientations.StairDirection.up, out var decSprite);
+                tile.FormatDecorationSprite(this, decSprite);
+                //tile.ResizeDecoration(tile.gameObj.transform.GetChild(0).gameObject, removePercent, 1.0f);
+            }
+            else if (stairNeighbours[2].envTileID == TileEnums.EnviromentTiles.level_1)
+            {
+                TileOrientations.stairTiles.TryGetValue(TileOrientations.StairDirection.right, out var decSprite);
+                tile.FormatDecorationSprite(this, decSprite);
+                //tile.ResizeDecoration(tile.gameObj.transform.GetChild(0).gameObject, 1.0f, removePercent);
+            }
+            else if (stairNeighbours[3].envTileID == TileEnums.EnviromentTiles.level_1)
+            {
+                TileOrientations.stairTiles.TryGetValue(TileOrientations.StairDirection.left, out var decSprite);
+                tile.FormatDecorationSprite(this, decSprite);
+                //tile.ResizeDecoration(tile.gameObj.transform.GetChild(0).gameObject, 1.0f, removePercent);
+            }
         }
     }
+
+    
 }

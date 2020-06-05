@@ -22,10 +22,10 @@ public class SuggestiveReplacementButton : MonoBehaviour
         switch (replacementType)
         {
             case ReplacementType.classBalance:
-                MapSuggestionMng.OnBalancedCharacters += ActivateButton;
+                MapSuggestionMng.onCharactersBalanced += ActivateButton;
                 break;
             case ReplacementType.pickUpPlacementKR:
-                MapSuggestionMng.OnGeneratedPickUps += ActivateButton;
+                MapSuggestionMng.onPickUpsGenerated += ActivateButton;
                 break;
             default:
                 break;

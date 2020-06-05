@@ -14,27 +14,18 @@ public class MetricsManager : MonoBehaviour
     public DeathHeatmap heatmapUI;
     public LineChartCtrl daChart;
     public LineChartCtrl cpChart;
-    public ProgressBar killRatioBar;
+    public GameObject killRatioBar;
+    public TextMeshProUGUI killRatioTextBlue;
+    public TextMeshProUGUI killRatioTextRed;
     public TextMeshProUGUI GameDurationText;
+    public Image GameDurationRadialBar;
     public Button classBalanceBtn;
     public Button pickUpsBalanceBtn;
 
-    private void OnEnable()
-    {
-        OnBalancedCharacters += SetClassBalanceBtn;
-        OnGeneratedPickUps += SetPickupsBtn;
-    }
-
-    private void OnDisable()
-    {
-        OnBalancedCharacters -= SetClassBalanceBtn;
-        OnGeneratedPickUps -= SetPickupsBtn;
-    }
-
     public void Start()
     {
-        classBalanceBtn.interactable = false;
-        pickUpsBalanceBtn.interactable = false;
+        //classBalanceBtn.interactable = false;
+        //pickUpsBalanceBtn.interactable = false;
     }
 
     public void DeathHeatmapButtonListener(float[,] heatmap)
@@ -70,51 +61,57 @@ public class MetricsManager : MonoBehaviour
 
     public void GenerateCombatPaceGraph(float[] combat_pace)
     {
-
+        cpChart.SetChartData(combat_pace);
     }
 
     public void SetKillRatioProgressBar(float percent)
     {
-        killRatioBar.currentPercent = percent;
-        var child = killRatioBar.transform.GetChild(0);
-        var loadingBar = child.GetChild(0).GetComponent<Image>();
-        if(percent > 60.0f)
-        {
-            loadingBar.color = Color.red;
-        }
-        else if(percent < 40.0f)
-        {
-            loadingBar.color = Color.blue;
-        }
-        else
-        {
-            loadingBar.color = new Color32(255,133,0,255);
-        }
+        var fillAmountBlue = killRatioBar.transform.GetChild(0).GetComponent<Image>();
+        var fillAmountRed = killRatioBar.transform.GetChild(1).GetComponent<Image>();
+        var blueAmount = (1 - percent) * 100.0f;
+        var redAmount = percent* 100.0f;
+        fillAmountBlue.fillAmount = blueAmount / 100.0f;
+        fillAmountRed.fillAmount = redAmount / 100.0f;
+        killRatioTextBlue.text = $"{blueAmount.ToString("F0")} %";
+        killRatioTextRed.text =  $"{redAmount.ToString("F0")} %";
     }
 
     public void SetGameDurationText(float value)
     {
+        //reverse min max normalized value.
+        float timeSecs = (value * 450) + 150; 
         if (value < 0.28f)
         {
-            GameDurationText.text = "Short";
+            GameDurationText.text = (Mathf.Floor(timeSecs) / 60.0f).ToString("F0") + " min (Short)";
         }
         else if (value >= 0.28f && value < 0.43f)
         {
-            GameDurationText.text = "Medium";
+            GameDurationText.text = (Mathf.Floor(timeSecs) / 60.0f).ToString("F0") + "  min (Medium)";
         }
         else
         {
-            GameDurationText.text = "Long";
+            GameDurationText.text = (Mathf.Floor(timeSecs) / 60.0f).ToString("F0") + "  min (Long)";
         }
+
+        // total amount of match duration is 600 secs.
+        GameDurationRadialBar.fillAmount = timeSecs / 600.0f;
     }
 
-    public void SetPickupsBtn(bool value)
+    public static void SetKillRatioBar(float blueAmount, float redAmount, GameObject killRatioBar)
     {
-        pickUpsBalanceBtn.interactable = value;
+        var fillAmountBlue = killRatioBar.transform.GetChild(0).GetComponent<Image>();
+        var fillAmountRed = killRatioBar.transform.GetChild(1).GetComponent<Image>();
+        fillAmountBlue.fillAmount = blueAmount;
+        fillAmountRed.fillAmount = redAmount;
     }
 
-    public void SetClassBalanceBtn(bool value)
+    public static float CalculateRatioDifference(float newPercent, float curPercent)
     {
-        classBalanceBtn.interactable = value;
+        var suggestedKR = Mathf.Abs(0.5f - newPercent);
+        var currentKR = Mathf.Abs(0.5f - curPercent);
+        if (currentKR == 0.0f) return 0.0f;
+        // we divide by the desired number(0.5) so we get the percentage error (mathematical measurement).
+        var result = (suggestedKR - currentKR) / 0.5f;
+        return result * 100;
     }
 }

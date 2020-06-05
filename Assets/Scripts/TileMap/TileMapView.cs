@@ -7,7 +7,7 @@ using TileMapLogic;
 public class TileMapView : MonoBehaviour
 {
     public RectTransform gridRect;
-    protected GridLayoutGroup gridLayoutGroup;
+    public GridLayoutGroup gridLayoutGroup;
 
 
     public void Awake()
@@ -15,7 +15,7 @@ public class TileMapView : MonoBehaviour
         InitView();
     }
 
-    public virtual void InitView()
+    public void InitView()
     {
         gridRect = GetComponent<RectTransform>();
         gridLayoutGroup = GetComponent<GridLayoutGroup>();
