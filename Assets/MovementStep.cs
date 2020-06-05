@@ -11,13 +11,13 @@ public class MovementStep : MonoBehaviour
     private void OnEnable()
     {
         //EventManagerUI.onPlayableMap += SetText;
-        EventManagerUI.onTileMapEdit += SetText;
+        EventManagerUI.onSingleClickEdit += SetText;
     }
 
     private void OnDisable()
     {
         //EventManagerUI.onPlayableMap -= SetText;
-        EventManagerUI.onTileMapEdit -= SetText;
+        EventManagerUI.onSingleClickEdit -= SetText;
     }
 
     private void Start()

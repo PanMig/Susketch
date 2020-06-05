@@ -101,7 +101,7 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
                     tileMapMain.FormatTileOrientation(i, j, TileEnums.EnviromentTiles.ground);
                 }
             }
-            EventManagerUI.onTileMapEdit?.Invoke();
+            EventManagerUI.onSingleClickEdit?.Invoke();
         }
 
     }
@@ -163,7 +163,7 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
                     tileMapMain.FormatTileOrientation(i,j, TileEnums.EnviromentTiles.ground);
                 }
             }
-            EventManagerUI.onTileMapEdit?.Invoke();
+            EventManagerUI.onSingleClickEdit?.Invoke();
         }
     }
 
@@ -191,7 +191,7 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
                     }
                 }
             }
-            EventManagerUI.onTileMapEdit?.Invoke();
+            EventManagerUI.onSingleClickEdit?.Invoke();
         }
     }
 

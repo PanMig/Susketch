@@ -16,7 +16,7 @@ public class TileOccurences : MonoBehaviour
     public void OnEnable()
     {
         AuthoringTool.onMapInitEnded += SetTextValues;
-        EventManagerUI.onTileMapEdit += SetTextValues;
+        EventManagerUI.onSingleClickEdit += SetTextValues;
         MiniMap.onMiniMapApply += SetTextValues;
         AuthoringTool.onMapLoaded += SetTextValues;
     }
@@ -24,7 +24,7 @@ public class TileOccurences : MonoBehaviour
     public void OnDisable()
     {
         AuthoringTool.onMapInitEnded -= SetTextValues;
-        EventManagerUI.onTileMapEdit -= SetTextValues;
+        EventManagerUI.onSingleClickEdit -= SetTextValues;
         MiniMap.onMiniMapApply -= SetTextValues;
         AuthoringTool.onMapLoaded -= SetTextValues;
     }

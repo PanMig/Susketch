@@ -100,7 +100,7 @@ public class TileMapRepair
         }
 
         int holesCount = 0;
-        int stairCount = 0;
+        int holeStairsCount = 0;
         HashSet<Vector2> tilesVisited = new HashSet<Vector2>();
         for (int i = 0; i < TileMap.rows; i++)
         {
@@ -112,12 +112,30 @@ public class TileMapRepair
                     PathUtils.FloodFill(i, j, 0, 3, tempMap);
                     tilesVisited.Add(v);
                     holesCount++;
+                }
+            }
+        }
+
+        for (int i = 0; i < TileMap.rows; i++)
+        {
+            for (int j = 0; j < TileMap.columns; j++)
+            {
+                if (tempMap[i, j] == 3)
+                {
                     if (map.GetTileWithIndex(i, j).decID == Decorations.stairs)
                     {
-                        stairCount++;
+                        holeStairsCount++;
                     }
                 }
             }
+        }
+
+        Debug.Log("holes" + holesCount);
+        Debug.Log("stairs " + holeStairsCount);
+
+        if (holesCount > holeStairsCount)
+        {
+            return false;
         }
 
         return true;
@@ -138,7 +156,7 @@ public class TileMapRepair
             }
             for (int j = 0; j < neighbours.Count; j++)
             {
-                if (neighbours[j].envTileID == TileEnums.EnviromentTiles.level_2)
+                if (neighbours[j].envTileID == TileEnums.EnviromentTiles.level_2 && (j == 0 || j == 1))
                 {
                     return false;
                 }
@@ -164,38 +182,40 @@ public class TileMapRepair
         // 1: Bases should be traversable.
         if (!IsTraversable(map))
         {
-            SetErrorMsg("Bases are not traversable");
+            SetErrorMsg("Bases are not traversable.");
             return false;
         }
 
         // 2: Every player must reach all power ups.
         if (!HasAccesiblePowerUps(map))
         {
-            SetErrorMsg("Not all power ups are available to players");
+            SetErrorMsg("Not all power ups are available to the players.");
             return false;
         }
 
         // 3: First floor platform should always be connected to a stair
         if (!ArePlatformsConnectedToStairs(map))
         {
-            SetErrorMsg("Platform not connected to a stair");
+            SetErrorMsg("Platform is not connected to a stair.");
             return false;
         }
 
-        // 4: Make sure player can get out of first floor closed areas (a stair exists inside hole)
-        if (!HasExitFromClosedPlatform(map))
-        {
-            SetErrorMsg("There is not exit from first floor region");
-            return false;
-        }
-
-        // 5: A stair should always lead to first floor tiles
+        // 4: A stair should always lead to first floor tiles
         if (!AreStairsConnectedToFirstFloor(map))
         {
             SetErrorMsg("Stair is wrongly connected. It either leads to a wall, is cornered by two or more level1 tiles, " +
-                "or does not lead to first level floor");
+                        "or does not lead to first level floor.");
             return false;
         }
+
+        // 5: Make sure player can get out of first floor closed areas (a stair exists inside hole)
+        if (!HasExitFromClosedPlatform(map))
+        {
+            SetErrorMsg("There is no stair in ground region surrounded by first floor tiles.");
+            return false;
+        }
+
+        
 
         return true;
     }

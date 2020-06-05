@@ -50,7 +50,7 @@ public class PathManager : MonoBehaviour
 
     private void Start()
     {
-        EventManagerUI.onTileMapEdit += PathHighlightListener;
+        EventManagerUI.onSingleClickEdit += PathHighlightListener;
     }
 
     public void SetPathTarget(int value)

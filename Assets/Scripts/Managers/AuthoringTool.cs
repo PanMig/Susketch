@@ -51,33 +51,27 @@ public class AuthoringTool : MonoBehaviour
     private void OnEnable()
     {
         //onTileMapEdit is fired when a tile or decoration is added to the map.
-        EventManagerUI.onTileMapEdit += PaintTeamRegions;
-        EventManagerUI.onTileMapEdit += CheckTileMapListener;
+        EventManagerUI.onSingleClickEdit += PaintTeamRegions;
+        EventManagerUI.onSingleClickEdit += CheckTileMapListener;
         
-        //onMapReadyForPrediction is fired on End of drag and pointer up.
-        EventManagerUI.onMapReadyForPrediction += InvokeMetrics;
-        EventManagerUI.onMapReadyForPrediction += CalculateBalancedPickUpsAsync;
-        EventManagerUI.onMapReadyForPrediction += CalculateClassBalanceAsync;
+        //onMapReadyForPrediction is fired on End of drag AND pointer up.
+        EventManagerUI.onMapReadyForPrediction += InvokeSurrogateModels;
 
         // CharacterClassMng is fired when the class selector is edited.
-        CharacterClassMng.onClassSelectorEdit += InvokeMetrics;
-        CharacterClassMng.onClassSelectorEdit += CalculateClassBalanceAsync;
+        CharacterClassMng.onClassSelectorEdit += InvokeSurrogateModels;
 
         // When minimap is applied.
-        MiniMap.onMiniMapApply += InvokeMetrics;
+        MiniMap.onMiniMapApply += InvokeSurrogateModels;
         MiniMap.onMiniMapApply += PaintTeamRegions;
     }
 
     private void OnDisable()
     {
-        EventManagerUI.onTileMapEdit -= PaintTeamRegions;
-        EventManagerUI.onTileMapEdit -= CheckTileMapListener;
-        EventManagerUI.onMapReadyForPrediction -= InvokeMetrics;
-        EventManagerUI.onMapReadyForPrediction -= CalculateClassBalanceAsync;
-        CharacterClassMng.onClassSelectorEdit -= InvokeMetrics;
-        CharacterClassMng.onClassSelectorEdit -= CalculateBalancedPickUpsAsync;
-        CharacterClassMng.onClassSelectorEdit -= CalculateClassBalanceAsync;
-        MiniMap.onMiniMapApply -= InvokeMetrics;
+        EventManagerUI.onSingleClickEdit -= PaintTeamRegions;
+        EventManagerUI.onSingleClickEdit -= CheckTileMapListener;
+        EventManagerUI.onMapReadyForPrediction -= InvokeSurrogateModels;
+        CharacterClassMng.onClassSelectorEdit -= InvokeSurrogateModels;
+        MiniMap.onMiniMapApply -= InvokeSurrogateModels;
         MiniMap.onMiniMapApply -= PaintTeamRegions;
     }
 
@@ -155,7 +149,7 @@ public class AuthoringTool : MonoBehaviour
             Destroy(tempView);
             CheckTileMapListener();
             //PaintTeamRegions();
-            InvokeMetrics();
+            InvokeSurrogateModels();
             CalculateClassBalanceAsync();
             CalculateBalancedPickUpsAsync();
             onMapLoaded?.Invoke();
@@ -179,19 +173,30 @@ public class AuthoringTool : MonoBehaviour
         SetTileOrientation();
         CheckTileMapListener();
         PaintTeamRegions();
-        InvokeMetrics();
-        CalculateClassBalanceAsync();
-        CalculateBalancedPickUpsAsync();
+        InvokeSurrogateModels();
         onMapLoaded?.Invoke();
     }
 
-    public void InvokeMetrics()
+    public void InvokeSurrogateModels()
     {
-        DeathHeatmapListenerSmall();
-        DramaticArcListener();
-        CombatPaceListener();
-        KillRatioListener();
-        GameDurationListener();
+        if (TileMapPlayable())
+        {
+            DeathHeatmapListenerSmall();
+            DramaticArcListener();
+            CombatPaceListener();
+            KillRatioListener();
+            GameDurationListener();
+
+            // Procedural suggestions
+            InvokeSuggestions();
+        }
+
+    }
+
+    public void InvokeSuggestions()
+    {
+        CalculateClassBalanceAsync();
+        CalculateBalancedPickUpsAsync();
     }
 
     public async void DeathHeatmapListenerOverlay()
@@ -205,7 +210,7 @@ public class AuthoringTool : MonoBehaviour
 
     public async void DeathHeatmapListenerSmall()
     {
-        if (!_heatmapTaskBusy && TileMapPlayable())
+        if (!_heatmapTaskBusy)
         {
             _heatmapTaskBusy = true;
             SetModelInput();
@@ -218,7 +223,7 @@ public class AuthoringTool : MonoBehaviour
 
     public async void DramaticArcListener()
     {
-        if (!_daTaskBusy && TileMapPlayable())
+        if (!_daTaskBusy)
         {
             _daTaskBusy = true;
             SetModelInput();
@@ -230,7 +235,7 @@ public class AuthoringTool : MonoBehaviour
 
     public async void CombatPaceListener()
     {
-        if(!_cpTaskBusy && TileMapPlayable())
+        if(!_cpTaskBusy)
         {
             _cpTaskBusy = true;
             SetModelInput();
@@ -247,7 +252,7 @@ public class AuthoringTool : MonoBehaviour
 
     public async void KillRatioListener()
     {
-        if (!_krTaskBusy && TileMapPlayable())
+        if (!_krTaskBusy)
         {
             _krTaskBusy = true;
             SetModelInput();
@@ -261,7 +266,7 @@ public class AuthoringTool : MonoBehaviour
 
     public async void GameDurationListener()
     {
-        if (!_durationTaskBusy && TileMapPlayable())
+        if (!_durationTaskBusy)
         {
             _durationTaskBusy = true;
             SetModelInput();
@@ -281,7 +286,7 @@ public class AuthoringTool : MonoBehaviour
 
     public async void CalculateClassBalanceAsync()
     {
-        if (!MapSuggestionMng.classBalanceTaskBusy && TileMapPlayable())
+        if (!MapSuggestionMng.classBalanceTaskBusy)
         {
             onCharactersBalanced?.Invoke(false);
             var balanced_classes = await GetBalancedMatchUpAsynchronous(FPSClasses.distinctMatches, GetInputMap(tileMapMain));
@@ -295,7 +300,7 @@ public class AuthoringTool : MonoBehaviour
 
     public async void CalculateBalancedPickUpsAsync()
     {
-        if (!MapSuggestionMng.pickUpsTaskBusy && TileMapPlayable())
+        if (!MapSuggestionMng.pickUpsTaskBusy)
         {
             var randomMutation = await SpawnPickupsAsynchronous(tileMapMain, Enums.PowerUpPlacement.random);
             onMapMutationRandom?.Invoke(randomMutation);
