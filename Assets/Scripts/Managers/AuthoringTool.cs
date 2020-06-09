@@ -303,9 +303,9 @@ public class AuthoringTool : MonoBehaviour
     {
         if (!MapSuggestionMng.pickUpsTaskBusy)
         {
-            var randomMutation = await SpawnPickupsAsynchronous(tileMapMain, Enums.PowerUpPlacement.random);
+            var randomMutation = await SpawnPickupsAsynchronous(tileMapMain, Enums.PowerUpPlacement.randomReplacement);
             onMapMutationRandom?.Invoke(randomMutation);
-            var regionShift = await SpawnPickupsAsynchronous(tileMapMain, Enums.PowerUpPlacement.regionShift);
+            var regionShift = await SpawnPickupsAsynchronous(tileMapMain, Enums.PowerUpPlacement.typeAlteration);
             onMapMutationRegionShift?.Invoke(regionShift);
             _loadingMapTaskBusy = false;
         }

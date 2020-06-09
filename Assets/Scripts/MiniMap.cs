@@ -22,13 +22,13 @@ public class MiniMap : MonoBehaviour
         AuthoringTool.onMapInitEnded += Init;
         switch (type)
         {
-            case Enums.PowerUpPlacement.random:
+            case Enums.PowerUpPlacement.randomReplacement:
                 AuthoringTool.onMapMutationRandom += SetMiniMap;
                 break;
-            case Enums.PowerUpPlacement.regionShift:
+            case Enums.PowerUpPlacement.regionSwap:
                 AuthoringTool.onMapMutationRegionShift += SetMiniMap;
                 break;
-            case Enums.PowerUpPlacement.typeReplace:
+            case Enums.PowerUpPlacement.typeAlteration:
                 AuthoringTool.onMapMutationRegionShift += SetMiniMap;
                 break;
         }

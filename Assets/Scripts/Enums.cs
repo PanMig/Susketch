@@ -13,8 +13,9 @@ public static class Enums
 
     public enum PowerUpPlacement
     {
-        random,
-        regionShift,
-        typeReplace,
+        randomReplacement,
+        regionSwap,
+        typeAlteration,
+        positionShift
     }
 }
