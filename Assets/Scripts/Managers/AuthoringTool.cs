@@ -132,6 +132,7 @@ public class AuthoringTool : MonoBehaviour
             GameObject tempView = new GameObject("TempView");
             var randomMap = new TileMap();
             randomMap.Init();
+            randomMap.InitRegions();
             randomMap.PaintTiles(tempView.transform, 1.0f);
 
             if (mapIndex <= PREDEFINED_MAPS)

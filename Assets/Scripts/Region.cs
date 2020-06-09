@@ -41,6 +41,23 @@ public class Region
         return tiles;
     }
 
+    public List<Tile> GetEnvironmentalTiles(TileEnums.EnviromentTiles tileId)
+    {
+        List<Tile> tileList = new List<Tile>();
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                var tile = tileSet[i, j];
+                if (tile.envTileID == tileId && tile.decID != TileEnums.Decorations.stairs)
+                {
+                    tileList.Add(tile);
+                }
+            }
+        }
+        return tileList;
+    }
+
     public int GetPickUpsNumber()
     {
         int count = 0;

@@ -130,9 +130,6 @@ public class TileMapRepair
             }
         }
 
-        Debug.Log("holes" + holesCount);
-        Debug.Log("stairs " + holeStairsCount);
-
         if (holesCount > holeStairsCount)
         {
             return false;

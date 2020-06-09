@@ -13,6 +13,8 @@ namespace TileMapLogic
         public static readonly int rows = 20;
         public static readonly int columns = 20;
         private static readonly int CELL_PER_REGION = 5;
+        private static readonly int REGION_ROWS = 4;
+        private static readonly int REGION_COLS = 4;
         protected Tile[,] tileMap;
         public Region[,] Regions = new Region[4, 4];
 
@@ -233,12 +235,38 @@ namespace TileMapLogic
                 col = rangeY.ElementAt(col_index);
                 return new Tuple<int, int>(row, col);
             }
+            // -1 case means that no region to be removed is given.
             else
             {
                 row = rand.Next(0, 3);
                 col = rand.Next(0, 3);
                 return new Tuple<int, int>(row, col);
             }
+        }
+
+        public Tuple<int, int> GetRandomRegionWithNoPowerUps(int removeX, int removeY, List<Tile>[,] validLocations)
+        {
+            var rand = new System.Random();
+            int row, col = 0;
+      
+            var rangeX = Enumerable.Range(0, 4).Where(i => i != removeY);
+            var rangeY = Enumerable.Range(0, 4).Where(i => i != removeX);
+
+            List<Tuple<int,int>> validRegions = new List<Tuple<int, int>>();
+
+            foreach (var x in rangeX)
+            {
+                foreach (var y in rangeY)
+                {
+                    if (Regions[x, y].GetPickUpsNumber() == 0 && validLocations[x,y].Count > 0)
+                    {
+                        validRegions.Add(new Tuple<int, int>(x,y));
+                    }
+                }
+            }
+
+            int random_idx = rand.Next(0, validRegions.Count);
+            return validRegions[random_idx];
         }
 
         public Tuple<int,int> GetTileRegion(int tile_X, int tile_Y)
