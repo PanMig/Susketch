@@ -13,81 +13,120 @@ public class RandomReplacement : IPowerupPlacement
     private const int GENERATIONS = 10;
     private const float THRESHOLD = 0.5f;
 
-    public async Task<List<KeyValuePair<TileMap, float>>> ChangePowerUps(TileMap tilemapMain)
+    public  Task<List<KeyValuePair<Tile[,], float>>> ChangePowerUps(TileMap tilemapMain)
     {
-        //used for spawning the new tiles and delete them after the search process.
         MapSuggestionMng.tempView = new GameObject("TempView");
-        var tempMap = tilemapMain.GetTileMap();
-        Dictionary<TileMap, float> mapsDict = new Dictionary<TileMap, float>();
+        // create a deep copy of the main tileMap.
+        var tempMap = new TileMap();
+        tempMap.Init();
+        tempMap.InitRegions();
+        tempMap.PaintTiles(MapSuggestionMng.tempView.transform, 1.0f);
+        tempMap.SetTileMap(tilemapMain.GetTileMap());
+        tempMap.RemoveDecorations();
 
-        //Get a 2D array with all valid for placement ground and first level tiles.
-        var placementLocations = MapSuggestionMng.GetValidPlacementLocations(tilemapMain);
-
-        for (int m = 0; m < GENERATIONS; m++)
+        var task = Task.Run(() =>
         {
-            var map = new TileMap();
-            map.Init();
-            map.PaintTiles(MapSuggestionMng.tempView.transform, 1.0f);
-            map.SetTileMap(tempMap);
+            // dictionary to keep the generated maps and scores
+            Dictionary<Tile[,], float> mapsDict = new Dictionary<Tile[,], float>(new TileMapComparer());
 
-            // this will erase all previous decorations on the main map.
-            map.RemoveDecorations();
-            map = await SetPickUpsLocations(map, placementLocations).ConfigureAwait(false);
-            var score = await PredictKillRatio(GetInputMap(map), GetInputWeapons(CharacterClassMng.Instance.BlueClass, CharacterClassMng.Instance.RedClass));
-            mapsDict.Add(map, score);
-            await new WaitForEndOfFrame();
-        }
+            //Get a 2D array with all valid for placement ground and first level tiles.
+            var placementLocations = MapSuggestionMng.GetValidPlacementLocations(tempMap);
 
-        var balancedMaps = (from pair in mapsDict
-            orderby Math.Abs(pair.Value - THRESHOLD)
-            select pair).ToList();
-        return balancedMaps;
+            for (int m = 0; m < GENERATIONS; m++)
+            {
+                var map = TileMap.GetMapDeepCopy(tempMap.GetTileMap());
+                map = SetPickUpsLocations(map, placementLocations);
+                var score = PredictKillRatioSynchronous(GetInputMap(map), GetInputWeapons(CharacterClassMng.Instance.BlueClass, CharacterClassMng.Instance.RedClass));
+                mapsDict.Add(map, score);
+                //await new WaitForEndOfFrame();
+            }
+            
+            var balancedMaps = (from pair in mapsDict
+                                orderby Math.Abs(pair.Value - THRESHOLD)
+                                select pair).ToList();
+            return balancedMaps;
+        });
+        return task;
     }
 
-    private Task<TileMap> SetPickUpsLocations(TileMap map, List<Tile>[,] validLocations)
+
+    private Tile[,] SetPickUpsLocations(Tile[,] map, List<Tile>[,] validLocations)
     {
-        MapSuggestionMng.pickUpsTask = Task.Run(() =>
+        int powerUpRoll;
+        //iterate regions.
+        for (int i = 0; i < 4; i++)
         {
-            int powerUpRoll;
-            //iterate regions.
-            for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 4; j++)
             {
-                for (int j = 0; j < 4; j++)
+                if (validLocations[i, j].Count == 0)
                 {
-                    if (validLocations[i, j].Count == 0)
-                    {
-                        continue;
-                    }
+                    continue;
+                }
 
-                    powerUpRoll = MapSuggestionMng.RNG.Next(1, 5);
-                    var randomIdx = MapSuggestionMng.RNG.Next(0, validLocations[i, j].Count);
-                    Tile fillTile;
+                powerUpRoll = MapSuggestionMng.RNG.Next(1, 5);
+                var randomIdx = MapSuggestionMng.RNG.Next(0, validLocations[i, j].Count);
+                Tile fillTile = validLocations[i, j][randomIdx];
 
-                    if (powerUpRoll == (int)MapSuggestionMng.pickups.health)
-                    {
-                        fillTile = validLocations[i, j][randomIdx];
-                        fillTile.decID = TileEnums.Decorations.healthPack;
-                    }
-                    else if (powerUpRoll == (int)MapSuggestionMng.pickups.armor)
-                    {
-                        fillTile = validLocations[i, j][randomIdx];
-                        fillTile.decID = TileEnums.Decorations.armorVest;
-                    }
-                    else if (powerUpRoll == (int)MapSuggestionMng.pickups.damage)
-                    {
-                        fillTile = validLocations[i, j][randomIdx];
-                        fillTile.decID = TileEnums.Decorations.damageBoost;
-                    }
-                    else
-                    {
-                        fillTile = validLocations[i, j][randomIdx];
-                        fillTile.decID = TileEnums.Decorations.empty;
-                    }
-                    map.SetTileMapTile(fillTile);
+                if (powerUpRoll == (int)MapSuggestionMng.pickups.health)
+                {
+                    map[fillTile.X, fillTile.Y].decID = TileEnums.Decorations.healthPack;
+                }
+                else if (powerUpRoll == (int)MapSuggestionMng.pickups.armor)
+                {
+                    map[fillTile.X, fillTile.Y].decID = TileEnums.Decorations.armorVest;
+                }
+                else if (powerUpRoll == (int)MapSuggestionMng.pickups.damage)
+                {
+                    map[fillTile.X, fillTile.Y].decID = TileEnums.Decorations.damageBoost;
+                }
+                else
+                {
+                    map[fillTile.X, fillTile.Y].decID = TileEnums.Decorations.empty;
                 }
             }
-            return map;
-        });
-        return MapSuggestionMng.pickUpsTask;
+        }
+        return map;
     }
+
+    //private Task<Tile[,]> SetPickUpsLocations(Tile[,] map, List<Tile>[,] validLocations)
+    //    {
+    //        var task = Task.Run(() =>
+    //        {
+    //            int powerUpRoll;
+    //            //iterate regions.
+    //            for (int i = 0; i < 4; i++)
+    //            {
+    //                for (int j = 0; j < 4; j++)
+    //                {
+    //                    if (validLocations[i, j].Count == 0)
+    //                    {
+    //                        continue;
+    //                    }
+
+    //                    powerUpRoll = MapSuggestionMng.RNG.Next(1, 5);
+    //                    var randomIdx = MapSuggestionMng.RNG.Next(0, validLocations[i, j].Count);
+    //                    Tile fillTile = validLocations[i, j][randomIdx];
+
+    //                    if (powerUpRoll == (int)MapSuggestionMng.pickups.health)
+    //                    {
+    //                        map[fillTile.X, fillTile.Y].decID = TileEnums.Decorations.healthPack;
+    //                    }
+    //                    else if (powerUpRoll == (int)MapSuggestionMng.pickups.armor)
+    //                    {
+    //                        map[fillTile.X, fillTile.Y].decID = TileEnums.Decorations.armorVest;
+    //                    }
+    //                    else if (powerUpRoll == (int)MapSuggestionMng.pickups.damage)
+    //                    {
+    //                        map[fillTile.X, fillTile.Y].decID = TileEnums.Decorations.damageBoost;
+    //                    }
+    //                    else
+    //                    {
+    //                        map[fillTile.X, fillTile.Y].decID = TileEnums.Decorations.empty;
+    //                    }
+    //                }
+    //            }
+    //            return map;
+    //        });
+    //        return task;
+    //    }
 }

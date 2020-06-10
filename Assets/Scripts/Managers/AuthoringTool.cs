@@ -28,7 +28,7 @@ public class AuthoringTool : MonoBehaviour
     public delegate void OnMapLoaded();
     public static event OnMapLoaded onMapLoaded;
 
-    public delegate void OnMapSuggestionsReady(List<KeyValuePair<TileMap,float>> balancedMaps);
+    public delegate void OnMapSuggestionsReady(List<KeyValuePair<Tile[,], float>> balancedMaps);
     public static event OnMapSuggestionsReady onPowerupsReplacement;
     public static event OnMapSuggestionsReady onPowerupsAdjucement;
 
@@ -305,8 +305,8 @@ public class AuthoringTool : MonoBehaviour
         {
             var replacements = await SpawnPickupsAsynchronous(tileMapMain, Enums.PowerUpPlacement.randomReplacement);
             onPowerupsReplacement?.Invoke(replacements);
-            //var adjustments = await SpawnPickupsAsynchronous(tileMapMain, Enums.PowerUpPlacement.typeAlteration);
-            //onPowerupsAdjucement?.Invoke(adjustments);
+            var adjustments = await SpawnPickupsAsynchronous(tileMapMain, Enums.PowerUpPlacement.regionSwap);
+            onPowerupsAdjucement?.Invoke(adjustments);
             _loadingMapTaskBusy = false;
         }
     }

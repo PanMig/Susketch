@@ -4,18 +4,15 @@ using UnityEngine;
 using System.Linq;
 using NumSharp;
 using System;
-using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
-using Google.Protobuf.WellKnownTypes;
 using static TFModel;
 using TileMapLogic;
 using static AuthoringTool;
-using UnityEngine.UI;
 
 public class MapSuggestionMng : MonoBehaviour
 {
     public enum pickups { none, health, armor, damage };
-    public static Task<TileMap> pickUpsTask;
+    public static Task<Tile[,]> pickUpsTask;
     public static bool pickUpsTaskBusy;
     public static bool classBalanceTaskBusy;
     public static GameObject tempView;
@@ -79,11 +76,11 @@ public class MapSuggestionMng : MonoBehaviour
 
     #region Pickups Placement
 
-    public static async Task<List<KeyValuePair<TileMap, float>>> SpawnPickupsAsynchronous(TileMap tilemapMain, Enums.PowerUpPlacement replaceType)
+    public static async Task<List<KeyValuePair<Tile[,], float>>> SpawnPickupsAsynchronous(TileMap tilemapMain, Enums.PowerUpPlacement replaceType)
     {
         pickUpsTaskBusy = true;
         onPickUpsGenerated?.Invoke(false);
-        List<KeyValuePair<TileMap, float>> maps;
+        List<KeyValuePair<Tile[,], float>> maps;
         if (replaceType == Enums.PowerUpPlacement.randomReplacement)
         {
             var rndReplacement = new RandomReplacement();
@@ -94,15 +91,17 @@ public class MapSuggestionMng : MonoBehaviour
             var regSwap = new RegionSwap();
             maps = await regSwap.ChangePowerUps(tilemapMain);
         }
-        else if (replaceType == Enums.PowerUpPlacement.typeAlteration)
-        {
-            var typeAlter = new TypeAlteration();
-            maps = await typeAlter.ChangePowerUps(tilemapMain);
-        }
+        //else if (replaceType == Enums.PowerUpPlacement.typeAlteration)
+        //{
+        //    var typeAlter = new TypeAlteration();
+        //    maps = await typeAlter.ChangePowerUps(tilemapMain);
+        //}
         else
         {
-            var posShift = new PositionShift();
-            maps = await posShift.ChangePowerUps(tilemapMain);
+            //var posShift = new PositionShift();
+            //maps = await posShift.ChangePowerUps(tilemapMain);
+            var rndReplacement = new RandomReplacement();
+            maps = await rndReplacement.ChangePowerUps(tilemapMain);
         }
         onPickUpsGenerated?.Invoke(true);
         pickUpsTaskBusy = false;

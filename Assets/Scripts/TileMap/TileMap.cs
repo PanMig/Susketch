@@ -143,6 +143,76 @@ namespace TileMapLogic
             return tileMap[row, col];
         }
 
+        public static Tile[,] GetMapDeepCopy(Tile[,] inputMap)
+        {
+            var map = new Tile[rows, columns];
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    map[i,j] = new Tile(TileEnums.EnviromentTiles.ground, TileEnums.Decorations.empty, i, j);
+                    map[i, j].CopyEnvDec(inputMap[i, j]);
+                }
+            }
+
+            return map;
+        }
+
+        public static void RemoveMapDecorations(Tile[,] map)
+        {
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    if (map[i, j].decID != TileEnums.Decorations.stairs && map[i, j].decID != TileEnums.Decorations.empty)
+                    {
+                        map[i, j].SetDecoration(Brush.Instance.decorations[0]);
+                    }
+                }
+            }
+        }
+
+        public static string[,] GetTileMapToString(Tile[,] map)
+        {
+            string[,] stringMap = new string[rows, columns];
+
+            for (int row = 0; row < rows; row++)
+            {
+                for (int col = 0; col < columns; col++)
+                {
+                    if (map[row, col].envTileID == TileEnums.EnviromentTiles.ground)
+                    {
+                        stringMap[row, col] = "0";
+                    }
+                    else if (map[row, col].envTileID == TileEnums.EnviromentTiles.level_1)
+                    {
+                        stringMap[row, col] = "1";
+                    }
+                    else if (map[row, col].envTileID == TileEnums.EnviromentTiles.level_2)
+                    {
+                        stringMap[row, col] = "2";
+                    }
+                    if (map[row, col].decID == TileEnums.Decorations.healthPack)
+                    {
+                        stringMap[row, col] += "H";
+                    }
+                    if (map[row, col].decID == TileEnums.Decorations.damageBoost)
+                    {
+                        stringMap[row, col] += "D";
+                    }
+                    if (map[row, col].decID == TileEnums.Decorations.armorVest)
+                    {
+                        stringMap[row, col] += "A";
+                    }
+                    if (map[row, col].decID == TileEnums.Decorations.stairs)
+                    {
+                        stringMap[row, col] += "S";
+                    }
+                }
+            }
+            return stringMap;
+        }
+
         public void SetTileMapTile(Tile tile)
         {
             tileMap[tile.X, tile.Y] = tile;
@@ -314,7 +384,7 @@ namespace TileMapLogic
             {
                 for (int j = 0; j < columns; j++)
                 {
-                    tileMap[i, j] = map[i, j].ShallowCopy(tileMap[i,j]);
+                    tileMap[i, j].CopyEnvDec(map[i,j]);
                 }
             }
         }

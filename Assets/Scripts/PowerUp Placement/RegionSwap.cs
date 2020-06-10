@@ -6,78 +6,80 @@ using System.Threading.Tasks;
 using TileMapLogic;
 using UnityEngine;
 using static TFModel;
+using Random = System.Random;
 
 public class RegionSwap : IPowerupPlacement
 {
-    private const int GENERATIONS = 6;
+    private const int GENERATIONS = 10;
+    private const float THRESHOLD = 0.5f;
 
-    public async Task<List<KeyValuePair<TileMap, float>>> ChangePowerUps(TileMap tilemapMain)
+    public Task<List<KeyValuePair<Tile[,], float>>> ChangePowerUps(TileMap tilemapMain)
     {
         MapSuggestionMng.tempView = new GameObject("TempView");
-        var tempMap = tilemapMain.GetTileMap();
-        TileMap map;
-        var maps = new Dictionary<TileMap, float>();
-        //Get a 2D array with all valid for placement ground and first level tiles.
-        var placementLocations = MapSuggestionMng.GetValidPlacementLocations(tilemapMain);
+        // create a deep copy of the main tileMap.
+        var tempMap = new TileMap();
+        tempMap.Init();
+        tempMap.InitRegions();
+        tempMap.PaintTiles(MapSuggestionMng.tempView.transform, 1.0f);
 
-        for (int m = 0; m < GENERATIONS; m++)
+        var task = Task.Run(() =>
         {
-            map = new TileMap();
-            map.Init();
-            map.InitRegions();
-            map.PaintTiles(MapSuggestionMng.tempView.transform, 1.0f);
-            map.SetTileMap(tempMap);
-            map = await ChangePickUpsRegion(tilemapMain, placementLocations).ConfigureAwait(false);
-            var score = await PredictKillRatio(GetInputMap(map), GetInputWeapons(CharacterClassMng.Instance.BlueClass, CharacterClassMng.Instance.RedClass));
-            maps.Add(map, score);
-            await new WaitForEndOfFrame();
-        }
+            // dictionary to keep the generated maps and scores
+            Dictionary<Tile[,], float> mapsDict = new Dictionary<Tile[,], float>(new TileMapComparer());
 
-        var balancedMaps = (from pair in maps
-            orderby Math.Abs(pair.Value - MapSuggestionMng.thresshold)
-            select pair).ToList();
-        return balancedMaps;
+            //Get a 2D array with all valid for placement ground and first level tiles.
+            var placementLocations = MapSuggestionMng.GetValidPlacementLocations(tilemapMain);
+
+            for (int m = 0; m < GENERATIONS; m++)
+            {
+                tempMap.CopyTileMap(tilemapMain.GetTileMap());
+                var map = ChangePickUpsRegion(tempMap, placementLocations);
+                var score = PredictKillRatioSynchronous(GetInputMap(map), GetInputWeapons(CharacterClassMng.Instance.BlueClass, CharacterClassMng.Instance.RedClass));
+                mapsDict.Add(map.GetTileMap(), score);
+            }
+
+            var balancedMaps = (from pair in mapsDict
+                orderby Math.Abs(pair.Value - THRESHOLD)
+                select pair).ToList();
+            return balancedMaps;
+        });
+        return task;
     }
 
-    private static Task<TileMap> ChangePickUpsRegion(TileMap map, List<Tile>[,] validLocations)
+    private static TileMap ChangePickUpsRegion(TileMap map, List<Tile>[,] validLocations)
     {
-        MapSuggestionMng.pickUpsTask = Task.Run(() =>
+        var pickups = map.GetDecorations();
+
+        foreach (var pickup in pickups)
         {
-            var pickups = map.GetDecorations();
-
-            foreach (var pickup in pickups)
+            Random RNG = new Random();
+            
+            string key = pickup.Key;
+            foreach (var value in pickup.Value)
             {
-                string key = "";
-                key = pickup.Key;
-                foreach (var value in pickup.Value)
-                {
-                    var regionNum = map.GetTileRegion((int)value[0], (int)value[1]);
-                    var randomRegion = map.GetRandomRegionWithNoPowerUps(regionNum.Item1, regionNum.Item2, validLocations);
-                    // get a random tile in the randomly selected region.
-                    var randomIdx = MapSuggestionMng.RNG.Next(0, validLocations[randomRegion.Item1, randomRegion.Item2].Count);
-                    var randomTile = validLocations[randomRegion.Item1, randomRegion.Item2][randomIdx];
+                var regionNum = map.GetTileRegion((int)value[0], (int)value[1]);
+                var randomRegion = map.GetRandomRegionWithNoPowerUps(regionNum.Item1, regionNum.Item2, validLocations);
+                // get a random tile in the randomly selected region.
+                var randomIdx = RNG.Next(0, validLocations[randomRegion.Item1, randomRegion.Item2].Count);
+                var randomTile = validLocations[randomRegion.Item1, randomRegion.Item2][randomIdx];
 
-                    switch (key)
-                    {
-                        case "healthPack":
-                            randomTile.decID = TileEnums.Decorations.healthPack;
-                            map.GetTileWithIndex((int)value[0], (int)value[1]).decID = TileEnums.Decorations.empty;
-                            break;
-                        case "armorVest":
-                            randomTile.decID = TileEnums.Decorations.armorVest;
-                            map.GetTileWithIndex((int)value[0], (int)value[1]).decID = TileEnums.Decorations.empty;
-                            break;
-                        case "damageBoost":
-                            randomTile.decID = TileEnums.Decorations.damageBoost;
-                            map.GetTileWithIndex((int)value[0], (int)value[1]).decID = TileEnums.Decorations.empty;
-                            break;
-                    }
-                    map.SetTileMapTile(randomTile);
+                switch (key)
+                {
+                    case "healthPack":
+                        map.GetTileWithIndex(randomTile.X, randomTile.Y).decID = TileEnums.Decorations.healthPack;
+                        map.GetTileWithIndex((int)value[0], (int)value[1]).decID = TileEnums.Decorations.empty;
+                        break;
+                    case "armorVest":
+                        map.GetTileWithIndex(randomTile.X, randomTile.Y).decID = TileEnums.Decorations.armorVest;
+                        map.GetTileWithIndex((int)value[0], (int)value[1]).decID = TileEnums.Decorations.empty;
+                        break;
+                    case "damageBoost":
+                        map.GetTileWithIndex(randomTile.X, randomTile.Y).decID = TileEnums.Decorations.damageBoost;
+                        map.GetTileWithIndex((int)value[0], (int)value[1]).decID = TileEnums.Decorations.empty;
+                        break;
                 }
             }
-            return map;
-        });
-
-        return MapSuggestionMng.pickUpsTask;
+        }
+        return map;
     }
 }

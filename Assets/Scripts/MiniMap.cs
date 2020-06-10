@@ -54,12 +54,23 @@ public class MiniMap : MonoBehaviour
         EventManagerUI.onMapReadyForPrediction?.Invoke();
     }
 
-    public void SetMiniMap(List<KeyValuePair<TileMap, float>> balancedMaps)
+    public void SetMiniMap(List<KeyValuePair<Tile[,], float>> balancedMaps)
     {
-        _map.SetTileMap(balancedMaps[_index].Key.GetTileMap());
+        var balancedMap = balancedMaps[_index].Key;
+
+        // Copy enviroments and decorations from generated map.
+        for (int i = 0; i < 20; i++)
+        {
+            for (int j = 0; j < 20; j++)
+            {
+                _map.GetTileWithIndex(i, j).CopyEnvDec(balancedMap[i,j]);
+            }
+        }
+        _map.SetTileMap(_map.GetTileMap());
         _map.Render();
         var percent = balancedMaps[_index].Value;
         SetMiniMapView(percent);
+
         for (int i = 0; i < 20; i++)
         {
             for (int j = 0; j < 20; j++)

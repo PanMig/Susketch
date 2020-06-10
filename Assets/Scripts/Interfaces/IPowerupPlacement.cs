@@ -6,5 +6,5 @@ using UnityEngine;
 
 public interface IPowerupPlacement
 {
-     Task<List<KeyValuePair<TileMap, float>>> ChangePowerUps(TileMap map);
+     Task<List<KeyValuePair<Tile[,], float>>> ChangePowerUps(TileMap map);
 }

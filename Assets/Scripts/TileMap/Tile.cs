@@ -15,6 +15,11 @@ public class Tile
     public TileEnums.Decorations decID;
     public Image decorationImage;
 
+    public Tile()
+    {
+
+    }
+
     public Tile(TileEnums.EnviromentTiles envTileID, TileEnums.Decorations decID , int posX, int posY)
     {
         X = posX;
@@ -93,6 +98,12 @@ public class Tile
         newTile.decorationImage.sprite = this.decorationImage.sprite;
 
         return newTile;
+    }
+
+    public void CopyEnvDec(Tile copiedTile)
+    {
+        this.envTileID = copiedTile.envTileID;
+        this.decID = copiedTile.decID;
     }
 
     public void SetColor(Color color)

@@ -82,6 +82,27 @@ public class TFModel : MonoBehaviour
         });
     }
 
+    public static float PredictKillRatioSynchronous(NDArray map, NDArray weapons)
+    {
+        map = ConcatCoverChannel(map);
+        killRatioGraph.as_default();
+        Tensor input_maps = killRatioGraph.OperationByName("input_layer");
+        Tensor input_weapons = killRatioGraph.OperationByName("input_12");
+        Tensor output = killRatioGraph.OperationByName("output_layer/BiasAdd");
+
+        using (var sess = tf.Session())
+        {
+            var results = sess.run(output, new FeedItem[]
+            {
+                new FeedItem(input_maps, map),
+                new FeedItem(input_weapons, weapons)
+            });
+
+            var x = results.ToArray<float>();
+            return x[0];
+        }
+    }
+
     public static Task<float> PredictGameDuration(NDArray map, NDArray weapons)
     {
         return Task.Run(() =>
@@ -238,6 +259,14 @@ public class TFModel : MonoBehaviour
     public static NDArray GetInputMap(TileMap tileMap)
     {
         var map = tileMap.GetTileMapToString();
+        var input_map = ArrayParsingUtils.ParseToChannelArray(map);
+        input_map = np.expand_dims(input_map, 0);
+        return input_map;
+    }
+
+    public static NDArray GetInputMap(Tile[,] tileMap)
+    {
+        var map = TileMap.GetTileMapToString(tileMap);
         var input_map = ArrayParsingUtils.ParseToChannelArray(map);
         input_map = np.expand_dims(input_map, 0);
         return input_map;

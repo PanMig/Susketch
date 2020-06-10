@@ -105,12 +105,10 @@ namespace TileMapLogic
 }
 
 
-public class TileMapComparer : IEqualityComparer<TileMap>
+public class TileMapComparer : IEqualityComparer<Tile[,]>
 {
-    public bool Equals(TileMap x, TileMap y)
+    public bool Equals(Tile[,] map_x, Tile[,] map_y)
     {
-        var map_x = x.GetTileMap();
-        var map_y = y.GetTileMap();
         for (int i = 0; i < TileMap.rows; i++)
         {
             for (int j = 0; j < TileMap.columns; j++)
@@ -129,14 +127,14 @@ public class TileMapComparer : IEqualityComparer<TileMap>
         return true;
     }
 
-    public int GetHashCode(TileMap obj)
+    public int GetHashCode(Tile[,] obj)
     {
         int hash = 17;
         for (int i = 0; i < TileMap.rows; i++)
         {
             for (int j = 0; j < TileMap.columns; j++)
             {
-                hash = hash * 31 + (int)obj.GetTileMap()[i, j].envTileID + (int)obj.GetTileMap()[i, j].decID;
+                hash = hash * 31 + (int)obj[i, j].envTileID + (int)obj[i, j].decID;
             }
         }
 
