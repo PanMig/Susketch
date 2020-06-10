@@ -34,8 +34,12 @@ public class RegionSwap : IPowerupPlacement
             {
                 tempMap.CopyTileMap(tilemapMain.GetTileMap());
                 var map = ChangePickUpsRegion(tempMap, placementLocations);
-                var score = PredictKillRatioSynchronous(GetInputMap(map), GetInputWeapons(CharacterClassMng.Instance.BlueClass, CharacterClassMng.Instance.RedClass));
-                mapsDict.Add(map.GetTileMap(), score);
+                var score = PredictKillRatioSynchronous(GetInputMap(map),
+                    GetInputWeapons(CharacterClassMng.Instance.BlueClass, CharacterClassMng.Instance.RedClass));
+                if (!mapsDict.ContainsKey(map.GetTileMap()))
+                {
+                    mapsDict.Add(map.GetTileMap(), score);
+                }
             }
 
             var balancedMaps = (from pair in mapsDict
@@ -59,24 +63,31 @@ public class RegionSwap : IPowerupPlacement
             {
                 var regionNum = map.GetTileRegion((int)value[0], (int)value[1]);
                 var randomRegion = map.GetRandomRegionWithNoPowerUps(regionNum.Item1, regionNum.Item2, validLocations);
-                // get a random tile in the randomly selected region.
-                var randomIdx = RNG.Next(0, validLocations[randomRegion.Item1, randomRegion.Item2].Count);
-                var randomTile = validLocations[randomRegion.Item1, randomRegion.Item2][randomIdx];
-
-                switch (key)
+                if (randomRegion.Item1 == -1)
                 {
-                    case "healthPack":
-                        map.GetTileWithIndex(randomTile.X, randomTile.Y).decID = TileEnums.Decorations.healthPack;
-                        map.GetTileWithIndex((int)value[0], (int)value[1]).decID = TileEnums.Decorations.empty;
-                        break;
-                    case "armorVest":
-                        map.GetTileWithIndex(randomTile.X, randomTile.Y).decID = TileEnums.Decorations.armorVest;
-                        map.GetTileWithIndex((int)value[0], (int)value[1]).decID = TileEnums.Decorations.empty;
-                        break;
-                    case "damageBoost":
-                        map.GetTileWithIndex(randomTile.X, randomTile.Y).decID = TileEnums.Decorations.damageBoost;
-                        map.GetTileWithIndex((int)value[0], (int)value[1]).decID = TileEnums.Decorations.empty;
-                        break;
+                    continue;
+                }
+                // get a random tile in the randomly selected region.
+                if (validLocations[randomRegion.Item1, randomRegion.Item2].Count > 0)
+                {
+                    var randomIdx = RNG.Next(0, validLocations[randomRegion.Item1, randomRegion.Item2].Count);
+                    var randomTile = validLocations[randomRegion.Item1, randomRegion.Item2][randomIdx];
+
+                    switch (key)
+                    {
+                        case "healthPack":
+                            map.GetTileWithIndex(randomTile.X, randomTile.Y).decID = TileEnums.Decorations.healthPack;
+                            map.GetTileWithIndex((int)value[0], (int)value[1]).decID = TileEnums.Decorations.empty;
+                            break;
+                        case "armorVest":
+                            map.GetTileWithIndex(randomTile.X, randomTile.Y).decID = TileEnums.Decorations.armorVest;
+                            map.GetTileWithIndex((int)value[0], (int)value[1]).decID = TileEnums.Decorations.empty;
+                            break;
+                        case "damageBoost":
+                            map.GetTileWithIndex(randomTile.X, randomTile.Y).decID = TileEnums.Decorations.damageBoost;
+                            map.GetTileWithIndex((int)value[0], (int)value[1]).decID = TileEnums.Decorations.empty;
+                            break;
+                    }
                 }
             }
         }

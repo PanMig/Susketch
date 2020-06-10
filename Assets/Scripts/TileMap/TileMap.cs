@@ -335,8 +335,12 @@ namespace TileMapLogic
                 }
             }
 
-            int random_idx = rand.Next(0, validRegions.Count);
-            return validRegions[random_idx];
+            if (validRegions.Count > 0)
+            {
+                int random_idx = rand.Next(0, validRegions.Count);
+                return validRegions[random_idx];
+            }
+            return new Tuple<int, int>(-1,-1);
         }
 
         public Tuple<int,int> GetTileRegion(int tile_X, int tile_Y)
