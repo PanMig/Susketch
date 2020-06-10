@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TileMapLogic;
 using UnityEngine;
 
 namespace TileMapLogic
@@ -101,4 +102,44 @@ namespace TileMapLogic
     }
 
     
+}
+
+
+public class TileMapComparer : IEqualityComparer<TileMap>
+{
+    public bool Equals(TileMap x, TileMap y)
+    {
+        var map_x = x.GetTileMap();
+        var map_y = y.GetTileMap();
+        for (int i = 0; i < TileMap.rows; i++)
+        {
+            for (int j = 0; j < TileMap.columns; j++)
+            {
+                if (map_x[i, j].envTileID == map_y[i, j].envTileID && map_x[i, j].decID == map_y[i, j].decID)
+                {
+                    continue;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public int GetHashCode(TileMap obj)
+    {
+        int hash = 17;
+        for (int i = 0; i < TileMap.rows; i++)
+        {
+            for (int j = 0; j < TileMap.columns; j++)
+            {
+                hash = hash * 31 + (int)obj.GetTileMap()[i, j].envTileID + (int)obj.GetTileMap()[i, j].decID;
+            }
+        }
+
+        return hash;
+    }
 }

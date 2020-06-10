@@ -11,6 +11,7 @@ public class RandomReplacement : IPowerupPlacement
 {
 
     private const int GENERATIONS = 10;
+    private const float THRESHOLD = 0.5f;
 
     public async Task<List<KeyValuePair<TileMap, float>>> ChangePowerUps(TileMap tilemapMain)
     {
@@ -38,7 +39,7 @@ public class RandomReplacement : IPowerupPlacement
         }
 
         var balancedMaps = (from pair in mapsDict
-            orderby Math.Abs(pair.Value - MapSuggestionMng.thresshold)
+            orderby Math.Abs(pair.Value - THRESHOLD)
             select pair).ToList();
         return balancedMaps;
     }
@@ -49,9 +50,9 @@ public class RandomReplacement : IPowerupPlacement
         {
             int powerUpRoll;
             //iterate regions.
-            for (int i = 1; i < 4; i++)
+            for (int i = 0; i < 4; i++)
             {
-                for (int j = 1; j < 4; j++)
+                for (int j = 0; j < 4; j++)
                 {
                     if (validLocations[i, j].Count == 0)
                     {

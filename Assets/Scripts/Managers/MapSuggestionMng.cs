@@ -79,28 +79,6 @@ public class MapSuggestionMng : MonoBehaviour
 
     #region Pickups Placement
 
-    //public static async Task<List<KeyValuePair<TileMap, float>>> SpawnPickupsAsynchronous(TileMap tilemapMain, Enums.PowerUpPlacement replaceType)
-    //{
-    //    pickUpsTaskBusy = true;
-    //    onPickUpsGenerated?.Invoke(false);
-    //    List<KeyValuePair<TileMap, float>> maps;
-    //    if (replaceType == Enums.PowerUpPlacement.random)
-    //    {
-    //        maps = await SpawnRandomPickUps(tilemapMain);
-    //    }
-    //    else if (replaceType == Enums.PowerUpPlacement.regionShift)
-    //    {
-    //        maps = await ChangePickUpsLocation(tilemapMain);
-    //    }
-    //    else
-    //    {
-    //        maps = await ChangePickUpsLocation(tilemapMain);
-    //    }
-    //    onPickUpsGenerated?.Invoke(true);
-    //    pickUpsTaskBusy = false;
-    //    return maps;
-    //}
-
     public static async Task<List<KeyValuePair<TileMap, float>>> SpawnPickupsAsynchronous(TileMap tilemapMain, Enums.PowerUpPlacement replaceType)
     {
         pickUpsTaskBusy = true;

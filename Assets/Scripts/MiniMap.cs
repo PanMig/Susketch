@@ -10,9 +10,12 @@ public class MiniMap : MonoBehaviour
     private MiniTileMap _map;
     private MiniMapView _mapView;
     [SerializeField] private int _index;
-    [SerializeField] private Enums.PowerUpPlacement type;
     private float _newBlueAmount = 0;
     private float _newRedAmount= 0;
+
+    private enum MiniMapType { replacement, adjucement}
+    [SerializeField] private MiniMapType type;
+
 
     public delegate void OnMiniMapApply();
     public static event OnMiniMapApply onMiniMapApply;
@@ -22,14 +25,11 @@ public class MiniMap : MonoBehaviour
         AuthoringTool.onMapInitEnded += Init;
         switch (type)
         {
-            case Enums.PowerUpPlacement.randomReplacement:
-                AuthoringTool.onMapMutationRandom += SetMiniMap;
+            case MiniMapType.replacement:
+                AuthoringTool.onPowerupsReplacement += SetMiniMap;
                 break;
-            case Enums.PowerUpPlacement.regionSwap:
-                AuthoringTool.onMapMutationRegionShift += SetMiniMap;
-                break;
-            case Enums.PowerUpPlacement.typeAlteration:
-                AuthoringTool.onMapMutationRegionShift += SetMiniMap;
+            case MiniMapType.adjucement:
+                AuthoringTool.onPowerupsAdjucement += SetMiniMap;
                 break;
         }
     }
