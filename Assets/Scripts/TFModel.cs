@@ -62,6 +62,7 @@ public class TFModel : MonoBehaviour
     {
         return Task.Run(() =>
         {
+            // the KR models has on extra dimension for cover. Therefore we add an extra layer of zeros so match the dimensions
             map = ConcatCoverChannel(map);
             killRatioGraph.as_default();
             Tensor input_maps = killRatioGraph.OperationByName("input_layer");
@@ -272,6 +273,7 @@ public class TFModel : MonoBehaviour
         return input_map;
     }
 
+    // some models have on extra dimension for cover. Therefore we add an extra layer of zeros so match the dimensions.
     public static NDArray ConcatCoverChannel(NDArray input_map)
     {
         var coverChannel = np.zeros(1, 20, 20, 1);
