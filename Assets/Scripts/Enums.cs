@@ -15,7 +15,15 @@ public static class Enums
     {
         randomReplacement,
         regionSwap,
-        typeAlteration,
+        modifyType,
         positionShift
+    }
+
+    public enum UIScreens
+    {
+        MapProperties,
+        Predictions,
+        Suggestions,
+        Outro
     }
 }

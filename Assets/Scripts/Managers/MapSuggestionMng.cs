@@ -91,15 +91,13 @@ public class MapSuggestionMng : MonoBehaviour
             var regSwap = new RegionSwap();
             maps = await regSwap.ChangePowerUps(tilemapMain);
         }
-        //else if (replaceType == Enums.PowerUpPlacement.typeAlteration)
-        //{
-        //    var typeAlter = new TypeAlteration();
-        //    maps = await typeAlter.ChangePowerUps(tilemapMain);
-        //}
+        else if (replaceType == Enums.PowerUpPlacement.modifyType)
+        {
+            var modifyType = new ModifyType();
+            maps = await modifyType.ChangePowerUps(tilemapMain);
+        }
         else
         {
-            //var posShift = new PositionShift();
-            //maps = await posShift.ChangePowerUps(tilemapMain);
             var rndReplacement = new RandomReplacement();
             maps = await rndReplacement.ChangePowerUps(tilemapMain);
         }

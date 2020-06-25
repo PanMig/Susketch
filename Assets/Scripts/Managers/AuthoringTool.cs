@@ -47,6 +47,7 @@ public class AuthoringTool : MonoBehaviour
     // UI
     private int mapIndex = 0;
     private const int PREDEFINED_MAPS = 20;
+    public Enums.UIScreens _activeTab;
 
     private void OnEnable()
     {
@@ -88,6 +89,26 @@ public class AuthoringTool : MonoBehaviour
 
         //Fire event for ready map.
         onMapInitEnded?.Invoke();
+        _activeTab = Enums.UIScreens.MapProperties;
+    }
+
+    public void SetActiveTab(int index)
+    {
+        switch (index)
+        {
+            case (int)Enums.UIScreens.MapProperties:
+                _activeTab = Enums.UIScreens.MapProperties;
+                break;
+            case (int)Enums.UIScreens.Predictions:
+                _activeTab = Enums.UIScreens.Predictions;
+                break;
+            case (int)Enums.UIScreens.Suggestions:
+                _activeTab = Enums.UIScreens.Suggestions;
+                break;
+            case (int)Enums.UIScreens.Outro:
+                _activeTab = Enums.UIScreens.Outro;
+                break;
+        }
     }
 
     private static void PaintTeamRegions()
@@ -182,16 +203,25 @@ public class AuthoringTool : MonoBehaviour
     {
         if (TileMapPlayable())
         {
-            DeathHeatmapListenerSmall();
-            DramaticArcListener();
-            CombatPaceListener();
-            KillRatioListener();
-            GameDurationListener();
+            // Predictions
+            InvokePredictions();
 
             // Procedural suggestions
             InvokeSuggestions();
         }
 
+    }
+
+    public void InvokePredictions()
+    {
+        KillRatioListener();
+        if (_activeTab == Enums.UIScreens.Predictions)
+        {
+            DeathHeatmapListenerSmall();
+            DramaticArcListener();
+            CombatPaceListener();
+            GameDurationListener();
+        }
     }
 
     public void InvokeSuggestions()
