@@ -478,6 +478,28 @@ namespace TileMapLogic
             return platformsList;
         }
 
+        public List<List<Tile>> GetFirstFloorPlatformBounds()
+        {
+            var platformsList = new List<List<Tile>>();
+            var tileList = new List<Tile>();
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    var tile = GetTileWithIndex(i, j);
+
+                    if (!tileList.Contains(tile) && tile.envTileID == TileEnums.EnviromentTiles.level_1)
+                    {
+                        var list = new List<Tile>();
+                        list = PathUtils.RecursiveFloodFill(i, j, Brush.Instance.brushThemes[1], list);
+                        tileList.AddRange(list);
+                        platformsList.Add(list);
+                    }
+                }
+            }
+            return platformsList;
+        }
+
         public List<Tile> GetEnviromentTiles(TileEnums.EnviromentTiles tileID)
         {
             var tileList = new List<Tile>();
@@ -596,6 +618,56 @@ namespace TileMapLogic
                     }
                 }
             }
+        }
+
+        public void ExportTileMapToCSV()
+        {
+            StreamWriter file = new StreamWriter(Application.dataPath + "/mapTemplateTest.csv", true);
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    var env = tileMap[i, j].envTileID;
+                    switch (env)
+                    {
+                        case TileEnums.EnviromentTiles.ground:
+                            file.Write("0");
+                            break;
+                        case TileEnums.EnviromentTiles.level_1:
+                            file.Write("1");
+                            break;
+                        case TileEnums.EnviromentTiles.level_2:
+                            file.Write("2");
+                            break;
+                    }
+                    if (tileMap[i, j].decID != TileEnums.Decorations.empty)
+                    {
+                        var dec = tileMap[i, j].decID;
+                        switch (dec)
+                        {
+                            case TileEnums.Decorations.healthPack:
+                                file.Write("H");
+                                break;
+                            case TileEnums.Decorations.armorVest:
+                                file.Write("A");
+                                break;
+                            case TileEnums.Decorations.damageBoost:
+                                file.Write("D");
+                                break;
+                        }
+                    }
+                    if (j % 5 == 0 && j !=0)
+                    {
+                        file.Write("|");
+                    }
+                    //it is comman and not a tab
+                    file.Write(",");
+                }
+                //go to next line
+                file.Write("\n");
+            }
+            file.Close();
+            Debug.Log("Saved");
         }
 
     }

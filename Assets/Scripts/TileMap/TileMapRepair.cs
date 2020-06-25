@@ -70,12 +70,15 @@ public class TileMapRepair
             for (int j = 0; j < platforms[i].Count; j++)
             {
                 var neighbours = PathUtils.GetNeighboursCross(platforms[i][j], map);
+
                 for (int n = 0; n < neighbours.Count; n++)
                 {
                     if (neighbours[n].decID == TileEnums.Decorations.stairs) { stairCount++; }
                 }
             }
-            if (stairCount == 0)
+
+            var midPlatTile = platforms[i][platforms[i].Count / 2];
+            if (stairCount == 0 || !PathManager.Instance.IsPath(blue_base, new Vector2(midPlatTile.X, midPlatTile.Y), map))
             {
                 return false;
             }

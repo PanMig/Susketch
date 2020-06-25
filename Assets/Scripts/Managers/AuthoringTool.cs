@@ -178,6 +178,11 @@ public class AuthoringTool : MonoBehaviour
         }
     }
 
+    public void SaveMap(string fileName)
+    {
+        tileMapMain.ExportTileMapToCSV();
+    }
+
     public static void SetTileOrientation()
     {
         for (int i = 0; i < 20; i++)
