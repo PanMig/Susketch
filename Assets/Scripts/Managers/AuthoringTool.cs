@@ -144,7 +144,7 @@ public class AuthoringTool : MonoBehaviour
         return false;
     }
 
-    public void LoadMap()
+    public void LoadPredifinedMap()
     {
         if (!_loadingMapTaskBusy)
         {
@@ -165,7 +165,9 @@ public class AuthoringTool : MonoBehaviour
             {
                 mapIndex = 1;
             }
-            randomMap.ReadCSVToTileMap($"Daniel files/custom_{mapIndex}");
+
+            randomMap.ReadCSVToTileMap($"custom_{mapIndex}.txt", true);
+
             tileMapMain.SetTileMap(randomMap.GetTileMap());
             SetTileOrientation();
             Destroy(tempView);
@@ -178,9 +180,31 @@ public class AuthoringTool : MonoBehaviour
         }
     }
 
-    public void SaveMap(string fileName)
+    public void LoadMap(string fileName)
     {
-        tileMapMain.ExportTileMapToCSV();
+        if (!_loadingMapTaskBusy)
+        {
+            _loadingMapTaskBusy = true;
+            // create a temp parent to save all instantiated tiles
+            GameObject tempView = new GameObject("TempView");
+            var randomMap = new TileMap();
+            randomMap.Init();
+            randomMap.InitRegions();
+            randomMap.PaintTiles(tempView.transform, 1.0f);
+
+            
+            randomMap.ReadCSVToTileMap($"{fileName}.csv", false);
+            
+            tileMapMain.SetTileMap(randomMap.GetTileMap());
+            SetTileOrientation();
+            Destroy(tempView);
+            CheckTileMapListener();
+            //PaintTeamRegions();
+            InvokeSurrogateModels();
+            CalculateClassBalanceAsync();
+            CalculateBalancedPickUpsAsync();
+            onMapLoaded?.Invoke();
+        }
     }
 
     public static void SetTileOrientation()

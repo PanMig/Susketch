@@ -541,10 +541,21 @@ namespace TileMapLogic
             return list;
         }
 
-        public void ReadCSVToTileMap(string fileName)
+        public void ReadCSVToTileMap(string fileName, bool fromAssets)
         {
-            TextAsset datafile = Resources.Load<TextAsset>(fileName);
-            using (var sr = new StreamReader(new MemoryStream(datafile.bytes)))
+            FileStream file;
+            if (fromAssets)
+            {
+                var path = Application.streamingAssetsPath + "/" + fileName;
+                file = new FileStream(path, FileMode.Open, FileAccess.Read);
+                
+            }
+            else
+            {
+                var path = Application.dataPath + "/" + fileName;
+                file = new FileStream(path, FileMode.Open, FileAccess.Read);
+            }
+            using (var sr = new StreamReader(file))
             {
                 for (var i = 0; i < rows; i++)
                 {
@@ -620,9 +631,9 @@ namespace TileMapLogic
             }
         }
 
-        public void ExportTileMapToCSV()
+        public void ExportTileMapToCSV(string fileName)
         {
-            StreamWriter file = new StreamWriter(Application.dataPath + "/mapTemplateTest.csv", true);
+            StreamWriter file = new StreamWriter(Application.dataPath + $"/{fileName}.csv", false);
             for (int i = 0; i < rows; i++)
             {
                 for (int j = 0; j < columns; j++)
@@ -654,12 +665,15 @@ namespace TileMapLogic
                             case TileEnums.Decorations.damageBoost:
                                 file.Write("D");
                                 break;
+                            case TileEnums.Decorations.stairs:
+                                file.Write("S");
+                                break;
                         }
                     }
-                    if (j % 5 == 0 && j !=0)
-                    {
-                        file.Write("|");
-                    }
+                    //if (j % 5 == 0 && j !=0)
+                    //{
+                    //    file.Write("|");
+                    //}
                     //it is comman and not a tab
                     file.Write(",");
                 }
@@ -667,7 +681,7 @@ namespace TileMapLogic
                 file.Write("\n");
             }
             file.Close();
-            Debug.Log("Saved");
+            Debug.Log("Saved map file to: " + Application.dataPath + $"/{fileName}.csv");
         }
 
     }
