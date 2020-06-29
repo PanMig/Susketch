@@ -11,6 +11,8 @@ public class OutroManager : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI saveField;
     [SerializeField] private TextMeshProUGUI loadField;
+    [SerializeField] private TextMeshProUGUI exportField;
+    [SerializeField] private TextMeshProUGUI saveAndExitField;
     private AuthoringTool tool;
 
     public void Start()
@@ -20,6 +22,10 @@ public class OutroManager : MonoBehaviour
 
     public void SaveMap()
     {
+        if (saveField.text == "")
+        {
+            saveField.text = "myMap";
+        }
         AuthoringTool.tileMapMain.ExportTileMapToCSV(saveField.text);
     }
 
@@ -28,14 +34,26 @@ public class OutroManager : MonoBehaviour
         tool.LoadMap(loadField.text);
     }
 
-    void Update()
+    public void ExportMetrics()
     {
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (exportField.text == "")
         {
-            if (Input.GetKeyDown(KeyCode.S))
-            {
-                ScreenCapture.CaptureScreenshot("testCapt");
-            }
+            exportField.text = "myMapMetrics";
         }
+    }
+
+    public void Exit()
+    {
+        Application.Quit();
+    }
+
+    public void SaveAndExit()
+    {
+        if (saveAndExitField.text == "")
+        {
+            saveAndExitField.text = "myMap";
+        }
+        AuthoringTool.tileMapMain.ExportTileMapToCSV(saveAndExitField.text);
+        Application.Quit();
     }
 }

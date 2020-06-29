@@ -348,12 +348,12 @@ public class AuthoringTool : MonoBehaviour
     {
         if (!MapSuggestionMng.classBalanceTaskBusy)
         {
+            KillRatioListener();
             onCharactersBalanced?.Invoke(false);
             var balanced_classes = await GetBalancedMatchUpAsynchronous(FPSClasses.distinctMatches, GetInputMap(tileMapMain));
             onclassBalanceDistinct?.Invoke(balanced_classes);
             var same_classes = await GetBalancedMatchUpAsynchronous(FPSClasses.EqualMatches, GetInputMap(tileMapMain));
             onclassBalanceSame?.Invoke(same_classes);
-            KillRatioListener();
             onCharactersBalanced?.Invoke(true);
         }
     }
@@ -362,16 +362,12 @@ public class AuthoringTool : MonoBehaviour
     {
         if (!MapSuggestionMng.pickUpsTaskBusy)
         {
+            KillRatioListener();
             var replacements = await SpawnPickupsAsynchronous(tileMapMain, Enums.PowerUpPlacement.randomReplacement);
             onPowerupsReplacement?.Invoke(replacements);
             var adjustments = await SpawnPickupsAsynchronous(tileMapMain, Enums.PowerUpPlacement.regionSwap);
             onPowerupsAdjucement?.Invoke(adjustments);
             _loadingMapTaskBusy = false;
         }
-    }
-
-    public void ApplicationExit()
-    {
-        Application.Quit();
     }
 }
