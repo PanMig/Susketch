@@ -96,7 +96,6 @@ public class MiniMap : MonoBehaviour
         //use three whitespaces for better alignment.
         _mapView.BluePercentText.text = $"{_newBlueAmount.ToString($"F0")} %";
         _mapView.RedPercentText.text = $"{_newRedAmount.ToString($"F0")} %";
-
         var result = MetricsManager.CalculateRatioDifference(percent, currKillRatio);
         if (result < 0)
         {
@@ -123,14 +122,10 @@ public class MiniMap : MonoBehaviour
 
         var healthCount = _map.GetDecoration(TileEnums.Decorations.healthPack).Count;
         var healthDiff = healthCount - tileMapMain.GetDecoration(TileEnums.Decorations.healthPack).Count;
-        // IMPORTANT there is an error and the values of armor and damage boost are switched.
-        // Therefore, until error is solved, the texts will have switched values.
-        // This occurs only on the minimap. Error propably in MapSuggestionManager.cs
         var armorCount = _map.GetDecoration(TileEnums.Decorations.armorVest).Count;
         var dmgCount = _map.GetDecoration(TileEnums.Decorations.damageBoost).Count;
         var armorDiff = armorCount - tileMapMain.GetDecoration(TileEnums.Decorations.armorVest).Count;
         var dmgDiff = dmgCount - tileMapMain.GetDecoration(TileEnums.Decorations.damageBoost).Count;
-
 
         _mapView.HealthCountText.text = $"{healthCount.ToString()} ({healthDiff.ToString("+0;-#")})";
         _mapView.ArmorCountText.text = $"{armorCount.ToString()} ({armorDiff.ToString("+0;-#")})";

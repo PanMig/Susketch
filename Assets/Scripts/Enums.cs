@@ -16,7 +16,8 @@ public static class Enums
         randomReplacement,
         regionSwap,
         modifyType,
-        positionShift
+        changePosition,
+        RemoveOrPlace
     }
 
     public enum UIScreens

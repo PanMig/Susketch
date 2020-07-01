@@ -31,9 +31,13 @@ public class ModifyType : IPowerupPlacement
             for (int m = 0; m < GENERATIONS; m++)
             {
                 var map = TileMap.GetMapDeepCopy(tempMap.GetTileMap());
-                var map1 = ChangePickUpsType(tempMap);
-                var score = PredictKillRatioSynchronous(GetInputMap(map), GetInputWeapons(CharacterClassMng.Instance.BlueClass, CharacterClassMng.Instance.RedClass));
-                mapsDict.Add(map, score);
+                map = ModifyPickupType(map, tempMap.GetDecorations());
+                var score = PredictKillRatioSynchronous(GetInputMap(map),
+                    GetInputWeapons(CharacterClassMng.Instance.BlueClass, CharacterClassMng.Instance.RedClass));
+                if (!mapsDict.ContainsKey(map))
+                {
+                    mapsDict.Add(map, score);
+                }
             }
 
             var balancedMaps = (from pair in mapsDict
@@ -44,30 +48,54 @@ public class ModifyType : IPowerupPlacement
         return task;
     }
 
-    private static TileMap ChangePickUpsType(TileMap map)
+    public static Tile[,] ModifyPickupType(Tile[,] map, Dictionary<string, List<Vector2>> pickups)
     {
         Random RNG = new Random();
-        var pickups = map.GetDecorations();
 
         foreach (var pickup in pickups)
         {
             foreach (var value in pickup.Value)
             {
-                var tile = map.GetTileWithIndex((int)value.x, (int)value.y);
+                var tile = map[(int)value.x, (int)value.y];
+                var diceRoll = MapSuggestionMng.RNG.Next(0, 2);
 
-                var randomGuess = RNG.Next(0, 3);
-                switch (randomGuess)
+                if (tile.decID == TileEnums.Decorations.healthPack)
                 {
-                    case 0:
-                        tile.decID = TileEnums.Decorations.healthPack;
-                        break;
-                    case 1:
-                        tile.decID = TileEnums.Decorations.armorVest;
-                        break;
-                    case 2:
-                        tile.decID = TileEnums.Decorations.damageBoost;
-                        break;
+                    switch (diceRoll)
+                    {
+                        case 0:
+                            tile.decID = TileEnums.Decorations.armorVest;
+                            break;
+                        case 1:
+                            tile.decID = TileEnums.Decorations.damageBoost;
+                            break;
+                    }
                 }
+                else if (tile.decID == TileEnums.Decorations.armorVest)
+                {
+                    switch (diceRoll)
+                    {
+                        case 0:
+                            tile.decID = TileEnums.Decorations.healthPack;
+                            break;
+                        case 1:
+                            tile.decID = TileEnums.Decorations.damageBoost;
+                            break;
+                    }
+                }
+                else if(tile.decID == TileEnums.Decorations.damageBoost)
+                {
+                    switch (diceRoll)
+                    {
+                        case 0:
+                            tile.decID = TileEnums.Decorations.healthPack;
+                            break;
+                        case 1:
+                            tile.decID = TileEnums.Decorations.armorVest;
+                            break;
+                    }
+                }
+
             }
         }
         return map;

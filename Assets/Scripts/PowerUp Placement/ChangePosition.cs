@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TileMapLogic;
-using UnityEngine;
 using static TFModel;
-using Random = System.Random;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
-public class RegionSwap : IPowerupPlacement
+public class ChangePosition : IPowerupPlacement
 {
     private const int GENERATIONS = 10;
     private const float THRESHOLD = 0.5f;
@@ -33,42 +33,44 @@ public class RegionSwap : IPowerupPlacement
 
             for (int m = 0; m < GENERATIONS; m++)
             {
-                var map = ChangePickUpsRegion(tempMap, placementLocations);
+                var map = ChangePickUpsPosInRegion(tempMap, placementLocations);
                 var score = PredictKillRatioSynchronous(GetInputMap(map),
                     GetInputWeapons(CharacterClassMng.Instance.BlueClass, CharacterClassMng.Instance.RedClass));
-                mapsDict.Add(map, score);
+                if (!mapsDict.ContainsKey(map))
+                {
+                    mapsDict.Add(map, score);
+                }
             }
 
             var balancedMaps = (from pair in mapsDict
-                orderby Math.Abs(pair.Value - THRESHOLD)
-                select pair).ToList();
+                                orderby Math.Abs(pair.Value - THRESHOLD)
+                                select pair).ToList();
             return balancedMaps;
         });
         return task;
     }
 
-    public static Tile[,] ChangePickUpsRegion(TileMap map, List<Tile>[,] validLocations)
+    public static Tile[,] ChangePickUpsPosInRegion(TileMap map, List<Tile>[,] validLocations)
     {
         var pickups = map.GetDecorations();
 
         foreach (var pickup in pickups)
         {
-            Random RNG = new Random();
-            
+            System.Random RNG = new System.Random();
+
             string key = pickup.Key;
             foreach (var value in pickup.Value)
             {
-                var regionNum = map.GetTileRegion((int)value[0], (int)value[1]);
-                var randomRegion = map.GetRandomRegionWithNoPowerUps(regionNum.Item1, regionNum.Item2, validLocations);
-                if (randomRegion.Item1 == -1)
+                var cur_region = map.GetTileRegion((int)value[0], (int)value[1]);
+                if (cur_region.Item1 == -1)
                 {
                     continue;
                 }
                 // get a random tile in the randomly selected region.
-                if (validLocations[randomRegion.Item1, randomRegion.Item2].Count > 0)
+                if (validLocations[cur_region.Item1, cur_region.Item2].Count > 0)
                 {
-                    var randomIdx = RNG.Next(0, validLocations[randomRegion.Item1, randomRegion.Item2].Count);
-                    var randomTile = validLocations[randomRegion.Item1, randomRegion.Item2][randomIdx];
+                    var randomIdx = RNG.Next(0, validLocations[cur_region.Item1, cur_region.Item2].Count);
+                    var randomTile = validLocations[cur_region.Item1, cur_region.Item2][randomIdx];
 
                     switch (key)
                     {

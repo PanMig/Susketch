@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Michsky.UI;
@@ -11,8 +12,10 @@ public class OutroManager : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI saveField;
     [SerializeField] private TextMeshProUGUI loadField;
+    [SerializeField] private TextMeshProUGUI loadFromMenuField;
     [SerializeField] private TextMeshProUGUI exportField;
     [SerializeField] private TextMeshProUGUI saveAndExitField;
+
     private AuthoringTool tool;
 
     public void Start()
@@ -31,7 +34,19 @@ public class OutroManager : MonoBehaviour
 
     public void LoadMap()
     {
-        tool.LoadMap(loadField.text);
+        try
+        {
+            tool.LoadMap(loadField.text);
+        }
+        catch (Exception e)
+        {
+            Debug.Log("failed");
+        }
+    }
+
+    public void LoadFromMenu()
+    {
+        tool.LoadMap(loadFromMenuField.text);
     }
 
     public void ExportMetrics()

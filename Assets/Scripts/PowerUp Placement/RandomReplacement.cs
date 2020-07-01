@@ -50,7 +50,7 @@ public class RandomReplacement : IPowerupPlacement
     }
 
 
-    private Tile[,] SetPickUpsLocations(Tile[,] map, List<Tile>[,] validLocations)
+    public Tile[,] SetPickUpsLocations(Tile[,] map, List<Tile>[,] validLocations)
     {
         int powerUpRoll;
         //iterate regions.

@@ -365,7 +365,7 @@ public class AuthoringTool : MonoBehaviour
             KillRatioListener();
             var replacements = await SpawnPickupsAsynchronous(tileMapMain, Enums.PowerUpPlacement.randomReplacement);
             onPowerupsReplacement?.Invoke(replacements);
-            var adjustments = await SpawnPickupsAsynchronous(tileMapMain, Enums.PowerUpPlacement.regionSwap);
+            var adjustments = await SpawnPickupsAsynchronous(tileMapMain, Enums.PowerUpPlacement.changePosition);
             onPowerupsAdjucement?.Invoke(adjustments);
             _loadingMapTaskBusy = false;
         }

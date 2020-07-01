@@ -96,10 +96,15 @@ public class MapSuggestionMng : MonoBehaviour
             var modifyType = new ModifyType();
             maps = await modifyType.ChangePowerUps(tilemapMain);
         }
+        else if (replaceType == Enums.PowerUpPlacement.RemoveOrPlace)
+        {
+            var removeOrPlace = new RemoveOrPlace();
+            maps = await removeOrPlace.ChangePowerUps(tilemapMain);
+        }
         else
         {
-            var rndReplacement = new RandomReplacement();
-            maps = await rndReplacement.ChangePowerUps(tilemapMain);
+            var changePos = new ChangePosition();
+            maps = await changePos.ChangePowerUps(tilemapMain);
         }
         onPickUpsGenerated?.Invoke(true);
         pickUpsTaskBusy = false;

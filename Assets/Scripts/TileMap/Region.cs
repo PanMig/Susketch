@@ -76,4 +76,21 @@ public class Region
         }
         return count;
     }
+
+    public void RemovePickups()
+    {
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                Tile tile = tileSet[i, j];
+                if (tile.decID == TileEnums.Decorations.healthPack ||
+                    tile.decID == TileEnums.Decorations.armorVest ||
+                    tile.decID == TileEnums.Decorations.damageBoost)
+                {
+                    tile.decID = TileEnums.Decorations.empty;
+                }
+            }
+        }
+    }
 }
