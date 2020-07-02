@@ -70,8 +70,6 @@ public class MetricsManager : MonoBehaviour
         var fillAmountRed = killRatioBar.transform.GetChild(1).GetComponent<Image>();
         var blueAmount = (1 - percent) * 100.0f;
         var redAmount = percent* 100.0f;
-        print("blue default:" + blueAmount);
-        print("red default:" + redAmount);
         fillAmountBlue.fillAmount = blueAmount / 100.0f;
         fillAmountRed.fillAmount = redAmount / 100.0f;
         killRatioTextBlue.text = $"{blueAmount.ToString("F0")} %";

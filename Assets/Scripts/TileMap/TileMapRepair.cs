@@ -38,7 +38,7 @@ public class TileMapRepair
 
     public static bool HasAccesiblePowerUps(TileMap map)
     {
-        var decorDict = map.GetDecorations();
+        var decorDict = map.GetDecorationsCoordinates();
         List<string> decorKeys = new List<string>
         {
             TileEnums.Decorations.healthPack.ToString(),

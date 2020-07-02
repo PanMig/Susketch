@@ -319,6 +319,7 @@ public class AuthoringTool : MonoBehaviour
             //result returns the kills of player one (red) divided by the total kills.
             var results = await PredictKillRatio(input_map, input_weapons);
             currKillRatio = results;
+            print("current:" + currKillRatio);
             metricsMng.SetKillRatioProgressBar(results);
             _krTaskBusy = false;
         }
@@ -365,7 +366,7 @@ public class AuthoringTool : MonoBehaviour
             KillRatioListener();
             var replacements = await SpawnPickupsAsynchronous(tileMapMain, Enums.PowerUpPlacement.randomReplacement);
             onPowerupsReplacement?.Invoke(replacements);
-            var adjustments = await SpawnPickupsAsynchronous(tileMapMain, Enums.PowerUpPlacement.changePosition);
+            var adjustments = await SpawnPickupsAsynchronous(tileMapMain, Enums.PowerUpPlacement.regionSwap);
             onPowerupsAdjucement?.Invoke(adjustments);
             _loadingMapTaskBusy = false;
         }

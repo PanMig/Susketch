@@ -48,15 +48,13 @@ public class ModifyType : IPowerupPlacement
         return task;
     }
 
-    public static Tile[,] ModifyPickupType(Tile[,] map, Dictionary<string, List<Vector2>> pickups)
+    public static Tile[,] ModifyPickupType(Tile[,] map, Dictionary<string, List<Tile>> pickups)
     {
-        Random RNG = new Random();
-
         foreach (var pickup in pickups)
         {
             foreach (var value in pickup.Value)
             {
-                var tile = map[(int)value.x, (int)value.y];
+                var tile = map[(int)value.X, (int)value.Y];
                 var diceRoll = MapSuggestionMng.RNG.Next(0, 2);
 
                 if (tile.decID == TileEnums.Decorations.healthPack)

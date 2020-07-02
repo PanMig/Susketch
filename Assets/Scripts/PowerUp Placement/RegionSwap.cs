@@ -30,13 +30,16 @@ public class RegionSwap : IPowerupPlacement
 
             //Get a 2D array with all valid for placement ground and first level tiles.
             var placementLocations = MapSuggestionMng.GetValidPlacementLocations(tilemapMain);
+            var weaponsInput = GetInputWeapons(CharacterClassMng.Instance.BlueClass, CharacterClassMng.Instance.RedClass);
 
             for (int m = 0; m < GENERATIONS; m++)
             {
                 var map = ChangePickUpsRegion(tempMap, placementLocations);
-                var score = PredictKillRatioSynchronous(GetInputMap(map),
-                    GetInputWeapons(CharacterClassMng.Instance.BlueClass, CharacterClassMng.Instance.RedClass));
-                mapsDict.Add(map, score);
+                var score = PredictKillRatioSynchronous(GetInputMap(map), weaponsInput);
+                if (!mapsDict.ContainsKey(map))
+                {
+                    mapsDict.Add(map, score);
+                }
             }
 
             var balancedMaps = (from pair in mapsDict
@@ -53,13 +56,12 @@ public class RegionSwap : IPowerupPlacement
 
         foreach (var pickup in pickups)
         {
-            Random RNG = new Random();
-            
             string key = pickup.Key;
             foreach (var value in pickup.Value)
             {
-                var regionNum = map.GetTileRegion((int)value[0], (int)value[1]);
+                var regionNum = value.GetRegion();
                 var randomRegion = map.GetRandomRegionWithNoPowerUps(regionNum.Item1, regionNum.Item2, validLocations);
+                // no empty region found
                 if (randomRegion.Item1 == -1)
                 {
                     continue;
@@ -67,27 +69,37 @@ public class RegionSwap : IPowerupPlacement
                 // get a random tile in the randomly selected region.
                 if (validLocations[randomRegion.Item1, randomRegion.Item2].Count > 0)
                 {
-                    var randomIdx = RNG.Next(0, validLocations[randomRegion.Item1, randomRegion.Item2].Count);
+                    var randomIdx = MapSuggestionMng.RNG.Next(0, validLocations[randomRegion.Item1, randomRegion.Item2].Count);
                     var randomTile = validLocations[randomRegion.Item1, randomRegion.Item2][randomIdx];
 
-                    switch (key)
+                    if (randomTile.X != value.X && randomTile.Y != value.Y)
                     {
-                        case "healthPack":
-                            map.GetTileWithIndex(randomTile.X, randomTile.Y).decID = TileEnums.Decorations.healthPack;
-                            map.GetTileWithIndex((int)value[0], (int)value[1]).decID = TileEnums.Decorations.empty;
-                            break;
-                        case "armorVest":
-                            map.GetTileWithIndex(randomTile.X, randomTile.Y).decID = TileEnums.Decorations.armorVest;
-                            map.GetTileWithIndex((int)value[0], (int)value[1]).decID = TileEnums.Decorations.empty;
-                            break;
-                        case "damageBoost":
-                            map.GetTileWithIndex(randomTile.X, randomTile.Y).decID = TileEnums.Decorations.damageBoost;
-                            map.GetTileWithIndex((int)value[0], (int)value[1]).decID = TileEnums.Decorations.empty;
-                            break;
+                        switch (key)
+                        {
+                            case "healthPack":
+                                PlaceNewRemoveOld(map, randomTile, value, TileEnums.Decorations.healthPack);
+                                break;
+                            case "armorVest":
+                                PlaceNewRemoveOld(map, randomTile, value, TileEnums.Decorations.armorVest);
+                                break;
+                            case "damageBoost":
+                                PlaceNewRemoveOld(map, randomTile, value, TileEnums.Decorations.damageBoost);
+                                break;
+                        }
                     }
                 }
             }
         }
         return map.GetTileMap();
+    }
+
+    private static void PlaceNewRemoveOld(TileMap map, Tile randomTile, Tile value, TileEnums.Decorations decType)
+    {
+        var newTile = map.GetTileWithIndex(randomTile.X, randomTile.Y);
+        var oldTile = map.GetTileWithIndex(value.X,value.Y);
+        newTile.decID = decType;
+        oldTile.decID = TileEnums.Decorations.empty;
+        map.SetTileMapTile(newTile);
+        map.SetTileMapTile(oldTile);
     }
 }

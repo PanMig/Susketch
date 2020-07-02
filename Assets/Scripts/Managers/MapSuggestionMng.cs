@@ -81,7 +81,12 @@ public class MapSuggestionMng : MonoBehaviour
         pickUpsTaskBusy = true;
         onPickUpsGenerated?.Invoke(false);
         List<KeyValuePair<Tile[,], float>> maps;
-        if (replaceType == Enums.PowerUpPlacement.randomReplacement)
+        if (replaceType == Enums.PowerUpPlacement.randomMutation)
+        {
+            var rndMutation = new RandomMutation();
+            maps = await rndMutation.ChangePowerUps(tilemapMain);
+        }
+        else if (replaceType == Enums.PowerUpPlacement.randomReplacement)
         {
             var rndReplacement = new RandomReplacement();
             maps = await rndReplacement.ChangePowerUps(tilemapMain);
@@ -136,6 +141,29 @@ public class MapSuggestionMng : MonoBehaviour
         return validLocations;
     }
 
+    public static Tuple<int, int> GetRandomRegion(int removeX, int removeY)
+    {
+        var rand = new System.Random();
+        int row, col = 0;
+        if (removeY != -1 && removeX != -1)
+        {
+            var rangeX = Enumerable.Range(0, 4).Where(i => i != removeY);
+            var rangeY = Enumerable.Range(0, 4).Where(i => i != removeX);
+
+            int row_index = rand.Next(0, 3);
+            row = rangeX.ElementAt(row_index);
+            int col_index = rand.Next(0, 3);
+            col = rangeY.ElementAt(col_index);
+            return new Tuple<int, int>(row, col);
+        }
+        // -1 case means that no region to be removed is given.
+        else
+        {
+            row = rand.Next(0, 3);
+            col = rand.Next(0, 3);
+            return new Tuple<int, int>(row, col);
+        }
+    }
 
     #endregion
 

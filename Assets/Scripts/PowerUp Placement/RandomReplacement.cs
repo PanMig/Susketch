@@ -22,23 +22,24 @@ public class RandomReplacement : IPowerupPlacement
         tempMap.InitRegions();
         tempMap.PaintTiles(MapSuggestionMng.tempView.transform, 1.0f);
         tempMap.SetTileMap(tilemapMain.GetTileMap());
-        tempMap.RemoveDecorations();
 
         var task = Task.Run(() =>
         {
             // dictionary to keep the generated maps and scores
             Dictionary<Tile[,], float> mapsDict = new Dictionary<Tile[,], float>(new TileMapComparer());
 
+            var weapons = GetInputWeapons(CharacterClassMng.Instance.BlueClass, CharacterClassMng.Instance.RedClass);
+
             //Get a 2D array with all valid for placement ground and first level tiles.
             var placementLocations = MapSuggestionMng.GetValidPlacementLocations(tempMap);
 
             for (int m = 0; m < GENERATIONS; m++)
             {
+                Debug.Log(tempMap.GetDecoration(TileEnums.Decorations.healthPack).Count);
                 var map = TileMap.GetMapDeepCopy(tempMap.GetTileMap());
                 map = SetPickUpsLocations(map, placementLocations);
-                var score = PredictKillRatioSynchronous(GetInputMap(map), GetInputWeapons(CharacterClassMng.Instance.BlueClass, CharacterClassMng.Instance.RedClass));
+                var score = PredictKillRatioSynchronous(GetInputMap(map), weapons);
                 mapsDict.Add(map, score);
-                //await new WaitForEndOfFrame();
             }
             
             var balancedMaps = (from pair in mapsDict

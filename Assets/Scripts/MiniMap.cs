@@ -47,6 +47,7 @@ public class MiniMap : MonoBehaviour
     {
         if (_map.GetTileMap() != null)
         {
+           
             tileMapMain.SetTileMap(_map.GetTileMap());
             _mapView.Btn.SetActive(false);
         }
@@ -69,6 +70,7 @@ public class MiniMap : MonoBehaviour
         _map.SetTileMap(_map.GetTileMap());
         _map.Render();
         var percent = balancedMaps[_index].Value;
+
         SetMiniMapView(percent);
 
         for (int i = 0; i < 20; i++)
@@ -88,10 +90,11 @@ public class MiniMap : MonoBehaviour
         var curBlueAmount = (1 - currKillRatio) * 100;
         var curRedAmount = currKillRatio * 100;
 
-        var blueSign = (curBlueAmount - _newBlueAmount) < 0 ? "-" : "+";
-        var redSign = (curRedAmount - _newRedAmount) < 0 ? "-" : "+";
+        if (type == MiniMapType.adjucement)
+        {
+            Debug.Log("suggested:" + percent);
+        }
 
-        //_mapView.SetKillRatioBar(_newBlueAmount / 100.0f, _newRedAmount / 100.0f);
         MetricsManager.SetKillRatioBar(_newBlueAmount / 100.0f, _newRedAmount / 100.0f, _mapView.KillRatioBar);
         //use three whitespaces for better alignment.
         _mapView.BluePercentText.text = $"{_newBlueAmount.ToString($"F0")} %";
@@ -109,6 +112,7 @@ public class MiniMap : MonoBehaviour
         }
 
         SetPowerUpsCount();
+
 
         //set button active
         if (!_mapView.Btn.activeInHierarchy)

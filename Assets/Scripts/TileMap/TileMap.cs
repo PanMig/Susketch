@@ -35,7 +35,7 @@ namespace TileMapLogic
                 for (int col = 0; col < columns; col++)
                 {
                     //ground tile and empty decoration.
-                    tileTheme = Brush.Instance.brushThemes[UnityEngine.Random.Range(0, 1)];
+                    tileTheme = Brush.Instance.brushThemes[0];
                     dec = Brush.Instance.decorations[0];
                     tileMap[row, col] = new Tile( tileTheme.envTileID, dec.decorationID, row, col);
                 }
@@ -290,47 +290,46 @@ namespace TileMapLogic
 
         }
 
-        public Tuple<int, int> GetRandomRegion(int removeX, int removeY)
-        {
-            var rand = new System.Random();
-            int row, col = 0;
-            if (removeY != -1 && removeX != -1)
-            {
-                var rangeX = Enumerable.Range(0, 4).Where(i => i != removeY);
-                var rangeY = Enumerable.Range(0, 4).Where(i => i != removeX);
+        //public Tuple<int,int> GetTileRegion(int tile_X, int tile_Y)
+        //{
+        //    int step = 5;
+        //    int regions = 4;
 
-                int row_index = rand.Next(0, 3);
-                row = rangeX.ElementAt(row_index);
-                int col_index = rand.Next(0, 3);
-                col = rangeY.ElementAt(col_index);
-                return new Tuple<int, int>(row, col);
-            }
-            // -1 case means that no region to be removed is given.
-            else
-            {
-                row = rand.Next(0, 3);
-                col = rand.Next(0, 3);
-                return new Tuple<int, int>(row, col);
-            }
-        }
+        //    int row_idx = tile_X / step;
+        //    int col_idx = tile_Y / step;
+        //    return new Tuple<int, int>(row_idx, col_idx);
+        //}
+
+        //public Tile GetRandomRegionCell(int regionNumX, int regionNumY, System.Random RNG)
+        //{
+        //    int xRange = regionNumX * 5;
+        //    int yRange = regionNumY * 5;
+
+        //    int row = RNG.Next(xRange - 5, xRange - 1);
+        //    int column = RNG.Next(yRange - 5, yRange - 1);
+
+        //    var tile = GetTileWithIndex(row, column);
+
+        //    return tile;
+        //}
 
         public Tuple<int, int> GetRandomRegionWithNoPowerUps(int removeX, int removeY, List<Tile>[,] validLocations)
         {
             var rand = new System.Random();
             int row, col = 0;
-      
+
             var rangeX = Enumerable.Range(0, 4).Where(i => i != removeY);
             var rangeY = Enumerable.Range(0, 4).Where(i => i != removeX);
 
-            List<Tuple<int,int>> validRegions = new List<Tuple<int, int>>();
+            List<Tuple<int, int>> validRegions = new List<Tuple<int, int>>();
 
             foreach (var x in rangeX)
             {
                 foreach (var y in rangeY)
                 {
-                    if (Regions[x, y].GetPickUpsNumber() == 0 && validLocations[x,y].Count > 0)
+                    if (Regions[x, y].GetPickUpsNumber() == 0 && validLocations[x, y].Count > 0)
                     {
-                        validRegions.Add(new Tuple<int, int>(x,y));
+                        validRegions.Add(new Tuple<int, int>(x, y));
                     }
                 }
             }
@@ -340,30 +339,7 @@ namespace TileMapLogic
                 int random_idx = rand.Next(0, validRegions.Count);
                 return validRegions[random_idx];
             }
-            return new Tuple<int, int>(-1,-1);
-        }
-
-        public Tuple<int,int> GetTileRegion(int tile_X, int tile_Y)
-        {
-            int step = 5;
-            int regions = 4;
-
-            int row_idx = tile_X / step;
-            int col_idx = tile_Y / step;
-            return new Tuple<int, int>(row_idx, col_idx);
-        }
-
-        public Tile GetRandomRegionCell(int regionNumX, int regionNumY, System.Random RNG)
-        {
-            int xRange = regionNumX * 5;
-            int yRange = regionNumY * 5;
-
-            int row = RNG.Next(xRange - 5, xRange - 1);
-            int column = RNG.Next(yRange - 5, yRange - 1);
-
-            var tile = GetTileWithIndex(row, column);
-
-            return tile;
+            return new Tuple<int, int>(-1, -1);
         }
 
         public virtual Tile[,] GetTileMap()
@@ -407,7 +383,7 @@ namespace TileMapLogic
             }
         }
 
-        public Dictionary<string, List<Vector2>> GetDecorations()
+        public Dictionary<string, List<Vector2>> GetDecorationsCoordinates()
         {
             Dictionary<string, List<Vector2>> decorDict = new Dictionary<string, List<Vector2>>();
             var healthPacks = new List<Vector2>();
@@ -430,6 +406,38 @@ namespace TileMapLogic
                     else if (currTile.decID == TileEnums.Decorations.damageBoost)
                     {
                         damagePacks.Add(new Vector2(currTile.X, currTile.Y));
+                    }
+                }
+            }
+            decorDict.Add(TileEnums.Decorations.healthPack.ToString(), healthPacks);
+            decorDict.Add(TileEnums.Decorations.armorVest.ToString(), armorPacks);
+            decorDict.Add(TileEnums.Decorations.damageBoost.ToString(), damagePacks);
+            return decorDict;
+        }
+
+        public Dictionary<string, List<Tile>> GetDecorations()
+        {
+            Dictionary<string, List<Tile>> decorDict = new Dictionary<string, List<Tile>>();
+            var healthPacks = new List<Tile>();
+            var armorPacks = new List<Tile>();
+            var damagePacks = new List<Tile>();
+
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    var currTile = tileMap[i, j];
+                    if (currTile.decID == TileEnums.Decorations.healthPack)
+                    {
+                        healthPacks.Add(currTile);
+                    }
+                    else if (currTile.decID == TileEnums.Decorations.armorVest)
+                    {
+                        armorPacks.Add(currTile);
+                    }
+                    else if (currTile.decID == TileEnums.Decorations.damageBoost)
+                    {
+                        damagePacks.Add(currTile);
                     }
                 }
             }

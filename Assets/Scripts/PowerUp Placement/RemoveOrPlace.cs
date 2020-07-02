@@ -9,7 +9,7 @@ using static TFModel;
 
 public class RemoveOrPlace : IPowerupPlacement
 {
-    private const int GENERATIONS = 1;
+    private const int GENERATIONS = 10;
     private const float THRESHOLD = 0.5f;
 
     public Task<List<KeyValuePair<Tile[,], float>>> ChangePowerUps(TileMap tilemapMain)
@@ -47,9 +47,9 @@ public class RemoveOrPlace : IPowerupPlacement
         return task;
     }
 
-    public Tile[,] RemoveOrPlacePickUp(TileMap map, List<Tile>[,] validLocations)
+    public static Tile[,] RemoveOrPlacePickUp(TileMap map, List<Tile>[,] validLocations)
     {
-        var region = map.GetRandomRegion(-1, -1);
+        var region = MapSuggestionMng .GetRandomRegion(-1, -1);
         if (map.Regions[region.Item1, region.Item2].GetPickUpsNumber() == 0)
         {
             var randomIdx = MapSuggestionMng.RNG.Next(0, validLocations[region.Item1, region.Item2].Count);

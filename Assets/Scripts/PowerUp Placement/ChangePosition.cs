@@ -33,7 +33,8 @@ public class ChangePosition : IPowerupPlacement
 
             for (int m = 0; m < GENERATIONS; m++)
             {
-                var map = ChangePickUpsPosInRegion(tempMap, placementLocations);
+                var map = TileMap.GetMapDeepCopy(tempMap.GetTileMap());
+                map = ChangePickUpsPosInRegion(map, placementLocations, tempMap.GetDecorations());
                 var score = PredictKillRatioSynchronous(GetInputMap(map),
                     GetInputWeapons(CharacterClassMng.Instance.BlueClass, CharacterClassMng.Instance.RedClass));
                 if (!mapsDict.ContainsKey(map))
@@ -50,46 +51,40 @@ public class ChangePosition : IPowerupPlacement
         return task;
     }
 
-    public static Tile[,] ChangePickUpsPosInRegion(TileMap map, List<Tile>[,] validLocations)
+    public static Tile[,] ChangePickUpsPosInRegion(Tile[,] map, List<Tile>[,] validLocations, Dictionary<string,List<Tile>> pickups)
     {
-        var pickups = map.GetDecorations();
-
         foreach (var pickup in pickups)
         {
-            System.Random RNG = new System.Random();
-
             string key = pickup.Key;
             foreach (var value in pickup.Value)
             {
-                var cur_region = map.GetTileRegion((int)value[0], (int)value[1]);
-                if (cur_region.Item1 == -1)
-                {
-                    continue;
-                }
+                var cur_region = value.GetRegion();
                 // get a random tile in the randomly selected region.
                 if (validLocations[cur_region.Item1, cur_region.Item2].Count > 0)
                 {
-                    var randomIdx = RNG.Next(0, validLocations[cur_region.Item1, cur_region.Item2].Count);
+                    var randomIdx = MapSuggestionMng.RNG.Next(0, validLocations[cur_region.Item1, cur_region.Item2].Count);
                     var randomTile = validLocations[cur_region.Item1, cur_region.Item2][randomIdx];
-
-                    switch (key)
+                    if (randomTile.X != value.X && randomTile.Y != value.Y)
                     {
-                        case "healthPack":
-                            map.GetTileWithIndex(randomTile.X, randomTile.Y).decID = TileEnums.Decorations.healthPack;
-                            map.GetTileWithIndex((int)value[0], (int)value[1]).decID = TileEnums.Decorations.empty;
-                            break;
-                        case "armorVest":
-                            map.GetTileWithIndex(randomTile.X, randomTile.Y).decID = TileEnums.Decorations.armorVest;
-                            map.GetTileWithIndex((int)value[0], (int)value[1]).decID = TileEnums.Decorations.empty;
-                            break;
-                        case "damageBoost":
-                            map.GetTileWithIndex(randomTile.X, randomTile.Y).decID = TileEnums.Decorations.damageBoost;
-                            map.GetTileWithIndex((int)value[0], (int)value[1]).decID = TileEnums.Decorations.empty;
-                            break;
+                        switch (key)
+                        {
+                            case "healthPack":
+                                map[randomTile.X, randomTile.Y].decID = TileEnums.Decorations.healthPack;
+                                map[value.X, (int)value.Y].decID = TileEnums.Decorations.empty;
+                                break;
+                            case "armorVest":
+                                map[randomTile.X, randomTile.Y].decID = TileEnums.Decorations.armorVest;
+                                map[value.X, (int)value.Y].decID = TileEnums.Decorations.empty;
+                                break;
+                            case "damageBoost":
+                                map[randomTile.X, randomTile.Y].decID = TileEnums.Decorations.damageBoost;
+                                map[value.X, (int)value.Y].decID = TileEnums.Decorations.empty;
+                                break;
+                        }
                     }
                 }
             }
         }
-        return map.GetTileMap();
+        return map;
     }
 }
