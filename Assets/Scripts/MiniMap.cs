@@ -87,8 +87,6 @@ public class MiniMap : MonoBehaviour
     {
         _newBlueAmount = (1 - percent) * 100;
         _newRedAmount = percent * 100;
-        var curBlueAmount = (1 - currKillRatio) * 100;
-        var curRedAmount = currKillRatio * 100;
 
         if (type == MiniMapType.adjucement)
         {
@@ -112,7 +110,6 @@ public class MiniMap : MonoBehaviour
         }
 
         SetPowerUpsCount();
-
 
         //set button active
         if (!_mapView.Btn.activeInHierarchy)

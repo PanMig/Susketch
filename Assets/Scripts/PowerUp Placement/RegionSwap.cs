@@ -34,7 +34,8 @@ public class RegionSwap : IPowerupPlacement
 
             for (int m = 0; m < GENERATIONS; m++)
             {
-                var map = ChangePickUpsRegion(tempMap, placementLocations);
+                var map = TileMap.GetMapDeepCopy(tempMap.GetTileMap());
+                map = ChangePickUpsRegion(map, placementLocations, tempMap.GetDecorations());
                 var score = PredictKillRatioSynchronous(GetInputMap(map), weaponsInput);
                 if (!mapsDict.ContainsKey(map))
                 {
@@ -50,17 +51,15 @@ public class RegionSwap : IPowerupPlacement
         return task;
     }
 
-    public static Tile[,] ChangePickUpsRegion(TileMap map, List<Tile>[,] validLocations)
+    public static Tile[,] ChangePickUpsRegion(Tile[,] map, List<Tile>[,] validLocations, Dictionary<string, List<Tile>> pickups)
     {
-        var pickups = map.GetDecorations();
-
         foreach (var pickup in pickups)
         {
             string key = pickup.Key;
             foreach (var value in pickup.Value)
             {
                 var regionNum = value.GetRegion();
-                var randomRegion = map.GetRandomRegionWithNoPowerUps(regionNum.Item1, regionNum.Item2, validLocations);
+                var randomRegion = MapSuggestionMng.GetRandomRegionWithNoPowerUps(regionNum.Item1, regionNum.Item2, validLocations, map);
                 // no empty region found
                 if (randomRegion.Item1 == -1)
                 {
@@ -77,20 +76,23 @@ public class RegionSwap : IPowerupPlacement
                         switch (key)
                         {
                             case "healthPack":
-                                PlaceNewRemoveOld(map, randomTile, value, TileEnums.Decorations.healthPack);
+                                map[randomTile.X, randomTile.Y].decID = TileEnums.Decorations.healthPack;
+                                map[value.X, (int)value.Y].decID = TileEnums.Decorations.empty;
                                 break;
                             case "armorVest":
-                                PlaceNewRemoveOld(map, randomTile, value, TileEnums.Decorations.armorVest);
+                                map[randomTile.X, randomTile.Y].decID = TileEnums.Decorations.armorVest;
+                                map[value.X, (int)value.Y].decID = TileEnums.Decorations.empty;
                                 break;
                             case "damageBoost":
-                                PlaceNewRemoveOld(map, randomTile, value, TileEnums.Decorations.damageBoost);
+                                map[randomTile.X, randomTile.Y].decID = TileEnums.Decorations.damageBoost;
+                                map[value.X, (int)value.Y].decID = TileEnums.Decorations.empty;
                                 break;
                         }
                     }
                 }
             }
         }
-        return map.GetTileMap();
+        return map;
     }
 
     private static void PlaceNewRemoveOld(TileMap map, Tile randomTile, Tile value, TileEnums.Decorations decType)

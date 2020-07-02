@@ -10,7 +10,7 @@ using static TFModel;
 public class RandomReplacement : IPowerupPlacement
 {
 
-    private const int GENERATIONS = 10;
+    private const int GENERATIONS = 1;
     private const float THRESHOLD = 0.5f;
 
     public  Task<List<KeyValuePair<Tile[,], float>>> ChangePowerUps(TileMap tilemapMain)
@@ -22,6 +22,8 @@ public class RandomReplacement : IPowerupPlacement
         tempMap.InitRegions();
         tempMap.PaintTiles(MapSuggestionMng.tempView.transform, 1.0f);
         tempMap.SetTileMap(tilemapMain.GetTileMap());
+        //remove decorations for every new generation
+        tempMap.RemoveDecorations();
 
         var task = Task.Run(() =>
         {
@@ -35,7 +37,6 @@ public class RandomReplacement : IPowerupPlacement
 
             for (int m = 0; m < GENERATIONS; m++)
             {
-                Debug.Log(tempMap.GetDecoration(TileEnums.Decorations.healthPack).Count);
                 var map = TileMap.GetMapDeepCopy(tempMap.GetTileMap());
                 map = SetPickUpsLocations(map, placementLocations);
                 var score = PredictKillRatioSynchronous(GetInputMap(map), weapons);

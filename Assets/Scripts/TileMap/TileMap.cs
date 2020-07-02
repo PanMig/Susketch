@@ -313,34 +313,34 @@ namespace TileMapLogic
         //    return tile;
         //}
 
-        public Tuple<int, int> GetRandomRegionWithNoPowerUps(int removeX, int removeY, List<Tile>[,] validLocations)
-        {
-            var rand = new System.Random();
-            int row, col = 0;
+        //public Tuple<int, int> GetRandomRegionWithNoPowerUps(int removeX, int removeY, List<Tile>[,] validLocations)
+        //{
+        //    var rand = new System.Random();
+        //    int row, col = 0;
 
-            var rangeX = Enumerable.Range(0, 4).Where(i => i != removeY);
-            var rangeY = Enumerable.Range(0, 4).Where(i => i != removeX);
+        //    var rangeX = Enumerable.Range(0, 4).Where(i => i != removeY);
+        //    var rangeY = Enumerable.Range(0, 4).Where(i => i != removeX);
 
-            List<Tuple<int, int>> validRegions = new List<Tuple<int, int>>();
+        //    List<Tuple<int, int>> validRegions = new List<Tuple<int, int>>();
 
-            foreach (var x in rangeX)
-            {
-                foreach (var y in rangeY)
-                {
-                    if (Regions[x, y].GetPickUpsNumber() == 0 && validLocations[x, y].Count > 0)
-                    {
-                        validRegions.Add(new Tuple<int, int>(x, y));
-                    }
-                }
-            }
+        //    foreach (var x in rangeX)
+        //    {
+        //        foreach (var y in rangeY)
+        //        {
+        //            if (Regions[x, y].GetPickUpsNumber() == 0 && validLocations[x, y].Count > 0)
+        //            {
+        //                validRegions.Add(new Tuple<int, int>(x, y));
+        //            }
+        //        }
+        //    }
 
-            if (validRegions.Count > 0)
-            {
-                int random_idx = rand.Next(0, validRegions.Count);
-                return validRegions[random_idx];
-            }
-            return new Tuple<int, int>(-1, -1);
-        }
+        //    if (validRegions.Count > 0)
+        //    {
+        //        int random_idx = rand.Next(0, validRegions.Count);
+        //        return validRegions[random_idx];
+        //    }
+        //    return new Tuple<int, int>(-1, -1);
+        //}
 
         public virtual Tile[,] GetTileMap()
         {
