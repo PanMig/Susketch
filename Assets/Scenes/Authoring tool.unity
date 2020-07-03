@@ -10403,7 +10403,7 @@ PrefabInstance:
     - target: {fileID: 5121887817289216974, guid: 8377f88491eed57469d7edbc24e694e0,
         type: 3}
       propertyPath: m_textAlignment
-      value: 1028
+      value: 1025
       objectReference: {fileID: 0}
     - target: {fileID: 5121887817289216974, guid: 8377f88491eed57469d7edbc24e694e0,
         type: 3}
@@ -10496,12 +10496,12 @@ PrefabInstance:
     - target: {fileID: 5121887817289216975, guid: 8377f88491eed57469d7edbc24e694e0,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -274.3
+      value: -1716
       objectReference: {fileID: 0}
     - target: {fileID: 5121887817289216975, guid: 8377f88491eed57469d7edbc24e694e0,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 96
+      value: 87.05
       objectReference: {fileID: 0}
     - target: {fileID: 5121887817289216975, guid: 8377f88491eed57469d7edbc24e694e0,
         type: 3}

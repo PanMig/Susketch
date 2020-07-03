@@ -9,7 +9,7 @@ using static TFModel;
 
 public class RemoveOrPlace : IPowerupPlacement
 {
-    private const int GENERATIONS = 10;
+    private const int GENERATIONS = 1;
     private const float THRESHOLD = 0.5f;
 
     public Task<List<KeyValuePair<Tile[,], float>>> ChangePowerUps(TileMap tilemapMain)
@@ -30,7 +30,8 @@ public class RemoveOrPlace : IPowerupPlacement
 
             for (int m = 0; m < GENERATIONS; m++)
             {
-                var map = RemoveOrPlacePickUp(tempMap, placementLocations);
+                var map = TileMap.GetMapDeepCopy(tempMap.GetTileMap());
+                map = RemoveOrPlacePickUp(map, placementLocations);
                 var score = PredictKillRatioSynchronous(GetInputMap(map),
                     GetInputWeapons(CharacterClassMng.Instance.BlueClass, CharacterClassMng.Instance.RedClass));
                 if (!mapsDict.ContainsKey(map))
@@ -47,10 +48,10 @@ public class RemoveOrPlace : IPowerupPlacement
         return task;
     }
 
-    public static Tile[,] RemoveOrPlacePickUp(TileMap map, List<Tile>[,] validLocations)
+    public static Tile[,] RemoveOrPlacePickUp(Tile[,] map, List<Tile>[,] validLocations)
     {
-        var region = MapSuggestionMng .GetRandomRegion(-1, -1);
-        if (map.Regions[region.Item1, region.Item2].GetPickUpsNumber() == 0)
+        var region = MapSuggestionMng.GetRandomRegion(-1, -1);
+        if (MapSuggestionMng.GetPickupsNumberInRegion(region.Item1, region.Item2, map) == 0)
         {
             var randomIdx = MapSuggestionMng.RNG.Next(0, validLocations[region.Item1, region.Item2].Count);
             var randomTile = validLocations[region.Item1, region.Item2][randomIdx];
@@ -58,21 +59,21 @@ public class RemoveOrPlace : IPowerupPlacement
             switch (diceRoll)
             {
                 case 0:
-                    map.GetTileWithIndex(randomTile.X, randomTile.Y).decID = TileEnums.Decorations.healthPack;
+                    map[randomTile.X, randomTile.Y].decID = TileEnums.Decorations.healthPack;
                     break;
                 case 1:
-                    map.GetTileWithIndex(randomTile.X, randomTile.Y).decID = TileEnums.Decorations.armorVest;
+                    map[randomTile.X, randomTile.Y].decID = TileEnums.Decorations.armorVest;
                     break;
                 case 2:
-                    map.GetTileWithIndex(randomTile.X, randomTile.Y).decID = TileEnums.Decorations.damageBoost;
+                    map[randomTile.X, randomTile.Y].decID = TileEnums.Decorations.damageBoost;
                     break;
             }
         }
-        else
+        else if(MapSuggestionMng.GetPickupsNumberInRegion(region.Item1, region.Item2, map) > 0)
         {
-            map.Regions[region.Item1, region.Item2].RemovePickups();
+            map = MapSuggestionMng.RemovePickupsInRegion(region.Item1, region.Item2, map);
         }
 
-        return map.GetTileMap();
+        return map;
     }
 }

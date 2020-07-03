@@ -10,7 +10,7 @@ using static TFModel;
 public class RandomReplacement : IPowerupPlacement
 {
 
-    private const int GENERATIONS = 1;
+    private const int GENERATIONS = 12;
     private const float THRESHOLD = 0.5f;
 
     public  Task<List<KeyValuePair<Tile[,], float>>> ChangePowerUps(TileMap tilemapMain)

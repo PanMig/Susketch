@@ -201,7 +201,7 @@ public class MapSuggestionMng : MonoBehaviour
         {
             for (int j = y * 5; j < y * 5 + 5; j++)
             {
-                if (map[i, j].decID != TileEnums.Decorations.empty)
+                if (map[i, j].decID != TileEnums.Decorations.empty && map[i, j].decID != TileEnums.Decorations.stairs)
                 {
                     count++;
                 }
@@ -214,18 +214,16 @@ public class MapSuggestionMng : MonoBehaviour
 
     public static Tile[,] RemovePickupsInRegion(int x, int y, Tile[,] map)
     {
-        var count = 0;
         for (int i = x * 5; i < x * 5 + 5; i++)
         {
             for (int j = y * 5; j < y * 5 + 5; j++)
             {
-                if (map[i, j].decID != TileEnums.Decorations.empty)
+                if (map[i, j].decID != TileEnums.Decorations.stairs)
                 {
                     map[i, j].decID = TileEnums.Decorations.empty;
                 }
             }
         }
-
         return map;
     }
 

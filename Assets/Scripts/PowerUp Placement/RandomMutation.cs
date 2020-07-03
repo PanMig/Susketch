@@ -21,7 +21,6 @@ public class RandomMutation : IPowerupPlacement
         tempMap.InitRegions();
         tempMap.PaintTiles(MapSuggestionMng.tempView.transform, 1.0f);
         tempMap.SetTileMap(tilemapMain.GetTileMap());
-
         var weaponsInput = GetInputWeapons(CharacterClassMng.Instance.BlueClass, CharacterClassMng.Instance.RedClass);
 
         var task = Task.Run(() =>
@@ -56,12 +55,14 @@ public class RandomMutation : IPowerupPlacement
                         score = PredictKillRatioSynchronous(GetInputMap(map), weaponsInput);
                         break;
                     case 3:
-                        map = RemoveOrPlace.RemoveOrPlacePickUp(tempMap, placementLocations);
+                        map = TileMap.GetMapDeepCopy(tempMap.GetTileMap());
+                        map = RemoveOrPlace.RemoveOrPlacePickUp(map, placementLocations);
                         score = PredictKillRatioSynchronous(GetInputMap(map), weaponsInput);
                         break;
                     default:
                         Debug.LogError("Wrong index in random Mutation switch statement. Default was choosen");
-                        map = RemoveOrPlace.RemoveOrPlacePickUp(tempMap, placementLocations);
+                        map = TileMap.GetMapDeepCopy(tempMap.GetTileMap());
+                        map = RemoveOrPlace.RemoveOrPlacePickUp(map, placementLocations);
                         score = PredictKillRatioSynchronous(GetInputMap(map), weaponsInput);
                         break;
                 }
