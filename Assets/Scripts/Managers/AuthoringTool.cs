@@ -57,6 +57,8 @@ public class AuthoringTool : MonoBehaviour
         
         //onMapReadyForPrediction is fired on End of drag AND pointer up.
         EventManagerUI.onMapReadyForPrediction += InvokeSurrogateModels;
+        //user analytics
+        EventManagerUI.onMapReadyForPrediction += CollectData;
 
         // CharacterClassMng is fired when the class selector is edited.
         CharacterClassMng.onClassSelectorEdit += InvokeSurrogateModels;
@@ -239,6 +241,16 @@ public class AuthoringTool : MonoBehaviour
             InvokeSuggestions();
         }
 
+    }
+
+    public void CollectData()
+    {
+        Debug.Log("collecting");
+        var map = tileMapMain.ExportToStringArray();
+        var blueClass = CharacterClassMng.Instance.BlueClass.className;
+        var redClass =  CharacterClassMng.Instance.RedClass.className;
+
+        UserEventsLogger.LogMainCanvas(map, blueClass, redClass,_activeTab.ToString());
     }
 
     public void InvokePredictions()

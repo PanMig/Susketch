@@ -37,7 +37,7 @@ namespace TileMapLogic
                     //ground tile and empty decoration.
                     tileTheme = Brush.Instance.brushThemes[0];
                     dec = Brush.Instance.decorations[0];
-                    tileMap[row, col] = new Tile( tileTheme.envTileID, dec.decorationID, row, col);
+                    tileMap[row, col] = new Tile(tileTheme.envTileID, dec.decorationID, row, col);
                 }
             }
         }
@@ -66,6 +66,7 @@ namespace TileMapLogic
                     tileSet[row, col] = tileMap[row + stepX, col + stepY];
                 }
             }
+
             return tileSet;
         }
 
@@ -108,7 +109,7 @@ namespace TileMapLogic
                 for (int j = 0; j < columns; j++)
                 {
                     tileMap[i, j].PaintTile(Brush.Instance.brushThemes[0].prefab,
-                        Brush.Instance.brushThemes[0], Brush.Instance.decorations[0] ,parent, decorationScale);
+                        Brush.Instance.brushThemes[0], Brush.Instance.decorations[0], parent, decorationScale);
                 }
             }
         }
@@ -150,7 +151,7 @@ namespace TileMapLogic
             {
                 for (int j = 0; j < columns; j++)
                 {
-                    map[i,j] = new Tile(TileEnums.EnviromentTiles.ground, TileEnums.Decorations.empty, i, j);
+                    map[i, j] = new Tile(TileEnums.EnviromentTiles.ground, TileEnums.Decorations.empty, i, j);
                     map[i, j].CopyEnvDec(inputMap[i, j]);
                 }
             }
@@ -164,7 +165,8 @@ namespace TileMapLogic
             {
                 for (int j = 0; j < columns; j++)
                 {
-                    if (map[i, j].decID != TileEnums.Decorations.stairs && map[i, j].decID != TileEnums.Decorations.empty)
+                    if (map[i, j].decID != TileEnums.Decorations.stairs &&
+                        map[i, j].decID != TileEnums.Decorations.empty)
                     {
                         map[i, j].SetDecoration(Brush.Instance.decorations[0]);
                     }
@@ -192,24 +194,29 @@ namespace TileMapLogic
                     {
                         stringMap[row, col] = "2";
                     }
+
                     if (map[row, col].decID == TileEnums.Decorations.healthPack)
                     {
                         stringMap[row, col] += "H";
                     }
+
                     if (map[row, col].decID == TileEnums.Decorations.damageBoost)
                     {
                         stringMap[row, col] += "D";
                     }
+
                     if (map[row, col].decID == TileEnums.Decorations.armorVest)
                     {
                         stringMap[row, col] += "A";
                     }
+
                     if (map[row, col].decID == TileEnums.Decorations.stairs)
                     {
                         stringMap[row, col] += "S";
                     }
                 }
             }
+
             return stringMap;
         }
 
@@ -238,24 +245,29 @@ namespace TileMapLogic
                     {
                         stringMap[row, col] = "2";
                     }
+
                     if (tileMap[row, col].decID == TileEnums.Decorations.healthPack)
                     {
                         stringMap[row, col] += "H";
                     }
+
                     if (tileMap[row, col].decID == TileEnums.Decorations.damageBoost)
                     {
                         stringMap[row, col] += "D";
                     }
+
                     if (tileMap[row, col].decID == TileEnums.Decorations.armorVest)
                     {
                         stringMap[row, col] += "A";
                     }
+
                     if (tileMap[row, col].decID == TileEnums.Decorations.stairs)
                     {
                         stringMap[row, col] += "S";
                     }
                 }
             }
+
             return stringMap;
         }
 
@@ -281,6 +293,7 @@ namespace TileMapLogic
                     }
                 }
             }
+
             return intMap;
         }
 
@@ -364,7 +377,7 @@ namespace TileMapLogic
             {
                 for (int j = 0; j < columns; j++)
                 {
-                    tileMap[i, j].CopyEnvDec(map[i,j]);
+                    tileMap[i, j].CopyEnvDec(map[i, j]);
                 }
             }
         }
@@ -375,7 +388,8 @@ namespace TileMapLogic
             {
                 for (int j = 0; j < columns; j++)
                 {
-                    if (tileMap[i, j].decID != TileEnums.Decorations.stairs && tileMap[i, j].decID != TileEnums.Decorations.empty)
+                    if (tileMap[i, j].decID != TileEnums.Decorations.stairs &&
+                        tileMap[i, j].decID != TileEnums.Decorations.empty)
                     {
                         tileMap[i, j].SetDecoration(Brush.Instance.decorations[0]);
                     }
@@ -409,6 +423,7 @@ namespace TileMapLogic
                     }
                 }
             }
+
             decorDict.Add(TileEnums.Decorations.healthPack.ToString(), healthPacks);
             decorDict.Add(TileEnums.Decorations.armorVest.ToString(), armorPacks);
             decorDict.Add(TileEnums.Decorations.damageBoost.ToString(), damagePacks);
@@ -441,6 +456,7 @@ namespace TileMapLogic
                     }
                 }
             }
+
             decorDict.Add(TileEnums.Decorations.healthPack.ToString(), healthPacks);
             decorDict.Add(TileEnums.Decorations.armorVest.ToString(), armorPacks);
             decorDict.Add(TileEnums.Decorations.damageBoost.ToString(), damagePacks);
@@ -461,6 +477,7 @@ namespace TileMapLogic
                     }
                 }
             }
+
             return decorTiles;
         }
 
@@ -483,6 +500,7 @@ namespace TileMapLogic
                     }
                 }
             }
+
             return platformsList;
         }
 
@@ -505,6 +523,7 @@ namespace TileMapLogic
                     }
                 }
             }
+
             return platformsList;
         }
 
@@ -523,6 +542,7 @@ namespace TileMapLogic
                     }
                 }
             }
+
             return tileList;
         }
 
@@ -546,6 +566,7 @@ namespace TileMapLogic
                     list.Add(GetTileWithIndex(i, j));
                 }
             }
+
             return list;
         }
 
@@ -556,13 +577,14 @@ namespace TileMapLogic
             {
                 var path = Application.streamingAssetsPath + "/" + fileName;
                 file = new FileStream(path, FileMode.Open, FileAccess.Read);
-                
+
             }
             else
             {
                 var path = Application.dataPath + "/" + fileName;
                 file = new FileStream(path, FileMode.Open, FileAccess.Read);
             }
+
             using (var sr = new StreamReader(file))
             {
                 for (var i = 0; i < rows; i++)
@@ -570,7 +592,7 @@ namespace TileMapLogic
                     string line;
                     if ((line = sr.ReadLine()) != null)
                     {
-                        var splitted = line.Split(',','|');
+                        var splitted = line.Split(',', '|');
                         for (var j = 0; j < columns; j++)
                         {
                             //map[i, j] = splitted[j];
@@ -659,6 +681,7 @@ namespace TileMapLogic
                             file.Write("2");
                             break;
                     }
+
                     if (tileMap[i, j].decID != TileEnums.Decorations.empty)
                     {
                         var dec = tileMap[i, j].decID;
@@ -678,19 +701,63 @@ namespace TileMapLogic
                                 break;
                         }
                     }
-                    //if (j % 5 == 0 && j !=0)
-                    //{
-                    //    file.Write("|");
-                    //}
-                    //it is comman and not a tab
+
                     file.Write(",");
                 }
+
                 //go to next line
                 file.Write("\n");
             }
+
             file.Close();
             Debug.Log("Saved map file to: " + Application.dataPath + $"/{fileName}.csv");
         }
 
+        public string[,] ExportToStringArray()
+        {
+            string[,] map = new string[20, 20];
+
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    var env = tileMap[i, j].envTileID;
+                    switch (env)
+                    {
+                        case TileEnums.EnviromentTiles.ground:
+                            map[i, j] = "0";
+                            break;
+                        case TileEnums.EnviromentTiles.level_1:
+                            map[i, j] = "1";
+                            break;
+                        case TileEnums.EnviromentTiles.level_2:
+                            map[i, j] = "2";
+                            break;
+                    }
+
+                    if (tileMap[i, j].decID != TileEnums.Decorations.empty)
+                    {
+                        var dec = tileMap[i, j].decID;
+                        switch (dec)
+                        {
+                            case TileEnums.Decorations.healthPack:
+                                map[i, j] = $"{map[i, j]}H";
+                                break;
+                            case TileEnums.Decorations.armorVest:
+                                map[i, j] = $"{map[i, j]}A";
+                                break;
+                            case TileEnums.Decorations.damageBoost:
+                                map[i, j] = $"{map[i, j]}D";
+                                break;
+                            case TileEnums.Decorations.stairs:
+                                map[i, j] = $"{map[i, j]}S";
+                                break;
+                        }
+                    }
+                }
+            }
+
+            return map;
+        }
     }
 }
