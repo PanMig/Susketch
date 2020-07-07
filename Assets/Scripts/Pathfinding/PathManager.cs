@@ -10,7 +10,6 @@ public class PlayerPathProperties
     public bool pathActive = false;
     public List<Tile> highlightedTiles = new List<Tile>();
     public int movementSteps = 0;
-    //public PathManager.Targets target; 
 
     public PlayerPathProperties(int team)
     {
@@ -56,16 +55,6 @@ public class PathManager : MonoBehaviour
     public void SetPathTarget(int value)
     {
         pathTarget = value;
-    }
-
-    public void SetPathTargetBlue(int value)
-    {
-        pathTargetBlue = value;
-    }
-
-    public void SetPathTargetRed(int value)
-    {
-        pathTargetRed = value;
     }
 
     public void SetBluePathActivation(bool value)
@@ -164,6 +153,7 @@ public class PathManager : MonoBehaviour
         }
     }
 
+    // To be refactored
     public void CalculatePathBlueTarget(int targetBlue)
     {
         switch (targetBlue)
@@ -195,6 +185,7 @@ public class PathManager : MonoBehaviour
         }
     }
 
+    // To be refactored
     public void CalculatePathRedTarget(int targetRed)
     {
         switch (targetRed)

@@ -7,7 +7,16 @@ using static AuthoringTool;
 public class MiniMap : MonoBehaviour
 {
     private TileMapView _tileMapView;
+
     private MiniTileMap _map;
+    public MiniTileMap Map => _map;
+
+    private float _killRatio;
+    public float KillRatio => _killRatio;
+
+    private float _percentageError;
+    public float PercentageError => _percentageError;
+
     private MiniMapView _mapView;
     [SerializeField] private int _index;
     private float _newBlueAmount = 0;
@@ -69,9 +78,9 @@ public class MiniMap : MonoBehaviour
         }
         _map.SetTileMap(_map.GetTileMap());
         _map.Render();
-        var percent = balancedMaps[_index].Value;
+        _killRatio = balancedMaps[_index].Value;
 
-        SetMiniMapView(percent);
+        SetMiniMapView(_killRatio);
 
         for (int i = 0; i < 20; i++)
         {
@@ -88,24 +97,19 @@ public class MiniMap : MonoBehaviour
         _newBlueAmount = (1 - percent) * 100;
         _newRedAmount = percent * 100;
 
-        if (type == MiniMapType.adjucement)
-        {
-            Debug.Log("suggested:" + percent);
-        }
-
         MetricsManager.SetKillRatioBar(_newBlueAmount / 100.0f, _newRedAmount / 100.0f, _mapView.KillRatioBar);
         //use three whitespaces for better alignment.
         _mapView.BluePercentText.text = $"{_newBlueAmount.ToString($"F0")} %";
         _mapView.RedPercentText.text = $"{_newRedAmount.ToString($"F0")} %";
-        var result = MetricsManager.CalculateRatioDifference(percent, currKillRatio);
-        if (result < 0)
+        _percentageError = MetricsManager.CalculateRatioDifference(percent, currKillRatio);
+        if (_percentageError < 0)
         {
-            _mapView.ResultsText.text = $"+{Mathf.Abs(result).ToString($"F0")} % balance gain";
+            _mapView.ResultsText.text = $"+{Mathf.Abs(_percentageError).ToString($"F0")} % balance gain";
             _mapView.ResultsText.color = Color.green;
         }
         else
         {
-            _mapView.ResultsText.text = $"-{result.ToString($"F0")} % balance loss";
+            _mapView.ResultsText.text = $"-{_percentageError.ToString($"F0")} % balance loss";
             _mapView.ResultsText.color = Color.red;
         }
 

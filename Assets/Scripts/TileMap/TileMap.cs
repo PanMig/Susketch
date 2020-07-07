@@ -463,6 +463,39 @@ namespace TileMapLogic
             return decorDict;
         }
 
+        public Dictionary<string, int> GetDecorationsCount()
+        {
+            Dictionary<string, int> decorDict = new Dictionary<string, int>();
+            var healthPacks = 0;
+            var armorPacks =  0;
+            var damagePacks = 0;
+
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    var currTile = tileMap[i, j];
+                    if (currTile.decID == TileEnums.Decorations.healthPack)
+                    {
+                        healthPacks++;
+                    }
+                    else if (currTile.decID == TileEnums.Decorations.armorVest)
+                    {
+                        armorPacks++;
+                    }
+                    else if (currTile.decID == TileEnums.Decorations.damageBoost)
+                    {
+                        damagePacks++;
+                    }
+                }
+            }
+
+            decorDict.Add(TileEnums.Decorations.healthPack.ToString(), healthPacks);
+            decorDict.Add(TileEnums.Decorations.armorVest.ToString(), armorPacks);
+            decorDict.Add(TileEnums.Decorations.damageBoost.ToString(), damagePacks);
+            return decorDict;
+        }
+
         public List<Tile> GetDecoration(TileEnums.Decorations decID)
         {
             List<Tile> decorTiles = new List<Tile>();

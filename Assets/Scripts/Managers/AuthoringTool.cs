@@ -11,13 +11,10 @@ public class AuthoringTool : MonoBehaviour
 {
     // Managers
     public MetricsManager metricsMng;
-    public MapSuggestionMng suggestionsMng;
     // Tilemap
     public static TileMapView tileMapViewMain;
     public static TileMap tileMapMain;
     private Tile[,] generatedMap = null;
-    public static float currKillRatio;
-    public static float currDuration;
     // Network input
     private NDArray input_map;
     private NDArray input_weapons;
@@ -27,6 +24,12 @@ public class AuthoringTool : MonoBehaviour
 
     public delegate void OnMapLoaded();
     public static event OnMapLoaded onMapLoaded;
+
+    public delegate void OnPredictionsEnded();
+    public static event OnPredictionsEnded onPredictionsEnded;
+
+    public delegate void OnSuggestionsEnded();
+    public static event OnSuggestionsEnded onSuggestionsEnded;
 
     public delegate void OnMapSuggestionsReady(List<KeyValuePair<Tile[,], float>> balancedMaps);
     public static event OnMapSuggestionsReady onPowerupsReplacement;
@@ -47,7 +50,15 @@ public class AuthoringTool : MonoBehaviour
     // UI
     private int mapIndex = 0;
     private const int PREDEFINED_MAPS = 20;
-    public Enums.UIScreens _activeTab;
+    public static bool _mapPlayable;
+    public static Enums.UIScreens _activeTab;
+
+    // Predictions
+    public static float currKillRatio;
+    public static float currDuration;
+    public static float[] currDArc;
+    public static float[] currCombatPace;
+    public static float[,] currHeatmap;
 
     private void OnEnable()
     {
@@ -57,9 +68,6 @@ public class AuthoringTool : MonoBehaviour
         
         //onMapReadyForPrediction is fired on End of drag AND pointer up.
         EventManagerUI.onMapReadyForPrediction += InvokeSurrogateModels;
-        //user analytics
-        EventManagerUI.onMapReadyForPrediction += CollectData;
-
         // CharacterClassMng is fired when the class selector is edited.
         CharacterClassMng.onClassSelectorEdit += InvokeSurrogateModels;
 
@@ -77,9 +85,23 @@ public class AuthoringTool : MonoBehaviour
         MiniMap.onMiniMapApply -= InvokeSurrogateModels;
         MiniMap.onMiniMapApply -= PaintTeamRegions;
     }
+    
+    // To be made singleton
+
+    //private void Awake()
+    //{
+    //    if (Instance != null && Instance != this)
+    //    {
+    //        Destroy(this.gameObject);
+    //    }
+    //    else
+    //    {
+    //        Instance = this;
+    //    }
+    //}
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         tileMapMain = new TileMap();
         tileMapViewMain = GameObject.FindGameObjectWithTag("tileMapViewMain").GetComponent<TileMapView>();
@@ -125,9 +147,10 @@ public class AuthoringTool : MonoBehaviour
         //tileMapMain.PaintRegionBorders(0, 3, 5);
     }
 
-    public static void CheckTileMapListener()
+    public void CheckTileMapListener()
     {
-        if (TileMapRepair.CheckTileMap(tileMapMain))
+        _mapPlayable = TileMapRepair.CheckTileMap(tileMapMain);
+        if (_mapPlayable)
         {
             TileMapRepair.onPlayableMap?.Invoke();
             _loadingMapTaskBusy = false;
@@ -135,15 +158,6 @@ public class AuthoringTool : MonoBehaviour
         }
         TileMapRepair.onUnPlayableMap?.Invoke();
         _loadingMapTaskBusy = false;
-    }
-
-    public bool TileMapPlayable()
-    {
-        if (TileMapRepair.CheckTileMap(tileMapMain))
-        {
-            return true;
-        }
-        return false;
     }
 
     public void LoadPredifinedMap()
@@ -232,7 +246,7 @@ public class AuthoringTool : MonoBehaviour
 
     public void InvokeSurrogateModels()
     {
-        if (TileMapPlayable())
+        if (_mapPlayable)
         {
             // Predictions
             InvokePredictions();
@@ -241,16 +255,6 @@ public class AuthoringTool : MonoBehaviour
             InvokeSuggestions();
         }
 
-    }
-
-    public void CollectData()
-    {
-        Debug.Log("collecting");
-        var map = tileMapMain.ExportToStringArray();
-        var blueClass = CharacterClassMng.Instance.BlueClass.className;
-        var redClass =  CharacterClassMng.Instance.RedClass.className;
-
-        UserEventsLogger.LogMainCanvas(map, blueClass, redClass,_activeTab.ToString());
     }
 
     public void InvokePredictions()
@@ -271,13 +275,15 @@ public class AuthoringTool : MonoBehaviour
         CalculateBalancedPickUpsAsync();
     }
 
+    //TODO : Change this to one method or at least compute it for one time.
+
     public async void DeathHeatmapListenerOverlay()
     {
         SetModelInput();
         var results = await PredictDeathHeatmap(input_map, input_weapons);
-        var heatmap = ArrayParsingUtils.Make2DArray(results, 4, 4);
-        metricsMng.DeathHeatmapButtonListener(heatmap);
-        metricsMng.GenerateDeathHeatmap(heatmap);
+        currHeatmap = ArrayParsingUtils.Make2DArray(results, 4, 4);
+        metricsMng.DeathHeatmapButtonListener(currHeatmap);
+        metricsMng.GenerateDeathHeatmap(currHeatmap);
     }
 
     public async void DeathHeatmapListenerSmall()
@@ -287,8 +293,8 @@ public class AuthoringTool : MonoBehaviour
             _heatmapTaskBusy = true;
             SetModelInput();
             var results = await PredictDeathHeatmap(input_map, input_weapons);
-            var heatmap = ArrayParsingUtils.Make2DArray(results, 4, 4);
-            metricsMng.GenerateDeathHeatmap(heatmap);
+            currHeatmap = ArrayParsingUtils.Make2DArray(results, 4, 4);
+            metricsMng.GenerateDeathHeatmap(currHeatmap);
             _heatmapTaskBusy = false;
         }
     }
@@ -299,8 +305,8 @@ public class AuthoringTool : MonoBehaviour
         {
             _daTaskBusy = true;
             SetModelInput();
-            var results = await PredictDramaticArc(input_map, input_weapons);
-            metricsMng.GenerateDramaticArcGraph(results);
+            currDArc = await PredictDramaticArc(input_map, input_weapons);
+            metricsMng.GenerateDramaticArcGraph(currDArc);
             _daTaskBusy = false;
         }
     }
@@ -311,13 +317,13 @@ public class AuthoringTool : MonoBehaviour
         {
             _cpTaskBusy = true;
             SetModelInput();
-            var results = await PredictCombatPace(input_map, input_weapons);
-            for (int i = 0; i < results.Length; i++)
+            var currCombatPace = await PredictCombatPace(input_map, input_weapons);
+            for (int i = 0; i < currCombatPace.Length; i++)
             {
-                results[i] = results[i] * 20.0f;
+                currCombatPace[i] = currCombatPace[i] * 20.0f;
             }
 
-            metricsMng.GenerateCombatPaceGraph(results);
+            metricsMng.GenerateCombatPaceGraph(currCombatPace);
             _cpTaskBusy = false;
         }
     }
@@ -329,10 +335,8 @@ public class AuthoringTool : MonoBehaviour
             _krTaskBusy = true;
             SetModelInput();
             //result returns the kills of player one (red) divided by the total kills.
-            var results = await PredictKillRatio(input_map, input_weapons);
-            currKillRatio = results;
-            print("current:" + currKillRatio);
-            metricsMng.SetKillRatioProgressBar(results);
+            currKillRatio = await PredictKillRatio(input_map, input_weapons);
+            metricsMng.SetKillRatioProgressBar(currKillRatio);
             _krTaskBusy = false;
         }
     }
@@ -343,10 +347,12 @@ public class AuthoringTool : MonoBehaviour
         {
             _durationTaskBusy = true;
             SetModelInput();
-            var results = await PredictGameDuration(input_map, input_weapons);
-            currDuration = results;
-            metricsMng.SetGameDurationText(results);
+            currDuration = await PredictGameDuration(input_map, input_weapons);
+            metricsMng.SetGameDurationText(currDuration);
             _durationTaskBusy = false;
+
+            // quick fix as it is the last awaited call.
+            onPredictionsEnded?.Invoke();
         }
     }
 
@@ -381,6 +387,7 @@ public class AuthoringTool : MonoBehaviour
             var adjustments = await SpawnPickupsAsynchronous(tileMapMain, Enums.PowerUpPlacement.randomMutation);
             onPowerupsAdjucement?.Invoke(adjustments);
             _loadingMapTaskBusy = false;
+            onSuggestionsEnded?.Invoke();
         }
     }
 }
