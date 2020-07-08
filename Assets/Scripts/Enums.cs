@@ -28,4 +28,12 @@ public static class Enums
         Suggestions,
         Outro
     }
+
+    public enum TutorialSessions
+    {
+        session_1,
+        session_2,
+        session_3,
+        free
+    }
 }

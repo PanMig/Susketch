@@ -105,6 +105,7 @@ public class MetricsManager : MonoBehaviour
         fillAmountRed.fillAmount = redAmount;
     }
 
+    // When error is negative we are closer to the desired value.
     public static float CalculateRatioDifference(float newPercent, float curPercent)
     {
         var suggestedKR = Mathf.Abs(0.5f - newPercent);

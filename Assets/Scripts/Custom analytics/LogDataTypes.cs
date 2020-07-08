@@ -12,13 +12,11 @@ public class MapPropertiesTabLog
 {
     public CoreMapClassPair MapClassPair;
     public PathFindingLog PathFindingLog;
-    public string ActiveTab;
 
-    public MapPropertiesTabLog(CoreMapClassPair mapClassPair, PathFindingLog pathFindingLog, string activeTab)
+    public MapPropertiesTabLog(CoreMapClassPair mapClassPair, PathFindingLog pathFindingLog)
     {
         this.MapClassPair = mapClassPair;
         this.PathFindingLog = pathFindingLog;
-        this.ActiveTab = activeTab;
     }
 }
 
@@ -26,13 +24,11 @@ public struct PredictionsTabLog
 {
     public CoreMapClassPair MapClassPair;
     public PredictionsLog Predictions;
-    public string activeTab;
 
-    public PredictionsTabLog(CoreMapClassPair mapClassPair, PredictionsLog predictions, string activeTab)
+    public PredictionsTabLog(CoreMapClassPair mapClassPair, PredictionsLog predictions)
     {
         this.MapClassPair = mapClassPair;
         this.Predictions = predictions;
-        this.activeTab = activeTab;
     }
 }
 
@@ -40,13 +36,11 @@ public struct SuggestionsTabLog
 {
     public CoreMapClassPair MapClassPair;
     public SuggestionLog[]  Suggestions;
-    public string activeTab;
 
-    public SuggestionsTabLog(CoreMapClassPair mapClassPair, SuggestionLog[] suggestions, string activeTab)
+    public SuggestionsTabLog(CoreMapClassPair mapClassPair, SuggestionLog[] suggestions)
     {
         this.MapClassPair = mapClassPair;
         this.Suggestions = suggestions;
-        this.activeTab = activeTab;
     }
 }
 
@@ -56,13 +50,15 @@ public struct SuggestionLog
     public float SuggestedKR;
     public string[,] SuggestedMap;
     public Dictionary<string, int> PowerUps;
+    public bool wasApplied;
 
-    public SuggestionLog(string[,] suggestedMap, float suggestedKr, float percentageError, Dictionary<string, int> powerUps)
+    public SuggestionLog(string[,] suggestedMap, float suggestedKr, float percentageError, Dictionary<string, int> powerUps, bool wasApplied)
     {
         this.SuggestedMap = suggestedMap;
         this.SuggestedKR = suggestedKr;
         this.PercentageError = percentageError;
         this.PowerUps = powerUps;
+        this.wasApplied = wasApplied;
     }
 }
 

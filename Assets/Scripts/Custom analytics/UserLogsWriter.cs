@@ -9,35 +9,42 @@ using System.Text;
 
 public static class UserLogsWriter
 {
-    private static readonly string pathMP = Application.dataPath + "/Collected Analytics/SuSketchUser_MapPropertiesLogs";
-    private static readonly string pathPreds = Application.dataPath + "/Collected Analytics/SuSketchUser_PredictionsLogs";
-    private static readonly string pathSugg = Application.dataPath + "/Collected Analytics/SuSketchUser_SuggestionsLogs";
-    public static string uniqueId;
+    private static readonly string
+        pathMP = Application.dataPath + "/Collected Analytics/SSK_MainCanvasLogs";
 
-    public static void LogMapProperties(CoreMapClassPair mainCanvas, PathFindingLog pathFindingLog, string activeTab)
+    private static readonly string pathPreds =
+        Application.dataPath + "/Collected Analytics/SSK__PredictionsLogs";
+
+    private static readonly string
+        pathSugg = Application.dataPath + "/Collected Analytics/SSK__SuggestionsLogs";
+
+    public static string uniqueId;
+    public static string dateTime;
+
+    public static void LogMapProperties(CoreMapClassPair mainCanvas, PathFindingLog pathFindingLog)
     {
-        Debug.Log("collecting MP");
-        MapPropertiesTabLog log = new MapPropertiesTabLog(mainCanvas, pathFindingLog, activeTab);
+        Debug.Log("collecting MainCanvas");
+        MapPropertiesTabLog log = new MapPropertiesTabLog(mainCanvas, pathFindingLog);
         SaveToJson(pathMP, log);
     }
 
-    public static void LogPredictions(CoreMapClassPair mainCanvas, PredictionsLog predictions, string activeTab)
+    public static void LogPredictions(CoreMapClassPair mainCanvas, PredictionsLog predictions)
     {
         Debug.Log("collecting Predictions");
-        PredictionsTabLog log = new PredictionsTabLog(mainCanvas, predictions, activeTab);
+        PredictionsTabLog log = new PredictionsTabLog(mainCanvas, predictions);
         SaveToJson(pathPreds, log);
     }
 
-    public static void LogSuggestions(CoreMapClassPair mainCanvas, SuggestionLog[] suggestions, string activeTab)
+    public static void LogSuggestions(CoreMapClassPair mainCanvas, SuggestionLog[] suggestions)
     {
         Debug.Log("collecting Suggestions");
-        SuggestionsTabLog log = new SuggestionsTabLog(mainCanvas, suggestions, activeTab);
+        SuggestionsTabLog log = new SuggestionsTabLog(mainCanvas, suggestions);
         SaveToJson(pathSugg, log);
     }
 
     private static void SaveToJson<T>(string path, T log)
     {
-        path = $"{path}_{uniqueId}.json";
+        path = $"{path}_{dateTime}.json";
         List<T> existingEntries;
         if (File.Exists(path))
         {
@@ -59,13 +66,24 @@ public static class UserLogsWriter
         StringBuilder builder = new StringBuilder();
         Enumerable
             .Range(65, 26)
-            .Select(e => ((char)e).ToString())
-            .Concat(Enumerable.Range(97, 26).Select(e => ((char)e).ToString()))
+            .Select(e => ((char) e).ToString())
+            .Concat(Enumerable.Range(97, 26).Select(e => ((char) e).ToString()))
             .Concat(Enumerable.Range(0, 10).Select(e => e.ToString()))
             .OrderBy(e => Guid.NewGuid())
             .Take(11)
             .ToList().ForEach(e => builder.Append(e));
         uniqueId = builder.ToString();
         //PlayerPrefs.SetString("uniqueID", uniqueId);
+    }
+
+    public static void SetDateTime()
+    {
+        dateTime = System.DateTime.Now.ToString();
+        dateTime = dateTime.Replace(" ", "_");
+        dateTime = dateTime.Replace(":", "_");
+        dateTime = dateTime.Replace("/", "_");
+        dateTime = dateTime.Replace(".", "");
+        dateTime = dateTime.Replace("μμ", "MM");
+        dateTime = dateTime.Replace("πμ", "PM");
     }
 }

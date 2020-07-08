@@ -8,10 +8,11 @@ public class UserLogsBuilder : MonoBehaviour
     [SerializeField] private bool _logging;
     [SerializeField] private MiniMap _adjustedMap;
     [SerializeField] private MiniMap _replacedMap;
+    private CoreMapClassPair mainCanvas;
 
     void Start()
     {
-        UserLogsWriter.SetUniqueId();
+        InitFileNameSettings();
         var dir = Application.dataPath + "/Collected Analytics";
         if (!Directory.Exists(dir))
         {
@@ -19,42 +20,37 @@ public class UserLogsBuilder : MonoBehaviour
         }
         if (_logging)
         {
-            EventManagerUI.onSingleClickEdit += CollectMainCanvasData;
+            EventManagerUI.onMapReadyForPrediction += CollectMainCanvasData;
             AuthoringTool.onPredictionsEnded += CollectPredictionsData;
-            AuthoringTool.onSuggestionsEnded += CollectSuggestionsData;
+            AuthoringTool.onSuggestionsEnded += CollectCalculatedSuggestions;
+            MiniMap.onMiniMapApply += CollectAppliedSuggestions;
         }
+    }
+
+    public void InitFileNameSettings()
+    {
+        UserLogsWriter.SetUniqueId();
+        UserLogsWriter.SetDateTime();
     }
 
     public void CollectMainCanvasData()
     {
-        var core = new CoreMapClassPair(
-            AuthoringTool.tileMapMain.ExportToStringArray(),
-            CharacterClassMng.Instance.BlueClass.className,
-            CharacterClassMng.Instance.RedClass.className,
-            AuthoringTool.tileMapMain.GetDecorationsCount(),
-            AuthoringTool._mapPlayable);
+        mainCanvas = new CoreMapClassPair(AuthoringTool.tileMapMain.ExportToStringArray(),
+        CharacterClassMng.Instance.BlueClass.className,
+        CharacterClassMng.Instance.RedClass.className,
+        AuthoringTool.tileMapMain.GetDecorationsCount(),
+        AuthoringTool._mapPlayable);
 
-        if(AuthoringTool._activeTab == Enums.UIScreens.MapProperties)
-        {
-            var pathLog = new PathFindingLog(
-                PathManager.Instance.pathTarget,
-                PathManager.Instance.pathBlueProps.movementSteps,
-                PathManager.Instance.pathRedProps.movementSteps);
+        var pathLog = new PathFindingLog(PathManager.Instance.pathTarget,
+            PathManager.Instance.pathBlueProps.movementSteps,
+            PathManager.Instance.pathRedProps.movementSteps);
 
-            UserLogsWriter.LogMapProperties(core, pathLog, Enums.UIScreens.MapProperties.ToString());
-        }
+        UserLogsWriter.LogMapProperties(mainCanvas, pathLog);
     }
 
     public void CollectPredictionsData()
     {
-        var core = new CoreMapClassPair(
-            AuthoringTool.tileMapMain.ExportToStringArray(),
-            CharacterClassMng.Instance.BlueClass.className,
-            CharacterClassMng.Instance.RedClass.className,
-            AuthoringTool.tileMapMain.GetDecorationsCount(),
-            AuthoringTool._mapPlayable);
-
-        if (AuthoringTool._activeTab == Enums.UIScreens.Predictions)
+        if (AuthoringTool._activeTab == Enums.UIScreens.Predictions && AuthoringTool._mapPlayable)
         {
             var predictionLog = new PredictionsLog(
                 AuthoringTool.currKillRatio,
@@ -63,30 +59,39 @@ public class UserLogsBuilder : MonoBehaviour
                 AuthoringTool.currCombatPace,
                 AuthoringTool.currHeatmap);
 
-            UserLogsWriter.LogPredictions(core, predictionLog, Enums.UIScreens.Predictions.ToString());
+            UserLogsWriter.LogPredictions(mainCanvas, predictionLog);
         }
     }
 
-    public void CollectSuggestionsData()
+    public void CollectCalculatedSuggestions()
     {
-        var core = new CoreMapClassPair(
-            AuthoringTool.tileMapMain.ExportToStringArray(),
-            CharacterClassMng.Instance.BlueClass.className,
-            CharacterClassMng.Instance.RedClass.className,
-            AuthoringTool.tileMapMain.GetDecorationsCount(),
-            AuthoringTool._mapPlayable);
-
-        if (AuthoringTool._activeTab == Enums.UIScreens.Suggestions)
+        if (AuthoringTool._activeTab == Enums.UIScreens.Suggestions && AuthoringTool._mapPlayable)
         {
             var adjucements = new SuggestionLog(_adjustedMap.Map.ExportToStringArray(), _adjustedMap.KillRatio,
-                _adjustedMap.PercentageError, _adjustedMap.Map.GetDecorationsCount());
+                _adjustedMap.PercentageError * -1, _adjustedMap.Map.GetDecorationsCount(), false);
 
             var replacements = new SuggestionLog(_replacedMap.Map.ExportToStringArray(), _replacedMap.KillRatio,
-                _replacedMap.PercentageError, _replacedMap.Map.GetDecorationsCount());
+                _replacedMap.PercentageError * -1, _replacedMap.Map.GetDecorationsCount(), false);
 
             var suggestions = new SuggestionLog[2] { adjucements, replacements };
 
-            UserLogsWriter.LogSuggestions(core, suggestions, Enums.UIScreens.Suggestions.ToString());
+            UserLogsWriter.LogSuggestions(mainCanvas, suggestions);
+        }
+    }
+
+    public void CollectAppliedSuggestions()
+    {
+        if (AuthoringTool._activeTab == Enums.UIScreens.Suggestions && AuthoringTool._mapPlayable)
+        {
+            var adjucements = new SuggestionLog(_adjustedMap.Map.ExportToStringArray(), _adjustedMap.KillRatio,
+                _adjustedMap.PercentageError * -1, _adjustedMap.Map.GetDecorationsCount(), true);
+
+            var replacements = new SuggestionLog(_replacedMap.Map.ExportToStringArray(), _replacedMap.KillRatio,
+                _replacedMap.PercentageError * -1, _replacedMap.Map.GetDecorationsCount(), true);
+
+            var suggestions = new SuggestionLog[2] { adjucements, replacements };
+
+            UserLogsWriter.LogSuggestions(mainCanvas, suggestions);
         }
     }
 }

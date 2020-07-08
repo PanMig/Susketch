@@ -317,7 +317,7 @@ public class AuthoringTool : MonoBehaviour
         {
             _cpTaskBusy = true;
             SetModelInput();
-            var currCombatPace = await PredictCombatPace(input_map, input_weapons);
+            currCombatPace = await PredictCombatPace(input_map, input_weapons);
             for (int i = 0; i < currCombatPace.Length; i++)
             {
                 currCombatPace[i] = currCombatPace[i] * 20.0f;
