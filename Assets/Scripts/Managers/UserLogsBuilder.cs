@@ -68,10 +68,10 @@ public class UserLogsBuilder : MonoBehaviour
         if (AuthoringTool._activeTab == Enums.UIScreens.Suggestions && AuthoringTool._mapPlayable)
         {
             var adjucements = new SuggestionLog(_adjustedMap.Map.ExportToStringArray(), _adjustedMap.KillRatio,
-                _adjustedMap.PercentageError * -1, _adjustedMap.Map.GetDecorationsCount(), false);
+                _adjustedMap.PercentageError, _adjustedMap.Map.GetDecorationsCount(), false);
 
             var replacements = new SuggestionLog(_replacedMap.Map.ExportToStringArray(), _replacedMap.KillRatio,
-                _replacedMap.PercentageError * -1, _replacedMap.Map.GetDecorationsCount(), false);
+                _replacedMap.PercentageError, _replacedMap.Map.GetDecorationsCount(), false);
 
             var suggestions = new SuggestionLog[2] { adjucements, replacements };
 
@@ -84,10 +84,10 @@ public class UserLogsBuilder : MonoBehaviour
         if (AuthoringTool._activeTab == Enums.UIScreens.Suggestions && AuthoringTool._mapPlayable)
         {
             var adjucements = new SuggestionLog(_adjustedMap.Map.ExportToStringArray(), _adjustedMap.KillRatio,
-                _adjustedMap.PercentageError * -1, _adjustedMap.Map.GetDecorationsCount(), true);
+                _adjustedMap.PercentageError, _adjustedMap.Map.GetDecorationsCount(), true);
 
             var replacements = new SuggestionLog(_replacedMap.Map.ExportToStringArray(), _replacedMap.KillRatio,
-                _replacedMap.PercentageError * -1, _replacedMap.Map.GetDecorationsCount(), true);
+                _replacedMap.PercentageError, _replacedMap.Map.GetDecorationsCount(), true);
 
             var suggestions = new SuggestionLog[2] { adjucements, replacements };
 

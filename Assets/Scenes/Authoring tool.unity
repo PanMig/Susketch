@@ -4905,7 +4905,6 @@ Transform:
   - {fileID: 1653734793}
   - {fileID: 1128438812}
   - {fileID: 543374955}
-  - {fileID: 1898424446}
   - {fileID: 727411481}
   m_Father: {fileID: 434260998}
   m_RootOrder: 2
@@ -9533,6 +9532,7 @@ RectTransform:
   - {fileID: 1972348761}
   - {fileID: 989380922}
   - {fileID: 244586384}
+  - {fileID: 1898424446}
   m_Father: {fileID: 1243208717}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -18066,17 +18066,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1047907030}
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 509945516}
         m_MethodName: SetActive
         m_Mode: 6
@@ -18156,7 +18145,7 @@ RectTransform:
   - {fileID: 437072341}
   - {fileID: 1414363674}
   m_Father: {fileID: 188746068}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -31063,7 +31052,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 2018068468}
-        m_MethodName: SetTutorialsSession
+        m_MethodName: SetTutorialSession
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -31071,6 +31060,17 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2018068468}
+        m_MethodName: BroadcastMessage
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: SetState
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!222 &1196071176
@@ -44572,8 +44572,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 1.3984375, y: -39.09961}
-  m_SizeDelta: {x: 578.9, y: 143.1}
+  m_AnchoredPosition: {x: 2.2000122, y: -39.09961}
+  m_SizeDelta: {x: 402.1, y: 143.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1633748607
 MonoBehaviour:
@@ -52224,19 +52224,19 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1898424445}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 404.04953}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1633748606}
   - {fileID: 1695117000}
   - {fileID: 1188751991}
-  m_Father: {fileID: 188746068}
-  m_RootOrder: 3
+  m_Father: {fileID: 434260998}
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 114.27368, y: 12.765991}
-  m_SizeDelta: {x: 540, y: 297.55}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: -1380, y: -782.45}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1898424447
 MonoBehaviour:

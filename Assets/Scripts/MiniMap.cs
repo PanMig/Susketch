@@ -102,14 +102,14 @@ public class MiniMap : MonoBehaviour
         _mapView.BluePercentText.text = $"{_newBlueAmount.ToString($"F0")} %";
         _mapView.RedPercentText.text = $"{_newRedAmount.ToString($"F0")} %";
         _percentageError = MetricsManager.CalculateRatioDifference(percent, currKillRatio);
-        if (_percentageError < 0)
+        if (_percentageError > 0)
         {
-            _mapView.ResultsText.text = $"+{Mathf.Abs(_percentageError).ToString($"F0")} % balance gain";
+            _mapView.ResultsText.text = $"+{_percentageError.ToString($"F0")} % balance gain";
             _mapView.ResultsText.color = Color.green;
         }
         else
         {
-            _mapView.ResultsText.text = $"-{_percentageError.ToString($"F0")} % balance loss";
+            _mapView.ResultsText.text = $"-{Mathf.Abs(_percentageError).ToString($"F0")} % balance loss";
             _mapView.ResultsText.color = Color.red;
         }
 

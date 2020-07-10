@@ -15,9 +15,17 @@ public class TutorialSessionHandler : MonoBehaviour
         if (_session == Enums.TutorialSessions.free)
         {
             sessionWinBtn.SetActive(false);
+            foreach (var panel in _sessionPanels)
+            {
+                panel.gameObject.SetActive(false);
+            }
         }
         else
         {
+            foreach (var panel in _sessionPanels)
+            {
+                panel.gameObject.SetActive(true);
+            }
             _sessionPanels[(int)_session].OpenWindow();
             sessionWinBtn.SetActive(true);
         }
