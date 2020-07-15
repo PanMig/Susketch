@@ -2,35 +2,40 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using static UserLogsWriter;
 
 public class UserLogsBuilder : MonoBehaviour
 {
     [SerializeField] private bool _logging;
     [SerializeField] private MiniMap _adjustedMap;
     [SerializeField] private MiniMap _replacedMap;
+    [SerializeField] private ClassBalanceView _distinct;
+    [SerializeField] private ClassBalanceView _equal;
     private CoreMapClassPair mainCanvas;
 
     void Start()
     {
         InitFileNameSettings();
-        var dir = Application.dataPath + "/Collected Analytics";
-        if (!Directory.Exists(dir))
+        LogsDir = Application.dataPath + $"/Collected Analytics/Sess_{DateTime}";
+        // create a main directory to save user sessions.
+        if (!Directory.Exists(LogsDir))
         {
-            Directory.CreateDirectory(dir);
+            Directory.CreateDirectory(LogsDir);
         }
         if (_logging)
         {
             EventManagerUI.onMapReadyForPrediction += CollectMainCanvasData;
             AuthoringTool.onPredictionsEnded += CollectPredictionsData;
             AuthoringTool.onSuggestionsEnded += CollectCalculatedSuggestions;
-            MiniMap.onMiniMapApply += CollectAppliedSuggestions;
+            MiniMap.onMiniMapApply += CollectCalculatedSuggestions;
         }
     }
 
     public void InitFileNameSettings()
     {
-        UserLogsWriter.SetUniqueId();
-        UserLogsWriter.SetDateTime();
+        SetUniqueId();
+        SetDateTime();
+        SetLogDirectory();
     }
 
     public void CollectMainCanvasData()
@@ -45,7 +50,7 @@ public class UserLogsBuilder : MonoBehaviour
             PathManager.Instance.pathBlueProps.movementSteps,
             PathManager.Instance.pathRedProps.movementSteps);
 
-        UserLogsWriter.LogMapProperties(mainCanvas, pathLog);
+        LogMapProperties(mainCanvas, pathLog);
     }
 
     public void CollectPredictionsData()
@@ -58,8 +63,8 @@ public class UserLogsBuilder : MonoBehaviour
                 AuthoringTool.currDArc,
                 AuthoringTool.currCombatPace,
                 AuthoringTool.currHeatmap);
-
-            UserLogsWriter.LogPredictions(mainCanvas, predictionLog);
+            
+            LogPredictions(mainCanvas, predictionLog);
         }
     }
 
@@ -67,31 +72,35 @@ public class UserLogsBuilder : MonoBehaviour
     {
         if (AuthoringTool._activeTab == Enums.UIScreens.Suggestions && AuthoringTool._mapPlayable)
         {
-            var adjucements = new SuggestionLog(_adjustedMap.Map.ExportToStringArray(), _adjustedMap.KillRatio,
-                _adjustedMap.PercentageError, _adjustedMap.Map.GetDecorationsCount(), false);
+            var adjucements = new MapSuggestionLog(_adjustedMap.Map.ExportToStringArray(), _adjustedMap.KillRatio,
+                _adjustedMap.PercentageError, _adjustedMap.Map.GetDecorationsCount(), _adjustedMap.Applied);
+            var replacements = new MapSuggestionLog(_replacedMap.Map.ExportToStringArray(), _replacedMap.KillRatio,
+                _replacedMap.PercentageError, _replacedMap.Map.GetDecorationsCount(), _replacedMap.Applied);
 
-            var replacements = new SuggestionLog(_replacedMap.Map.ExportToStringArray(), _replacedMap.KillRatio,
-                _replacedMap.PercentageError, _replacedMap.Map.GetDecorationsCount(), false);
+            var suggestions = new MapSuggestionLog[2] { adjucements, replacements };
 
-            var suggestions = new SuggestionLog[2] { adjucements, replacements };
+            var distinct = new ClassSuggestionLog(_distinct.PercentageError, _distinct.KillRatio, _distinct.ClassesText, _distinct.wasApplied);
+            var similar = new ClassSuggestionLog(_equal.PercentageError, _equal.KillRatio, _equal.ClassesText, _equal.wasApplied);
 
-            UserLogsWriter.LogSuggestions(mainCanvas, suggestions);
+            var classes = new ClassSuggestionLog[2]{distinct, similar};
+
+            LogSuggestions(mainCanvas, suggestions, classes);
         }
     }
 
-    public void CollectAppliedSuggestions()
-    {
-        if (AuthoringTool._activeTab == Enums.UIScreens.Suggestions && AuthoringTool._mapPlayable)
-        {
-            var adjucements = new SuggestionLog(_adjustedMap.Map.ExportToStringArray(), _adjustedMap.KillRatio,
-                _adjustedMap.PercentageError, _adjustedMap.Map.GetDecorationsCount(), true);
+    //public void CollectAppliedSuggestions()
+    //{
+    //    if (AuthoringTool._activeTab == Enums.UIScreens.Suggestions && AuthoringTool._mapPlayable)
+    //    {
+    //        var adjucements = new SuggestionLog(_adjustedMap.Map.ExportToStringArray(), _adjustedMap.KillRatio,
+    //            _adjustedMap.PercentageError, _adjustedMap.Map.GetDecorationsCount(), _adjustedMap.Applied);
 
-            var replacements = new SuggestionLog(_replacedMap.Map.ExportToStringArray(), _replacedMap.KillRatio,
-                _replacedMap.PercentageError, _replacedMap.Map.GetDecorationsCount(), true);
+    //        var replacements = new SuggestionLog(_replacedMap.Map.ExportToStringArray(), _replacedMap.KillRatio,
+    //            _replacedMap.PercentageError, _replacedMap.Map.GetDecorationsCount(), true);
 
-            var suggestions = new SuggestionLog[2] { adjucements, replacements };
+    //        var suggestions = new SuggestionLog[2] { adjucements, replacements };
 
-            UserLogsWriter.LogSuggestions(mainCanvas, suggestions);
-        }
-    }
+    //        LogSuggestions(mainCanvas, suggestions);
+    //    }
+    //}
 }

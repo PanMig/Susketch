@@ -8,7 +8,7 @@ public class LogDataTypes
 
 }
 
-public class MapPropertiesTabLog
+public struct MapPropertiesTabLog
 {
     public CoreMapClassPair MapClassPair;
     public PathFindingLog PathFindingLog;
@@ -35,16 +35,18 @@ public struct PredictionsTabLog
 public struct SuggestionsTabLog
 {
     public CoreMapClassPair MapClassPair;
-    public SuggestionLog[]  Suggestions;
+    public MapSuggestionLog[]  Suggestions;
+    public ClassSuggestionLog[] classSuggestions;
 
-    public SuggestionsTabLog(CoreMapClassPair mapClassPair, SuggestionLog[] suggestions)
+    public SuggestionsTabLog(CoreMapClassPair mapClassPair, MapSuggestionLog[] mapSuggestions, ClassSuggestionLog[] classSuggestions)
     {
         this.MapClassPair = mapClassPair;
-        this.Suggestions = suggestions;
+        this.Suggestions = mapSuggestions;
+        this.classSuggestions = classSuggestions;
     }
 }
 
-public struct SuggestionLog
+public struct MapSuggestionLog
 {
     public float PercentageError;
     public float SuggestedKR;
@@ -52,12 +54,28 @@ public struct SuggestionLog
     public Dictionary<string, int> PowerUps;
     public bool wasApplied;
 
-    public SuggestionLog(string[,] suggestedMap, float suggestedKr, float percentageError, Dictionary<string, int> powerUps, bool wasApplied)
+    public MapSuggestionLog(string[,] suggestedMap, float suggestedKr, float percentageError, Dictionary<string, int> powerUps, bool wasApplied)
     {
         this.SuggestedMap = suggestedMap;
         this.SuggestedKR = suggestedKr;
         this.PercentageError = percentageError;
         this.PowerUps = powerUps;
+        this.wasApplied = wasApplied;
+    }
+}
+
+public struct ClassSuggestionLog
+{
+    public float PercentageError;
+    public float SuggestedKR;
+    public string SuggestedClasses;
+    public bool wasApplied;
+
+    public ClassSuggestionLog(float percentageError, float suggestedKr, string suggestedClasses, bool wasApplied)
+    {
+        PercentageError = percentageError;
+        SuggestedKR = suggestedKr;
+        SuggestedClasses = suggestedClasses;
         this.wasApplied = wasApplied;
     }
 }

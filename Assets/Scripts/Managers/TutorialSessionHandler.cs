@@ -49,9 +49,4 @@ public class TutorialSessionHandler : MonoBehaviour
                 break;
         }
     }
-
-    //public void EnableTutorialSessionPanel(int index)
-    //{
-    //    _sessionPanels[index].SetActive(true);
-    //}
 }

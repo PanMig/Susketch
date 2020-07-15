@@ -26479,6 +26479,7 @@ MonoBehaviour:
   _classesText: {fileID: 18520831}
   _btn: {fileID: 405574987}
   _resultsText: {fileID: 2055567284}
+  wasApplied: 0
 --- !u!1 &1061911450
 GameObject:
   m_ObjectHideFlags: 0
@@ -31306,6 +31307,7 @@ MonoBehaviour:
   _classesText: {fileID: 2136502497}
   _btn: {fileID: 1489941312}
   _resultsText: {fileID: 442416262}
+  wasApplied: 0
 --- !u!114 &1204801953
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44572,7 +44574,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 2.2000122, y: -39.09961}
+  m_AnchoredPosition: {x: 2.1999512, y: -39.09961}
   m_SizeDelta: {x: 402.1, y: 143.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1633748607
@@ -54665,6 +54667,8 @@ MonoBehaviour:
   _logging: 1
   _adjustedMap: {fileID: 305829653}
   _replacedMap: {fileID: 195490363}
+  _distinct: {fileID: 1055388338}
+  _equal: {fileID: 1204801952}
 --- !u!114 &2018068468
 MonoBehaviour:
   m_ObjectHideFlags: 0

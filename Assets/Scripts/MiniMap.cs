@@ -29,6 +29,8 @@ public class MiniMap : MonoBehaviour
     public delegate void OnMiniMapApply();
     public static event OnMiniMapApply onMiniMapApply;
 
+    public bool Applied;
+
     public void OnEnable()
     {
         AuthoringTool.onMapInitEnded += Init;
@@ -59,6 +61,7 @@ public class MiniMap : MonoBehaviour
            
             tileMapMain.SetTileMap(_map.GetTileMap());
             _mapView.Btn.SetActive(false);
+            Applied = true;
         }
         onMiniMapApply?.Invoke();
         EventManagerUI.onMapReadyForPrediction?.Invoke();
@@ -66,6 +69,7 @@ public class MiniMap : MonoBehaviour
 
     public void SetMiniMap(List<KeyValuePair<Tile[,], float>> balancedMaps)
     {
+        Applied = false;
         var balancedMap = balancedMaps[_index].Key;
 
         // Copy enviroments and decorations from generated map.

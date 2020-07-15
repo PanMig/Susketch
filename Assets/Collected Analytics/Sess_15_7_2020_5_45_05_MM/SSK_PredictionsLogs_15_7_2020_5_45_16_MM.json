@@ -1,0 +1,71 @@
+[
+  {
+    "MapClassPair": {
+      "Map": null,
+      "BlueClass": null,
+      "RedClass": null,
+      "Playable": false,
+      "Powerups": null
+    },
+    "Predictions": {
+      "KillRatio": 0.4882315,
+      "Duration": 0.3111052,
+      "DArc": null,
+      "CombatPace": null,
+      "Heatmap": null
+    }
+  },
+  {
+    "MapClassPair": {
+      "Map": null,
+      "BlueClass": null,
+      "RedClass": null,
+      "Playable": false,
+      "Powerups": null
+    },
+    "Predictions": {
+      "KillRatio": 0.609924853,
+      "Duration": 0.408429325,
+      "DArc": [
+        0.00562078133,
+        0.0110663865,
+        0.000956192147,
+        -0.0010397993,
+        -0.00121934293
+      ],
+      "CombatPace": [
+        9.333262,
+        9.558665,
+        1.088383,
+        0.008933246,
+        0.0163743086
+      ],
+      "Heatmap": [
+        [
+          0.0004581781,
+          0.0135836489,
+          0.123148449,
+          0.0346697755
+        ],
+        [
+          0.00313643366,
+          0.06841478,
+          0.194056109,
+          0.028987797
+        ],
+        [
+          0.0288950913,
+          0.149144933,
+          0.21798417,
+          0.009940362
+        ],
+        [
+          0.008579463,
+          0.0456186756,
+          0.07213036,
+          0.0007682559
+        ]
+      ]
+    }
+  }
+]

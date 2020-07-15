@@ -9,17 +9,15 @@ using System.Text;
 
 public static class UserLogsWriter
 {
-    private static readonly string
-        pathMP = Application.dataPath + "/Collected Analytics/SSK_MainCanvasLogs";
+    // user log storing paths
+    private static string pathMP;
+    private static string pathPreds;
+    private static string pathSugg; 
 
-    private static readonly string pathPreds =
-        Application.dataPath + "/Collected Analytics/SSK__PredictionsLogs";
-
-    private static readonly string
-        pathSugg = Application.dataPath + "/Collected Analytics/SSK__SuggestionsLogs";
-
-    public static string uniqueId;
-    public static string dateTime;
+    // file properties
+    public static string UniqueId;
+    public static string DateTime;
+    public static string LogsDir;
 
     public static void LogMapProperties(CoreMapClassPair mainCanvas, PathFindingLog pathFindingLog)
     {
@@ -35,16 +33,18 @@ public static class UserLogsWriter
         SaveToJson(pathPreds, log);
     }
 
-    public static void LogSuggestions(CoreMapClassPair mainCanvas, SuggestionLog[] suggestions)
+    public static void LogSuggestions(CoreMapClassPair mainCanvas, MapSuggestionLog[] maps, ClassSuggestionLog[] classes)
     {
         Debug.Log("collecting Suggestions");
-        SuggestionsTabLog log = new SuggestionsTabLog(mainCanvas, suggestions);
+        SuggestionsTabLog log = new SuggestionsTabLog(mainCanvas, maps, classes);
         SaveToJson(pathSugg, log);
     }
 
+    #region JsonUtillities
+
     private static void SaveToJson<T>(string path, T log)
     {
-        path = $"{path}_{dateTime}.json";
+        path = $"{path}_{DateTime}.json";
         List<T> existingEntries;
         if (File.Exists(path))
         {
@@ -61,6 +61,10 @@ public static class UserLogsWriter
         File.WriteAllText(path, jsonEntry);
     }
 
+    #endregion
+
+    #region Writer FILE settings
+
     public static void SetUniqueId()
     {
         StringBuilder builder = new StringBuilder();
@@ -72,18 +76,29 @@ public static class UserLogsWriter
             .OrderBy(e => Guid.NewGuid())
             .Take(11)
             .ToList().ForEach(e => builder.Append(e));
-        uniqueId = builder.ToString();
+        UniqueId = builder.ToString();
         //PlayerPrefs.SetString("uniqueID", uniqueId);
     }
 
     public static void SetDateTime()
     {
-        dateTime = System.DateTime.Now.ToString();
-        dateTime = dateTime.Replace(" ", "_");
-        dateTime = dateTime.Replace(":", "_");
-        dateTime = dateTime.Replace("/", "_");
-        dateTime = dateTime.Replace(".", "");
-        dateTime = dateTime.Replace("μμ", "MM");
-        dateTime = dateTime.Replace("πμ", "PM");
+        DateTime = System.DateTime.Now.ToString();
+        DateTime = DateTime.Replace(" ", "_");
+        DateTime = DateTime.Replace(":", "_");
+        DateTime = DateTime.Replace("/", "_");
+        DateTime = DateTime.Replace(".", "");
+        DateTime = DateTime.Replace("μμ", "MM");
+        DateTime = DateTime.Replace("πμ", "PM");
     }
+
+    public static void SetLogDirectory()
+    {
+        pathMP = $"{LogsDir}/SSK_MainCanvasLogs";
+        pathPreds  = $"{LogsDir}/SSK_PredictionsLogs";
+        pathSugg = $"{LogsDir}/SSK_SuggestionsLogs";
+    }
+
+    #endregion
+
+    
 }
