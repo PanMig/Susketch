@@ -7,12 +7,14 @@ using UnityEngine.UI;
 public class TutorialSessionHandler : MonoBehaviour
 {
     [SerializeField] private Enums.TutorialSessions _session;
+    public Enums.TutorialSessions Session => _session;
+
     [SerializeField] private ModalWindowManager[] _sessionPanels;
     [SerializeField] private GameObject sessionWinBtn;
 
     public void SetState()
     {
-        if (_session == Enums.TutorialSessions.free)
+        if (_session == Enums.TutorialSessions.session_free)
         {
             sessionWinBtn.SetActive(false);
             foreach (var panel in _sessionPanels)
@@ -29,6 +31,7 @@ public class TutorialSessionHandler : MonoBehaviour
             _sessionPanels[(int)_session].OpenWindow();
             sessionWinBtn.SetActive(true);
         }
+        UserLogsBuilder.InitFileNameSettings(_session);
     }
 
     public void SetTutorialSession(int index)
@@ -45,7 +48,7 @@ public class TutorialSessionHandler : MonoBehaviour
                 _session = Enums.TutorialSessions.session_3;
                 break;
             default:
-                _session = Enums.TutorialSessions.free;
+                _session = Enums.TutorialSessions.session_free;
                 break;
         }
     }

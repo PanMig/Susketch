@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Sirenix.OdinInspector.Editor;
 using UnityEngine;
 using static UserLogsWriter;
 
@@ -15,27 +16,27 @@ public class UserLogsBuilder : MonoBehaviour
 
     void Start()
     {
-        InitFileNameSettings();
-        LogsDir = Application.dataPath + $"/Collected Analytics/Sess_{DateTime}";
-        // create a main directory to save user sessions.
-        if (!Directory.Exists(LogsDir))
-        {
-            Directory.CreateDirectory(LogsDir);
-        }
         if (_logging)
         {
             EventManagerUI.onMapReadyForPrediction += CollectMainCanvasData;
             AuthoringTool.onPredictionsEnded += CollectPredictionsData;
             AuthoringTool.onSuggestionsEnded += CollectCalculatedSuggestions;
             MiniMap.onMiniMapApply += CollectCalculatedSuggestions;
+            ClassBalanceView.onClassBalanceApplied += CollectCalculatedSuggestions;
         }
     }
 
-    public void InitFileNameSettings()
+    public static void InitFileNameSettings(Enums.TutorialSessions sess)
     {
         SetUniqueId();
         SetDateTime();
+        LogsDir = Application.dataPath + $"/Collected Analytics/{sess.ToString()}__{DateTime}";
         SetLogDirectory();
+        // create a main directory to save user sessions.
+        if (!Directory.Exists(LogsDir))
+        {
+            Directory.CreateDirectory(LogsDir);
+        }
     }
 
     public void CollectMainCanvasData()
@@ -87,20 +88,4 @@ public class UserLogsBuilder : MonoBehaviour
             LogSuggestions(mainCanvas, suggestions, classes);
         }
     }
-
-    //public void CollectAppliedSuggestions()
-    //{
-    //    if (AuthoringTool._activeTab == Enums.UIScreens.Suggestions && AuthoringTool._mapPlayable)
-    //    {
-    //        var adjucements = new SuggestionLog(_adjustedMap.Map.ExportToStringArray(), _adjustedMap.KillRatio,
-    //            _adjustedMap.PercentageError, _adjustedMap.Map.GetDecorationsCount(), _adjustedMap.Applied);
-
-    //        var replacements = new SuggestionLog(_replacedMap.Map.ExportToStringArray(), _replacedMap.KillRatio,
-    //            _replacedMap.PercentageError, _replacedMap.Map.GetDecorationsCount(), true);
-
-    //        var suggestions = new SuggestionLog[2] { adjucements, replacements };
-
-    //        LogSuggestions(mainCanvas, suggestions);
-    //    }
-    //}
 }

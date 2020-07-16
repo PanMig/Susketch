@@ -34,6 +34,6 @@ public static class Enums
         session_1,
         session_2,
         session_3,
-        free
+        session_free
     }
 }

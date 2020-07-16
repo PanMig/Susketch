@@ -33,6 +33,9 @@ public class ClassBalanceView : MonoBehaviour
 
     public bool wasApplied;
 
+    public delegate void OnClassBalanceApplied();
+    public static event OnClassBalanceApplied onClassBalanceApplied;
+
     public void OnEnable()
     {
         if (type == classBalanceType.distinct)
@@ -94,6 +97,7 @@ public class ClassBalanceView : MonoBehaviour
         CharacterClassMng.Instance.SetClassSprites(blueIndex, redIndex);
         CharacterClassMng.Instance.SetClassSpriteSelectors(blueIndex, redIndex);
         wasApplied = true;
+        onClassBalanceApplied?.Invoke();
         _btn.SetActive(false);
     }
 

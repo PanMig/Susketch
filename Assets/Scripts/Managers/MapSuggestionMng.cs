@@ -227,6 +227,39 @@ public class MapSuggestionMng : MonoBehaviour
         return map;
     }
 
+    public static Dictionary<string, List<Tile>> GetDecorations(Tile[,] map)
+    {
+        Dictionary<string, List<Tile>> decorDict = new Dictionary<string, List<Tile>>();
+        var healthPacks = new List<Tile>();
+        var armorPacks = new List<Tile>();
+        var damagePacks = new List<Tile>();
+
+        for (int i = 0; i < 20; i++)
+        {
+            for (int j = 0; j < 20; j++)
+            {
+                var currTile = map[i, j];
+                if (currTile.decID == TileEnums.Decorations.healthPack)
+                {
+                    healthPacks.Add(currTile);
+                }
+                else if (currTile.decID == TileEnums.Decorations.armorVest)
+                {
+                    armorPacks.Add(currTile);
+                }
+                else if (currTile.decID == TileEnums.Decorations.damageBoost)
+                {
+                    damagePacks.Add(currTile);
+                }
+            }
+        }
+
+        decorDict.Add(TileEnums.Decorations.healthPack.ToString(), healthPacks);
+        decorDict.Add(TileEnums.Decorations.armorVest.ToString(), armorPacks);
+        decorDict.Add(TileEnums.Decorations.damageBoost.ToString(), damagePacks);
+        return decorDict;
+    }
+
     #endregion
 }
 

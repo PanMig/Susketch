@@ -71,6 +71,9 @@ public class AuthoringTool : MonoBehaviour
         // CharacterClassMng is fired when the class selector is edited.
         CharacterClassMng.onClassSelectorEdit += InvokeSurrogateModels;
 
+        //when class balance is applied.
+        ClassBalanceView.onClassBalanceApplied += InvokeSurrogateModels;
+
         // When minimap is applied.
         MiniMap.onMiniMapApply += InvokeSurrogateModels;
         MiniMap.onMiniMapApply += PaintTeamRegions;
@@ -82,6 +85,7 @@ public class AuthoringTool : MonoBehaviour
         EventManagerUI.onSingleClickEdit -= CheckTileMapListener;
         EventManagerUI.onMapReadyForPrediction -= InvokeSurrogateModels;
         CharacterClassMng.onClassSelectorEdit -= InvokeSurrogateModels;
+        ClassBalanceView.onClassBalanceApplied -= InvokeSurrogateModels;
         MiniMap.onMiniMapApply -= InvokeSurrogateModels;
         MiniMap.onMiniMapApply -= PaintTeamRegions;
     }
