@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TileMapLogic;
 using UnityEngine;
 
 namespace TileMapLogic
@@ -27,7 +28,6 @@ namespace TileMapLogic
             if (tile.decID == TileEnums.Decorations.stairs)
             {
                 SetStairsOrientationTile(tile);
-                //return;
             }
             else if (tile.envTileID != tileType)
             {
@@ -101,4 +101,42 @@ namespace TileMapLogic
     }
 
     
+}
+
+
+public class TileMapComparer : IEqualityComparer<Tile[,]>
+{
+    public bool Equals(Tile[,] map_x, Tile[,] map_y)
+    {
+        for (int i = 0; i < TileMap.rows; i++)
+        {
+            for (int j = 0; j < TileMap.columns; j++)
+            {
+                if (map_x[i, j].envTileID == map_y[i, j].envTileID && map_x[i, j].decID == map_y[i, j].decID)
+                {
+                    continue;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public int GetHashCode(Tile[,] obj)
+    {
+        int hash = 17;
+        for (int i = 0; i < TileMap.rows; i++)
+        {
+            for (int j = 0; j < TileMap.columns; j++)
+            {
+                hash = hash * 31 + (int)obj[i, j].envTileID + (int)obj[i, j].decID;
+            }
+        }
+
+        return hash;
+    }
 }

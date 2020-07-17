@@ -13,8 +13,27 @@ public static class Enums
 
     public enum PowerUpPlacement
     {
-        random,
-        regionShift,
-        typeReplace,
+        randomReplacement,
+        regionSwap,
+        modifyType,
+        changePosition,
+        RemoveOrPlace,
+        randomMutation
+    }
+
+    public enum UIScreens
+    {
+        MapProperties,
+        Predictions,
+        Suggestions,
+        Outro
+    }
+
+    public enum TutorialSessions
+    {
+        session_1,
+        session_2,
+        session_3,
+        session_free
     }
 }

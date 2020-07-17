@@ -13,6 +13,8 @@ namespace TileMapLogic
         public static readonly int rows = 20;
         public static readonly int columns = 20;
         private static readonly int CELL_PER_REGION = 5;
+        private static readonly int REGION_ROWS = 4;
+        private static readonly int REGION_COLS = 4;
         protected Tile[,] tileMap;
         public Region[,] Regions = new Region[4, 4];
 
@@ -33,9 +35,9 @@ namespace TileMapLogic
                 for (int col = 0; col < columns; col++)
                 {
                     //ground tile and empty decoration.
-                    tileTheme = Brush.Instance.brushThemes[UnityEngine.Random.Range(0, 1)];
+                    tileTheme = Brush.Instance.brushThemes[0];
                     dec = Brush.Instance.decorations[0];
-                    tileMap[row, col] = new Tile( tileTheme.envTileID, dec.decorationID, row, col);
+                    tileMap[row, col] = new Tile(tileTheme.envTileID, dec.decorationID, row, col);
                 }
             }
         }
@@ -64,6 +66,7 @@ namespace TileMapLogic
                     tileSet[row, col] = tileMap[row + stepX, col + stepY];
                 }
             }
+
             return tileSet;
         }
 
@@ -106,7 +109,7 @@ namespace TileMapLogic
                 for (int j = 0; j < columns; j++)
                 {
                     tileMap[i, j].PaintTile(Brush.Instance.brushThemes[0].prefab,
-                        Brush.Instance.brushThemes[0], Brush.Instance.decorations[0] ,parent, decorationScale);
+                        Brush.Instance.brushThemes[0], Brush.Instance.decorations[0], parent, decorationScale);
                 }
             }
         }
@@ -141,6 +144,82 @@ namespace TileMapLogic
             return tileMap[row, col];
         }
 
+        public static Tile[,] GetMapDeepCopy(Tile[,] inputMap)
+        {
+            var map = new Tile[rows, columns];
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    map[i, j] = new Tile(TileEnums.EnviromentTiles.ground, TileEnums.Decorations.empty, i, j);
+                    map[i, j].CopyEnvDec(inputMap[i, j]);
+                }
+            }
+
+            return map;
+        }
+
+        public static void RemoveMapDecorations(Tile[,] map)
+        {
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    if (map[i, j].decID != TileEnums.Decorations.stairs &&
+                        map[i, j].decID != TileEnums.Decorations.empty)
+                    {
+                        map[i, j].SetDecoration(Brush.Instance.decorations[0]);
+                    }
+                }
+            }
+        }
+
+        public static string[,] GetTileMapToString(Tile[,] map)
+        {
+            string[,] stringMap = new string[rows, columns];
+
+            for (int row = 0; row < rows; row++)
+            {
+                for (int col = 0; col < columns; col++)
+                {
+                    if (map[row, col].envTileID == TileEnums.EnviromentTiles.ground)
+                    {
+                        stringMap[row, col] = "0";
+                    }
+                    else if (map[row, col].envTileID == TileEnums.EnviromentTiles.level_1)
+                    {
+                        stringMap[row, col] = "1";
+                    }
+                    else if (map[row, col].envTileID == TileEnums.EnviromentTiles.level_2)
+                    {
+                        stringMap[row, col] = "2";
+                    }
+
+                    if (map[row, col].decID == TileEnums.Decorations.healthPack)
+                    {
+                        stringMap[row, col] += "H";
+                    }
+
+                    if (map[row, col].decID == TileEnums.Decorations.damageBoost)
+                    {
+                        stringMap[row, col] += "D";
+                    }
+
+                    if (map[row, col].decID == TileEnums.Decorations.armorVest)
+                    {
+                        stringMap[row, col] += "A";
+                    }
+
+                    if (map[row, col].decID == TileEnums.Decorations.stairs)
+                    {
+                        stringMap[row, col] += "S";
+                    }
+                }
+            }
+
+            return stringMap;
+        }
+
         public void SetTileMapTile(Tile tile)
         {
             tileMap[tile.X, tile.Y] = tile;
@@ -166,24 +245,29 @@ namespace TileMapLogic
                     {
                         stringMap[row, col] = "2";
                     }
+
                     if (tileMap[row, col].decID == TileEnums.Decorations.healthPack)
                     {
                         stringMap[row, col] += "H";
                     }
+
                     if (tileMap[row, col].decID == TileEnums.Decorations.damageBoost)
                     {
                         stringMap[row, col] += "D";
                     }
+
                     if (tileMap[row, col].decID == TileEnums.Decorations.armorVest)
                     {
                         stringMap[row, col] += "A";
                     }
+
                     if (tileMap[row, col].decID == TileEnums.Decorations.stairs)
                     {
                         stringMap[row, col] += "S";
                     }
                 }
             }
+
             return stringMap;
         }
 
@@ -209,6 +293,7 @@ namespace TileMapLogic
                     }
                 }
             }
+
             return intMap;
         }
 
@@ -218,51 +303,57 @@ namespace TileMapLogic
 
         }
 
-        public Tuple<int, int> GetRandomRegion(int removeX, int removeY)
-        {
-            var rand = new System.Random();
-            int row, col = 0;
-            if (removeY != -1 && removeX != -1)
-            {
-                var rangeX = Enumerable.Range(0, 4).Where(i => i != removeY);
-                var rangeY = Enumerable.Range(0, 4).Where(i => i != removeX);
+        //public Tuple<int,int> GetTileRegion(int tile_X, int tile_Y)
+        //{
+        //    int step = 5;
+        //    int regions = 4;
 
-                int row_index = rand.Next(0, 3);
-                row = rangeX.ElementAt(row_index);
-                int col_index = rand.Next(0, 3);
-                col = rangeY.ElementAt(col_index);
-                return new Tuple<int, int>(row, col);
-            }
-            else
-            {
-                row = rand.Next(0, 3);
-                col = rand.Next(0, 3);
-                return new Tuple<int, int>(row, col);
-            }
-        }
+        //    int row_idx = tile_X / step;
+        //    int col_idx = tile_Y / step;
+        //    return new Tuple<int, int>(row_idx, col_idx);
+        //}
 
-        public Tuple<int,int> GetTileRegion(int tile_X, int tile_Y)
-        {
-            int step = 5;
-            int regions = 4;
+        //public Tile GetRandomRegionCell(int regionNumX, int regionNumY, System.Random RNG)
+        //{
+        //    int xRange = regionNumX * 5;
+        //    int yRange = regionNumY * 5;
 
-            int row_idx = tile_X / step;
-            int col_idx = tile_Y / step;
-            return new Tuple<int, int>(row_idx, col_idx);
-        }
+        //    int row = RNG.Next(xRange - 5, xRange - 1);
+        //    int column = RNG.Next(yRange - 5, yRange - 1);
 
-        public Tile GetRandomRegionCell(int regionNumX, int regionNumY, System.Random RNG)
-        {
-            int xRange = regionNumX * 5;
-            int yRange = regionNumY * 5;
+        //    var tile = GetTileWithIndex(row, column);
 
-            int row = RNG.Next(xRange - 5, xRange - 1);
-            int column = RNG.Next(yRange - 5, yRange - 1);
+        //    return tile;
+        //}
 
-            var tile = GetTileWithIndex(row, column);
+        //public Tuple<int, int> GetRandomRegionWithNoPowerUps(int removeX, int removeY, List<Tile>[,] validLocations)
+        //{
+        //    var rand = new System.Random();
+        //    int row, col = 0;
 
-            return tile;
-        }
+        //    var rangeX = Enumerable.Range(0, 4).Where(i => i != removeY);
+        //    var rangeY = Enumerable.Range(0, 4).Where(i => i != removeX);
+
+        //    List<Tuple<int, int>> validRegions = new List<Tuple<int, int>>();
+
+        //    foreach (var x in rangeX)
+        //    {
+        //        foreach (var y in rangeY)
+        //        {
+        //            if (Regions[x, y].GetPickUpsNumber() == 0 && validLocations[x, y].Count > 0)
+        //            {
+        //                validRegions.Add(new Tuple<int, int>(x, y));
+        //            }
+        //        }
+        //    }
+
+        //    if (validRegions.Count > 0)
+        //    {
+        //        int random_idx = rand.Next(0, validRegions.Count);
+        //        return validRegions[random_idx];
+        //    }
+        //    return new Tuple<int, int>(-1, -1);
+        //}
 
         public virtual Tile[,] GetTileMap()
         {
@@ -286,7 +377,7 @@ namespace TileMapLogic
             {
                 for (int j = 0; j < columns; j++)
                 {
-                    tileMap[i, j] = map[i, j].ShallowCopy(tileMap[i,j]);
+                    tileMap[i, j].CopyEnvDec(map[i, j]);
                 }
             }
         }
@@ -297,7 +388,8 @@ namespace TileMapLogic
             {
                 for (int j = 0; j < columns; j++)
                 {
-                    if (tileMap[i, j].decID != TileEnums.Decorations.stairs && tileMap[i, j].decID != TileEnums.Decorations.empty)
+                    if (tileMap[i, j].decID != TileEnums.Decorations.stairs &&
+                        tileMap[i, j].decID != TileEnums.Decorations.empty)
                     {
                         tileMap[i, j].SetDecoration(Brush.Instance.decorations[0]);
                     }
@@ -305,7 +397,7 @@ namespace TileMapLogic
             }
         }
 
-        public Dictionary<string, List<Vector2>> GetDecorations()
+        public Dictionary<string, List<Vector2>> GetDecorationsCoordinates()
         {
             Dictionary<string, List<Vector2>> decorDict = new Dictionary<string, List<Vector2>>();
             var healthPacks = new List<Vector2>();
@@ -331,6 +423,73 @@ namespace TileMapLogic
                     }
                 }
             }
+
+            decorDict.Add(TileEnums.Decorations.healthPack.ToString(), healthPacks);
+            decorDict.Add(TileEnums.Decorations.armorVest.ToString(), armorPacks);
+            decorDict.Add(TileEnums.Decorations.damageBoost.ToString(), damagePacks);
+            return decorDict;
+        }
+
+        public Dictionary<string, List<Tile>> GetDecorations()
+        {
+            Dictionary<string, List<Tile>> decorDict = new Dictionary<string, List<Tile>>();
+            var healthPacks = new List<Tile>();
+            var armorPacks = new List<Tile>();
+            var damagePacks = new List<Tile>();
+
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    var currTile = tileMap[i, j];
+                    if (currTile.decID == TileEnums.Decorations.healthPack)
+                    {
+                        healthPacks.Add(currTile);
+                    }
+                    else if (currTile.decID == TileEnums.Decorations.armorVest)
+                    {
+                        armorPacks.Add(currTile);
+                    }
+                    else if (currTile.decID == TileEnums.Decorations.damageBoost)
+                    {
+                        damagePacks.Add(currTile);
+                    }
+                }
+            }
+
+            decorDict.Add(TileEnums.Decorations.healthPack.ToString(), healthPacks);
+            decorDict.Add(TileEnums.Decorations.armorVest.ToString(), armorPacks);
+            decorDict.Add(TileEnums.Decorations.damageBoost.ToString(), damagePacks);
+            return decorDict;
+        }
+
+        public Dictionary<string, int> GetDecorationsCount()
+        {
+            Dictionary<string, int> decorDict = new Dictionary<string, int>();
+            var healthPacks = 0;
+            var armorPacks =  0;
+            var damagePacks = 0;
+
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    var currTile = tileMap[i, j];
+                    if (currTile.decID == TileEnums.Decorations.healthPack)
+                    {
+                        healthPacks++;
+                    }
+                    else if (currTile.decID == TileEnums.Decorations.armorVest)
+                    {
+                        armorPacks++;
+                    }
+                    else if (currTile.decID == TileEnums.Decorations.damageBoost)
+                    {
+                        damagePacks++;
+                    }
+                }
+            }
+
             decorDict.Add(TileEnums.Decorations.healthPack.ToString(), healthPacks);
             decorDict.Add(TileEnums.Decorations.armorVest.ToString(), armorPacks);
             decorDict.Add(TileEnums.Decorations.damageBoost.ToString(), damagePacks);
@@ -351,6 +510,7 @@ namespace TileMapLogic
                     }
                 }
             }
+
             return decorTiles;
         }
 
@@ -373,6 +533,30 @@ namespace TileMapLogic
                     }
                 }
             }
+
+            return platformsList;
+        }
+
+        public List<List<Tile>> GetFirstFloorPlatformBounds()
+        {
+            var platformsList = new List<List<Tile>>();
+            var tileList = new List<Tile>();
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    var tile = GetTileWithIndex(i, j);
+
+                    if (!tileList.Contains(tile) && tile.envTileID == TileEnums.EnviromentTiles.level_1)
+                    {
+                        var list = new List<Tile>();
+                        list = PathUtils.RecursiveFloodFill(i, j, Brush.Instance.brushThemes[1], list);
+                        tileList.AddRange(list);
+                        platformsList.Add(list);
+                    }
+                }
+            }
+
             return platformsList;
         }
 
@@ -391,6 +575,7 @@ namespace TileMapLogic
                     }
                 }
             }
+
             return tileList;
         }
 
@@ -414,20 +599,33 @@ namespace TileMapLogic
                     list.Add(GetTileWithIndex(i, j));
                 }
             }
+
             return list;
         }
 
-        public void ReadCSVToTileMap(string fileName)
+        public void ReadCSVToTileMap(string fileName, bool fromAssets)
         {
-            TextAsset datafile = Resources.Load<TextAsset>(fileName);
-            using (var sr = new StreamReader(new MemoryStream(datafile.bytes)))
+            FileStream file;
+            if (fromAssets)
+            {
+                var path = Application.streamingAssetsPath + "/" + fileName;
+                file = new FileStream(path, FileMode.Open, FileAccess.Read);
+
+            }
+            else
+            {
+                var path = Application.dataPath + "/" + fileName;
+                file = new FileStream(path, FileMode.Open, FileAccess.Read);
+            }
+
+            using (var sr = new StreamReader(file))
             {
                 for (var i = 0; i < rows; i++)
                 {
                     string line;
                     if ((line = sr.ReadLine()) != null)
                     {
-                        var splitted = line.Split(',','|');
+                        var splitted = line.Split(',', '|');
                         for (var j = 0; j < columns; j++)
                         {
                             //map[i, j] = splitted[j];
@@ -496,5 +694,103 @@ namespace TileMapLogic
             }
         }
 
+        public void ExportTileMapToCSV(string fileName)
+        {
+            StreamWriter file = new StreamWriter(Application.dataPath + $"/{fileName}.csv", false);
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    var env = tileMap[i, j].envTileID;
+                    switch (env)
+                    {
+                        case TileEnums.EnviromentTiles.ground:
+                            file.Write("0");
+                            break;
+                        case TileEnums.EnviromentTiles.level_1:
+                            file.Write("1");
+                            break;
+                        case TileEnums.EnviromentTiles.level_2:
+                            file.Write("2");
+                            break;
+                    }
+
+                    if (tileMap[i, j].decID != TileEnums.Decorations.empty)
+                    {
+                        var dec = tileMap[i, j].decID;
+                        switch (dec)
+                        {
+                            case TileEnums.Decorations.healthPack:
+                                file.Write("H");
+                                break;
+                            case TileEnums.Decorations.armorVest:
+                                file.Write("A");
+                                break;
+                            case TileEnums.Decorations.damageBoost:
+                                file.Write("D");
+                                break;
+                            case TileEnums.Decorations.stairs:
+                                file.Write("S");
+                                break;
+                        }
+                    }
+
+                    file.Write(",");
+                }
+
+                //go to next line
+                file.Write("\n");
+            }
+
+            file.Close();
+            Debug.Log("Saved map file to: " + Application.dataPath + $"/{fileName}.csv");
+        }
+
+        public string[,] ExportToStringArray()
+        {
+            string[,] map = new string[20, 20];
+
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    var env = tileMap[i, j].envTileID;
+                    switch (env)
+                    {
+                        case TileEnums.EnviromentTiles.ground:
+                            map[i, j] = "0";
+                            break;
+                        case TileEnums.EnviromentTiles.level_1:
+                            map[i, j] = "1";
+                            break;
+                        case TileEnums.EnviromentTiles.level_2:
+                            map[i, j] = "2";
+                            break;
+                    }
+
+                    if (tileMap[i, j].decID != TileEnums.Decorations.empty)
+                    {
+                        var dec = tileMap[i, j].decID;
+                        switch (dec)
+                        {
+                            case TileEnums.Decorations.healthPack:
+                                map[i, j] = $"{map[i, j]}H";
+                                break;
+                            case TileEnums.Decorations.armorVest:
+                                map[i, j] = $"{map[i, j]}A";
+                                break;
+                            case TileEnums.Decorations.damageBoost:
+                                map[i, j] = $"{map[i, j]}D";
+                                break;
+                            case TileEnums.Decorations.stairs:
+                                map[i, j] = $"{map[i, j]}S";
+                                break;
+                        }
+                    }
+                }
+            }
+
+            return map;
+        }
     }
 }

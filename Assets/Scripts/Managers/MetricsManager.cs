@@ -105,13 +105,15 @@ public class MetricsManager : MonoBehaviour
         fillAmountRed.fillAmount = redAmount;
     }
 
+    // When error is negative we are closer to the desired value.
     public static float CalculateRatioDifference(float newPercent, float curPercent)
     {
+        // we use absolute values for cases were KR is below 0.5 and their difference is positive.
         var suggestedKR = Mathf.Abs(0.5f - newPercent);
         var currentKR = Mathf.Abs(0.5f - curPercent);
         if (currentKR == 0.0f) return 0.0f;
         // we divide by the desired number(0.5) so we get the percentage error (mathematical measurement).
-        var result = (suggestedKR - currentKR) / 0.5f;
+        var result = (currentKR - suggestedKR) / 0.5f;
         return result * 100;
     }
 }

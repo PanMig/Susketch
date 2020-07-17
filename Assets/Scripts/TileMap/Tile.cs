@@ -15,6 +15,11 @@ public class Tile
     public TileEnums.Decorations decID;
     public Image decorationImage;
 
+    public Tile()
+    {
+
+    }
+
     public Tile(TileEnums.EnviromentTiles envTileID, TileEnums.Decorations decID , int posX, int posY)
     {
         X = posX;
@@ -87,17 +92,28 @@ public class Tile
 
     public Tile ShallowCopy(Tile newTile)
     {
-        newTile.envTileID = this.envTileID;
-        newTile.decID = this.decID;
-        newTile.image.sprite = this.image.sprite;
-        newTile.decorationImage.sprite = this.decorationImage.sprite;
+        return (Tile) newTile.MemberwiseClone();
+    }
 
-        return newTile;
+    public void CopyEnvDec(Tile copiedTile)
+    {
+        this.envTileID = copiedTile.envTileID;
+        this.decID = copiedTile.decID;
     }
 
     public void SetColor(Color color)
     {
         image.color = color;
+    }
+
+    public Tuple<int, int> GetRegion()
+    {
+        int step = 5;
+        int regions = 4;
+
+        int row_idx = X / step;
+        int col_idx = Y / step;
+        return new Tuple<int, int>(row_idx, col_idx);
     }
 
     public void Highlight(int team, int direction)

@@ -12,6 +12,7 @@ public enum classBalanceType
 
 public class ClassBalanceView : MonoBehaviour
 {
+    // UI metrics
     [SerializeField] private classBalanceType type;
     [SerializeField] private GameObject _killRatioBar;
     [SerializeField] private TextMeshProUGUI _bluePercent;
@@ -19,7 +20,21 @@ public class ClassBalanceView : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _classesText;
     [SerializeField] private GameObject _btn;
     [SerializeField] private TextMeshProUGUI _resultsText;
-    private CharacterParams[] balancedClasses = new CharacterParams[2]; 
+
+    private CharacterParams[] balancedClasses = new CharacterParams[2];
+
+    private float _killRatio;
+    public float KillRatio => _killRatio;
+
+    private float _percentageError;
+    public float PercentageError => _percentageError;
+
+    public string ClassesText => _classesText.text;
+
+    public bool wasApplied;
+
+    public delegate void OnClassBalanceApplied();
+    public static event OnClassBalanceApplied onClassBalanceApplied;
 
     public void OnEnable()
     {
@@ -47,26 +62,27 @@ public class ClassBalanceView : MonoBehaviour
         AuthoringTool.onclassBalanceSame -= SetClassBalanceView;
     }
 
-    private void SetClassBalanceView(KeyValuePair<CharacterParams[], float> balancedmatch)
+    private void SetClassBalanceView(KeyValuePair<CharacterParams[], float> balancedMatch)
     {
-        var percent = balancedmatch.Value;
-        _bluePercent.text = $"{((1 - percent) * 100).ToString("F0")} %";
-        _redPercent.text = $"{(percent * 100).ToString("F0")} %";
+        wasApplied = false;
+        _killRatio = balancedMatch.Value;
+        _bluePercent.text = $"{((1 - _killRatio) * 100).ToString("F0")} %";
+        _redPercent.text = $"{(_killRatio * 100).ToString("F0")} %";
         //blue is first player in input creation ONLY.
-        balancedClasses[0] = balancedmatch.Key[0];
+        balancedClasses[0] = balancedMatch.Key[0];
         //red is second.
-        balancedClasses[1] = balancedmatch.Key[1];
+        balancedClasses[1] = balancedMatch.Key[1];
         _classesText.text = $"{balancedClasses[0].className} vs {balancedClasses[1].className}";
-        MetricsManager.SetKillRatioBar(1 - percent, percent, _killRatioBar);
-        var result = MetricsManager.CalculateRatioDifference(percent, AuthoringTool.currKillRatio);
-        if (result < 0)
+        MetricsManager.SetKillRatioBar(1 - _killRatio, _killRatio, _killRatioBar);
+        _percentageError = MetricsManager.CalculateRatioDifference(_killRatio, AuthoringTool.currKillRatio);
+        if (_percentageError > 0)
         {
-            _resultsText.text = $"+{Mathf.Abs(result).ToString($"F0")} % gain";
+            _resultsText.text = $"+{_percentageError.ToString($"F0")} % gain";
             _resultsText.color = Color.green;
         }
         else
         {
-            _resultsText.text = $"-{Mathf.Abs(result).ToString($"F0")} % loss";
+            _resultsText.text = $"-{Mathf.Abs(_percentageError).ToString($"F0")} % loss";
             _resultsText.color = Color.red;
         }
         _btn.SetActive(true);
@@ -80,6 +96,8 @@ public class ClassBalanceView : MonoBehaviour
         var redIndex = CharacterClassMng.Instance.GetClassIndex(balancedClasses[1].className);
         CharacterClassMng.Instance.SetClassSprites(blueIndex, redIndex);
         CharacterClassMng.Instance.SetClassSpriteSelectors(blueIndex, redIndex);
+        wasApplied = true;
+        onClassBalanceApplied?.Invoke();
         _btn.SetActive(false);
     }
 

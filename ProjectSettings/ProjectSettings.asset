@@ -667,10 +667,10 @@ PlayerSettings:
     m_VersionCode: 1
     m_VersionName: 
   apiCompatibilityLevel: 6
-  cloudProjectId: 
+  cloudProjectId: 65d665ec-edf7-406e-be8d-fe62298a53d6
   framebufferDepthMemorylessMode: 0
-  projectName: 
-  organizationId: 
+  projectName: FPS Authoring Tool
+  organizationId: certh-iti
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0

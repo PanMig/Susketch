@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class EventManagerUI
 {
-    public delegate void OnTileMapEdit();
-    public static OnTileMapEdit onTileMapEdit;
+    public delegate void OnSingleClickEdit();
+    public static OnSingleClickEdit onSingleClickEdit;
+
+    public delegate void OnDragClickEdit();
+    public static OnDragClickEdit onDragClickEdit;
 
     public delegate void OnMapPlayable();
-    public static OnTileMapEdit onPlayableMap;
+    public static OnMapPlayable onPlayableMap;
 
     public delegate void OnMapReadyForPrediction();
     public static OnMapReadyForPrediction onMapReadyForPrediction;

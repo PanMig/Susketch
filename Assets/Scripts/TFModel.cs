@@ -62,6 +62,7 @@ public class TFModel : MonoBehaviour
     {
         return Task.Run(() =>
         {
+            // the KR models has on extra dimension for cover. Therefore we add an extra layer of zeros so match the dimensions
             map = ConcatCoverChannel(map);
             killRatioGraph.as_default();
             Tensor input_maps = killRatioGraph.OperationByName("input_layer");
@@ -80,6 +81,27 @@ public class TFModel : MonoBehaviour
                 return x[0];
             }
         });
+    }
+
+    public static float PredictKillRatioSynchronous(NDArray map, NDArray weapons)
+    {
+        map = ConcatCoverChannel(map);
+        killRatioGraph.as_default();
+        Tensor input_maps = killRatioGraph.OperationByName("input_layer");
+        Tensor input_weapons = killRatioGraph.OperationByName("input_12");
+        Tensor output = killRatioGraph.OperationByName("output_layer/BiasAdd");
+
+        using (var sess = tf.Session())
+        {
+            var results = sess.run(output, new FeedItem[]
+            {
+                new FeedItem(input_maps, map),
+                new FeedItem(input_weapons, weapons)
+            });
+
+            var x = results.ToArray<float>();
+            return x[0];
+        }
     }
 
     public static Task<float> PredictGameDuration(NDArray map, NDArray weapons)
@@ -243,6 +265,15 @@ public class TFModel : MonoBehaviour
         return input_map;
     }
 
+    public static NDArray GetInputMap(Tile[,] tileMap)
+    {
+        var map = TileMap.GetTileMapToString(tileMap);
+        var input_map = ArrayParsingUtils.ParseToChannelArray(map);
+        input_map = np.expand_dims(input_map, 0);
+        return input_map;
+    }
+
+    // some models have on extra dimension for cover. Therefore we add an extra layer of zeros so match the dimensions.
     public static NDArray ConcatCoverChannel(NDArray input_map)
     {
         var coverChannel = np.zeros(1, 20, 20, 1);

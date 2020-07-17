@@ -1,0 +1,55 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using Michsky.UI.ModernUIPack;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class TutorialSessionHandler : MonoBehaviour
+{
+    [SerializeField] private Enums.TutorialSessions _session;
+    public Enums.TutorialSessions Session => _session;
+
+    [SerializeField] private ModalWindowManager[] _sessionPanels;
+    [SerializeField] private GameObject sessionWinBtn;
+
+    public void SetState()
+    {
+        if (_session == Enums.TutorialSessions.session_free)
+        {
+            sessionWinBtn.SetActive(false);
+            foreach (var panel in _sessionPanels)
+            {
+                panel.gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            foreach (var panel in _sessionPanels)
+            {
+                panel.gameObject.SetActive(true);
+            }
+            _sessionPanels[(int)_session].OpenWindow();
+            sessionWinBtn.SetActive(true);
+        }
+        UserLogsBuilder.InitFileNameSettings(_session);
+    }
+
+    public void SetTutorialSession(int index)
+    {
+        switch (index)
+        {
+            case 1:
+                _session = Enums.TutorialSessions.session_1;
+                break;
+            case 2:
+                _session = Enums.TutorialSessions.session_2;
+                break;
+            case 3:
+                _session = Enums.TutorialSessions.session_3;
+                break;
+            default:
+                _session = Enums.TutorialSessions.session_free;
+                break;
+        }
+    }
+}
