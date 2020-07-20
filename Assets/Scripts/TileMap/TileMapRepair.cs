@@ -94,10 +94,12 @@ public class TileMapRepair
         {
             if (bound.envTileID == EnviromentTiles.ground)
             {
+                // -1 stands for ground color.
                 PathUtils.FloodFill(bound.X, bound.Y, 0, -1, tempMap);
             }
             else if (bound.envTileID == EnviromentTiles.level_1)
             {
+                //-2 stands for the platform color (first floor).
                 PathUtils.FloodFill(bound.X, bound.Y, 1, -2, tempMap);
             }
         }
@@ -203,15 +205,15 @@ public class TileMapRepair
         // 4: A stair should always lead to first floor tiles
         if (!AreStairsConnectedToFirstFloor(map))
         {
-            SetErrorMsg("Stair is wrongly connected. It either leads to a wall, is cornered by two or more level1 tiles, " +
-                        "or does not lead to first level floor.");
+            SetErrorMsg("Stair is wrongly connected. It either leads to a wall, is cornered by two or more first level tiles, " +
+                        "or does not lead to a first level floor.");
             return false;
         }
 
         // 5: Make sure player can get out of first floor closed areas (a stair exists inside hole)
         if (!HasExitFromClosedPlatform(map))
         {
-            SetErrorMsg("There is no stair in ground region surrounded by first floor tiles.");
+            SetErrorMsg("There is no stair in ground region surrounded by first floor tiles or ground floor is surrounded by walls.");
             return false;
         }
 

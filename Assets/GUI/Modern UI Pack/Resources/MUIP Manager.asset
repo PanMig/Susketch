@@ -46,7 +46,7 @@ MonoBehaviour:
   inputFieldColor: {r: 1, g: 1, b: 1, a: 1}
   modalWindowTitleFont: {fileID: 11400000, guid: fa328c1ae3ffb6b4583cf371153b0be6,
     type: 2}
-  modalWindowContentFont: {fileID: 11400000, guid: 4bd810f1cbcb0f446a8f5a31453e243f,
+  modalWindowContentFont: {fileID: 11400000, guid: 84dd14695854bbc43a5faa24fcf93d0d,
     type: 2}
   modalThemeType: 0
   modalWindowTitleColor: {r: 1, g: 1, b: 1, a: 1}
