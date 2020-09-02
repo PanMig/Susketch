@@ -21,21 +21,21 @@ public static class UserLogsWriter
 
     public static void LogMapProperties(CoreMapClassPair mainCanvas, PathFindingLog pathFindingLog)
     {
-        Debug.Log("collecting MainCanvas");
+        //Debug.Log("collecting MainCanvas");
         MapPropertiesTabLog log = new MapPropertiesTabLog(mainCanvas, pathFindingLog);
         SaveToJson(pathMP, log);
     }
 
     public static void LogPredictions(CoreMapClassPair mainCanvas, PredictionsLog predictions)
     {
-        Debug.Log("collecting Predictions");
+        //Debug.Log("collecting Predictions");
         PredictionsTabLog log = new PredictionsTabLog(mainCanvas, predictions);
         SaveToJson(pathPreds, log);
     }
 
     public static void LogSuggestions(CoreMapClassPair mainCanvas, MapSuggestionLog[] maps, ClassSuggestionLog[] classes)
     {
-        Debug.Log("collecting Suggestions");
+        //Debug.Log("collecting Suggestions");
         SuggestionsTabLog log = new SuggestionsTabLog(mainCanvas, maps, classes);
         SaveToJson(pathSugg, log);
     }

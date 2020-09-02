@@ -33,7 +33,7 @@ public class Individual
 
 public class RandomMutation : IPowerupPlacement
 {
-    private const int GENERATIONS = 20;
+    private const int GENERATIONS = 10;
     private const float THRESHOLD = 0.5f;
 
     public Task<List<KeyValuePair<Tile[,], float>>> ChangePowerUps(TileMap tilemapMain)

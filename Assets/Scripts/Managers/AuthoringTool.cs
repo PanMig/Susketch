@@ -118,6 +118,8 @@ public class AuthoringTool : MonoBehaviour
         //Fire event for ready map.
         onMapInitEnded?.Invoke();
         _activeTab = Enums.UIScreens.MapProperties;
+
+        Debug.developerConsoleVisible = false;
     }
 
     public void SetActiveTab(int index)
@@ -141,14 +143,8 @@ public class AuthoringTool : MonoBehaviour
 
     private static void PaintTeamRegions()
     {
-        Color blueColor = new Color(255, 255, 255, 0.6f);
-        //tileMapMain.PaintRegion(3, 0, blueColor);
-        Color redColor = new Color(255, 255, 255, 0.6f);
-        //tileMapMain.PaintRegion(0, 3, redColor);
-        //tileMapMain.PaintRegion(3,0,0);
-        //tileMapMain.PaintRegion(0,3,0);
-        //tileMapMain.PaintRegionBorders(3, 0, 4);
-        //tileMapMain.PaintRegionBorders(0, 3, 5);
+        //tileMapMain.PaintRegion(0, 3, 0);
+        //tileMapMain.PaintRegion(3, 0, 0);
     }
 
     public void CheckTileMapListener()
@@ -176,7 +172,7 @@ public class AuthoringTool : MonoBehaviour
             randomMap.InitRegions();
             randomMap.PaintTiles(tempView.transform, 1.0f);
 
-            if (mapIndex <= PREDEFINED_MAPS)
+            if (mapIndex < PREDEFINED_MAPS)
             {
                 mapIndex++;
                 Debug.Log("map index: " + mapIndex);
