@@ -118,6 +118,8 @@ public class AuthoringTool : MonoBehaviour
         //Fire event for ready map.
         onMapInitEnded?.Invoke();
         _activeTab = Enums.UIScreens.MapProperties;
+
+        Debug.developerConsoleVisible = false;
     }
 
     public void SetActiveTab(int index)

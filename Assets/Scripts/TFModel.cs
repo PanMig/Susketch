@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Tensorflow;
@@ -29,7 +30,16 @@ public class TFModel : MonoBehaviour
     {
         graph = new Graph();
         var model_file = Resources.Load<TextAsset>(pbFile).bytes;
-        graph.Import(model_file);
+        try
+        {
+            graph.Import(model_file);
+        }
+        catch (Exception e)
+        {
+            Application.Quit();
+            Debug.Log("Quitting tf model not loaded");
+        }
+        
         return graph;
     }
 

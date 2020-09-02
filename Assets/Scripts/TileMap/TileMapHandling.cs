@@ -72,35 +72,40 @@ namespace TileMapLogic
         public void SetStairsOrientationTile(Tile tile)
         {
             var stairNeighbours = PathUtils.GetNeighboursCross(tile, this);
-            float removePercent = 0.8f;
-            if (stairNeighbours[0].envTileID == TileEnums.EnviromentTiles.level_1)
+            if (stairNeighbours.Count >= 3 && stairNeighbours[0] != null)
             {
-                TileOrientations.stairTiles.TryGetValue(TileOrientations.StairDirection.down, out var decSprite);
-                tile.FormatDecorationSprite(this, decSprite);
-                //tile.ResizeDecoration(tile.gameObj.transform.GetChild(0).gameObject, removePercent, 1.0f);
+                if (stairNeighbours[0].envTileID == TileEnums.EnviromentTiles.level_1)
+                {
+                    TileOrientations.stairTiles.TryGetValue(TileOrientations.StairDirection.down, out var decSprite);
+                    tile.FormatDecorationSprite(this, decSprite);
+                }
             }
-            else if (stairNeighbours[1].envTileID == TileEnums.EnviromentTiles.level_1)
+            if (stairNeighbours.Count >= 2 &&stairNeighbours[1] != null)
             {
-                TileOrientations.stairTiles.TryGetValue(TileOrientations.StairDirection.up, out var decSprite);
-                tile.FormatDecorationSprite(this, decSprite);
-                //tile.ResizeDecoration(tile.gameObj.transform.GetChild(0).gameObject, removePercent, 1.0f);
+                if (stairNeighbours[1].envTileID == TileEnums.EnviromentTiles.level_1)
+                {
+                    TileOrientations.stairTiles.TryGetValue(TileOrientations.StairDirection.up, out var decSprite);
+                    tile.FormatDecorationSprite(this, decSprite);
+                }
             }
-            else if (stairNeighbours[2].envTileID == TileEnums.EnviromentTiles.level_1)
+            if (stairNeighbours.Count >= 3 && stairNeighbours[2] != null)
             {
-                TileOrientations.stairTiles.TryGetValue(TileOrientations.StairDirection.right, out var decSprite);
-                tile.FormatDecorationSprite(this, decSprite);
-                //tile.ResizeDecoration(tile.gameObj.transform.GetChild(0).gameObject, 1.0f, removePercent);
+                if (stairNeighbours[2].envTileID == TileEnums.EnviromentTiles.level_1)
+                {
+                    TileOrientations.stairTiles.TryGetValue(TileOrientations.StairDirection.right, out var decSprite);
+                    tile.FormatDecorationSprite(this, decSprite);
+                }
             }
-            else if (stairNeighbours[3].envTileID == TileEnums.EnviromentTiles.level_1)
+            if (stairNeighbours[3] != null)
             {
-                TileOrientations.stairTiles.TryGetValue(TileOrientations.StairDirection.left, out var decSprite);
-                tile.FormatDecorationSprite(this, decSprite);
-                //tile.ResizeDecoration(tile.gameObj.transform.GetChild(0).gameObject, 1.0f, removePercent);
+                if (stairNeighbours[3].envTileID == TileEnums.EnviromentTiles.level_1)
+                {
+                    TileOrientations.stairTiles.TryGetValue(TileOrientations.StairDirection.left, out var decSprite);
+                    tile.FormatDecorationSprite(this, decSprite);
+                }
             }
         }
     }
-
-    
 }
 
 
