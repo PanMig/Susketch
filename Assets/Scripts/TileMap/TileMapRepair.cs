@@ -184,21 +184,21 @@ public class TileMapRepair
         // 1: Bases should be traversable.
         if (!IsTraversable(map))
         {
-            SetErrorMsg("Bases are not traversable.");
+            SetErrorMsg("Player bases are not traversable. Probably a wall or a missing stair is blocking the player from reaching the opponent's base");
             return false;
         }
 
-        // 2: Every player must reach all power ups.
+        // 2: Every player must reach all powerups.
         if (!HasAccesiblePowerUps(map))
         {
-            SetErrorMsg("Not all power ups are available to the players.");
+            SetErrorMsg("Not all powerups are available to the players. Search for powerups that cannot be reached");
             return false;
         }
 
         // 3: First floor platform should always be connected to a stair
         if (!ArePlatformsConnectedToStairs(map))
         {
-            SetErrorMsg("Platform is not connected to a stair.");
+            SetErrorMsg("First floor platform is not connected to a stair.");
             return false;
         }
 
@@ -206,7 +206,7 @@ public class TileMapRepair
         if (!AreStairsConnectedToFirstFloor(map))
         {
             SetErrorMsg("Stair is wrongly connected. It either leads to a wall, is cornered by two or more first level tiles, " +
-                        "or does not lead to a first level floor.");
+                        "or does not lead to a first floor platform.");
             return false;
         }
 

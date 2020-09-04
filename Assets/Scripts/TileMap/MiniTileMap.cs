@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using TileMapLogic;
+﻿using TileMapLogic;
 using UnityEngine;
 
 public class MiniTileMap : TileMap

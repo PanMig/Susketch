@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TileMapLogic;
-using UnityEngine;
 
 namespace TileMapLogic
 {
@@ -72,7 +70,7 @@ namespace TileMapLogic
         public void SetStairsOrientationTile(Tile tile)
         {
             var stairNeighbours = PathUtils.GetNeighboursCross(tile, this);
-            if (stairNeighbours.Count >= 3 && stairNeighbours[0] != null)
+            if (stairNeighbours.Count >= 1 && stairNeighbours[0] != null)
             {
                 if (stairNeighbours[0].envTileID == TileEnums.EnviromentTiles.level_1)
                 {
@@ -96,7 +94,7 @@ namespace TileMapLogic
                     tile.FormatDecorationSprite(this, decSprite);
                 }
             }
-            if (stairNeighbours[3] != null)
+            if (stairNeighbours.Count >= 4 && stairNeighbours[3] != null)
             {
                 if (stairNeighbours[3].envTileID == TileEnums.EnviromentTiles.level_1)
                 {

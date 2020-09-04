@@ -5,6 +5,8 @@ using static MapSuggestionMng;
 using static TFModel;
 using Michsky.UI.ModernUIPack;
 using System.Collections.Generic;
+using Undo_Mechanism;
+using UnityEditor;
 
 // Change it with the TEMPLATE METHOD pattern.
 public class AuthoringTool : MonoBehaviour
@@ -66,6 +68,9 @@ public class AuthoringTool : MonoBehaviour
         EventManagerUI.onSingleClickEdit += PaintTeamRegions;
         EventManagerUI.onSingleClickEdit += CheckTileMapListener;
         
+        //on undo or redo event
+        UndoRedoHandler.onUndoRedoEvent += CheckTileMapListener;
+        
         //onMapReadyForPrediction is fired on End of drag AND pointer up.
         EventManagerUI.onMapReadyForPrediction += InvokeSurrogateModels;
         // CharacterClassMng is fired when the class selector is edited.
@@ -83,6 +88,7 @@ public class AuthoringTool : MonoBehaviour
     {
         EventManagerUI.onSingleClickEdit -= PaintTeamRegions;
         EventManagerUI.onSingleClickEdit -= CheckTileMapListener;
+        UndoRedoHandler.onUndoRedoEvent -= CheckTileMapListener;
         EventManagerUI.onMapReadyForPrediction -= InvokeSurrogateModels;
         CharacterClassMng.onClassSelectorEdit -= InvokeSurrogateModels;
         ClassBalanceView.onClassBalanceApplied -= InvokeSurrogateModels;
