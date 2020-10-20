@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using JetBrains.Annotations;
 using Tensorflow;
 using UnityEngine;
 
@@ -7,23 +6,23 @@ namespace Undo_Mechanism
 {
     public class CommandInvoker
     {
-        private const int HISTORY_SIZE = 10;
+        private const int HISTORY_SIZE = 20;
         private List<Command> _undoList = new List<Command>();
         private List<Command> _redoList = new List<Command>();
 
         public void Execute(Command command)
         {
             _undoList.Add(command);
+            Debug.Log("adding");
             if (_redoList.Count > 0)
             {
                 _redoList.Clear();
             }
             
-            if(_undoList.Count >= HISTORY_SIZE)
+            if(_undoList.Count == HISTORY_SIZE)
             {
                 _undoList.RemoveAt(0);
             }
-            Debug.Log(_undoList.Count);
         }
 
         public void Undo()
@@ -50,7 +49,7 @@ public static class ListExtensions
     {
         myList.add(elementToAdd);
     }
-    [CanBeNull]
+   
     public static T Pop<T>(this List<T> myList)
     {
         var topIndex = myList.Count - 1;
@@ -71,39 +70,3 @@ public static class ListExtensions
         return myList[myList.Count - 1];
     }
 }
-
-// STACK IMPLEMENTATION
-// private Stack<Command> _undoStack = new Stack<Command>();
-// private Stack<Command> _redoStack = new Stack<Command>();
-// private const int STACK_MAX_SIZE = 10;
-//
-// public void Execute(Command command)
-// {
-// _undoStack.Push(command);
-// if (_redoStack.Count != 0)
-// {
-//     _redoStack.Clear();
-// }
-// }
-//
-// public void Undo()
-// {
-// if (_undoStack.Count == 0) return;
-// // remove from undo stack and push to redo stack.
-// var currCommand =  _undoStack.Pop();
-// _redoStack.Push(currCommand);
-// // execute the previous command.
-// var undoCommand = _undoStack.Peek();
-// undoCommand.Execute();
-// }
-//
-// public void Redo()
-// {
-// if (_redoStack.Count == 0) return;
-// // remove from redo stack and push to undo stack.
-// var currCommand =  _redoStack.Pop();
-// _undoStack.Push(currCommand);
-// // execute the previous command.
-// var redoCommand = _redoStack.Peek();
-// redoCommand.Execute();
-// }

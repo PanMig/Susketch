@@ -16,7 +16,7 @@ public static class UserLogsWriter
 
     // file properties
     public static string UniqueId;
-    public static string DateTime;
+    public static string Date;
     public static string LogsDir;
 
     public static void LogMapProperties(CoreMapClassPair mainCanvas, PathFindingLog pathFindingLog)
@@ -44,7 +44,7 @@ public static class UserLogsWriter
 
     private static void SaveToJson<T>(string path, T log)
     {
-        path = $"{path}_{DateTime}.json";
+        path = $"{path}_{Date}.json";
         List<T> existingEntries;
         if (File.Exists(path))
         {
@@ -81,14 +81,16 @@ public static class UserLogsWriter
     }
 
     public static void SetDateTime()
-    {
-        DateTime = System.DateTime.Now.ToString();
-        DateTime = DateTime.Replace(" ", "_");
-        DateTime = DateTime.Replace(":", "_");
-        DateTime = DateTime.Replace("/", "_");
-        DateTime = DateTime.Replace(".", "");
-        DateTime = DateTime.Replace("μμ", "MM");
-        DateTime = DateTime.Replace("πμ", "PM");
+    {   
+        //date only
+        //Date = System.DateTime.Now.ToString("dd/MM/yyyy");
+        Date = System.DateTime.Now.ToString();
+        Date = Date.Replace(" ", "_");
+        Date = Date.Replace(":", "_");
+        Date = Date.Replace("/", "_");
+        Date = Date.Replace(".", "");
+        Date = Date.Replace("μμ", "MM");
+        Date = Date.Replace("πμ", "PM");
     }
 
     public static void SetLogDirectory()

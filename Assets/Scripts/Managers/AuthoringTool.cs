@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using NumSharp;
 using TileMapLogic;
 using static MapSuggestionMng;
@@ -70,6 +71,8 @@ public class AuthoringTool : MonoBehaviour
         
         //on undo or redo event
         UndoRedoHandler.onUndoRedoEvent += CheckTileMapListener;
+        UndoRedoHandler.onUndoRedoEvent += InvokePredictions;
+        UndoRedoHandler.onUndoRedoEvent += InvokeSuggestions;
         
         //onMapReadyForPrediction is fired on End of drag AND pointer up.
         EventManagerUI.onMapReadyForPrediction += InvokeSurrogateModels;
@@ -82,7 +85,10 @@ public class AuthoringTool : MonoBehaviour
         // When minimap is applied.
         MiniMap.onMiniMapApply += InvokeSurrogateModels;
         MiniMap.onMiniMapApply += PaintTeamRegions;
+        
+        Debug.developerConsoleVisible = false;
     }
+
 
     private void OnDisable()
     {
@@ -277,8 +283,11 @@ public class AuthoringTool : MonoBehaviour
 
     public void InvokeSuggestions()
     {
-        CalculateClassBalanceAsync();
-        CalculateBalancedPickUpsAsync();
+        // if (_activeTab == Enums.UIScreens.Suggestions)
+        // {
+            CalculateClassBalanceAsync();
+            CalculateBalancedPickUpsAsync();    
+        //}
     }
 
     //TODO : Change this to one method or at least compute it for one time.

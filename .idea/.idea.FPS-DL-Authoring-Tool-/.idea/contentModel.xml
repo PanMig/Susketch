@@ -304,6 +304,7 @@
           <e p="CharacterParams.cs" t="Include" />
           <e p="Custom analytics" t="Include">
             <e p="LogDataTypes.cs" t="Include" />
+            <e p="UserLogsBuilder.cs" t="Include" />
             <e p="UserLogsWriter.cs" t="Include" />
           </e>
           <e p="DeathHeatmap.cs" t="Include" />
@@ -323,7 +324,6 @@
             <e p="MapSuggestionMng.cs" t="Include" />
             <e p="MetricsManager.cs" t="Include" />
             <e p="TutorialSessionHandler.cs" t="Include" />
-            <e p="UserLogsBuilder.cs" t="Include" />
           </e>
           <e p="MiniMap.cs" t="Include" />
           <e p="OpenURL.cs" t="Include" />

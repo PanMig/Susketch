@@ -1,0 +1,18 @@
+[
+  {
+    "MapClassPair": {
+      "Map": null,
+      "BlueClass": null,
+      "RedClass": null,
+      "Playable": false,
+      "Powerups": null
+    },
+    "Predictions": {
+      "KillRatio": 0.0,
+      "Duration": 0.174299508,
+      "DArc": null,
+      "CombatPace": null,
+      "Heatmap": null
+    }
+  }
+]

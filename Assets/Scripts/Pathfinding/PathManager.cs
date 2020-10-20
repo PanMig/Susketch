@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TileMapLogic;
 using static AuthoringTool;
+using Undo_Mechanism;
 
 public class PlayerPathProperties
 {
@@ -50,6 +51,7 @@ public class PathManager : MonoBehaviour
     private void Start()
     {
         EventManagerUI.onSingleClickEdit += PathHighlightListener;
+        UndoRedoHandler.onUndoRedoEvent += PathHighlightListener;
     }
 
     public void SetPathTarget(int value)

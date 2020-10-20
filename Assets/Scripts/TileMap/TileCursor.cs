@@ -12,7 +12,8 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
     private Color startcolor;
     private Tile selectedTile;
     private bool dragging = false;
-
+    private bool bucketPainting = false;
+    
     public enum CursorType
     {
         tile,
@@ -88,8 +89,9 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
 
     private void FillBoundedArea(PointerEventData eventData)
     {
-        if (eventData.pointerCurrentRaycast.gameObject != null)
+        if (eventData.pointerCurrentRaycast.gameObject != null && !bucketPainting)
         {
+            bucketPainting = true;
             int index_row, index_col;
             GetIndexFromCoordinates(eventData, out index_row, out index_col);
             var oldColor = (int) tileMapMain.GetTileWithIndex(index_row, index_col).envTileID;
@@ -102,6 +104,7 @@ public class TileCursor : MonoBehaviour, IPointerClickHandler, IBeginDragHandler
                 }
             }
             EventManagerUI.onSingleClickEdit?.Invoke();
+            bucketPainting = false;
         }
 
     }

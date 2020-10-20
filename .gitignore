@@ -69,11 +69,8 @@ Assets/Plugins/System.Memory.dll
 Assets/Plugins/System.Memory.dll.meta
 Assets/Plugins/System.Runtime.CompilerServices.Unsafe.dll
 Assets/Plugins/System.Runtime.CompilerServices.Unsafe.dll.meta
-Assets/Plugins/tensorflow.dll/
-Assets/Plugins/tensorflow.dll.meta
 Assets/Plugins/TensorFlow.NET.dll
 Assets/Plugins/TensorFlow.NET.dll.meta
 Assets/Sirenix/
 Assets/Sirenix.meta
 Assets/Plugins/tensorflow.dll
-*.dll

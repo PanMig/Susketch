@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using TileMapLogic;
 using static AuthoringTool;
 
@@ -51,18 +52,24 @@ public class Brush : MonoBehaviour
     // Bucket like paint tool that uses recursive flood fill algorithm.
     public void FillRegion(int posX, int posY, TileThemes fill, TileThemes old)
     {
-        
-        if ((posX < 0) || (posX >= TileMap.rows)) return;
-        if((posY < 0) || (posY >= TileMap.columns)) return;
+        // if ((posX < 0) || (posX >= TileMap.rows)) return;
+        // if((posY < 0) || (posY >= TileMap.columns)) return;
+        //
+        // Tile tile = tileMapMain.GetTileWithIndex(posX, posY);
+        // if(tile.envTileID == old.envTileID)
+        // {
+        //     tile.SetTheme(fill);
+        //     FillRegion(posX + 1, posY, fill, old);
+        //     FillRegion(posX, posY + 1, fill, old);
+        //     FillRegion(posX - 1, posY, fill, old);
+        //     FillRegion(posX , posY - 1, fill, old);
+        // }
 
-        Tile tile = tileMapMain.GetTileWithIndex(posX, posY);
-        if(tile.envTileID == old.envTileID)
+        var tileList = new List<Tile>();
+        var tilesToPaint = PathUtils.RecursiveFloodFill(posX, posY, old, tileList);
+        foreach (var tiles in tilesToPaint)
         {
-            tile.SetTheme(fill);
-            FillRegion(posX + 1, posY, fill, old);
-            FillRegion(posX, posY + 1, fill, old);
-            FillRegion(posX - 1, posY, fill, old);
-            FillRegion(posX , posY - 1, fill, old);
+            tiles.SetTheme(fill);
         }
     }
 

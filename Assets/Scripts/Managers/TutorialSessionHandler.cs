@@ -49,10 +49,13 @@ public class TutorialSessionHandler : MonoBehaviour
         }
         else
         {
+            foreach (var panel in _sessionPanels)
+            {
+                panel.CloseWindow();
+            }
             _sessionPanels[(int)_session].OpenWindow();
             sessionWinBtn.SetActive(true);
         }
-        UserLogsBuilder.InitFileNameSettings(_session);
     }
 
     public void SetTutorialSession(int index)
@@ -72,6 +75,7 @@ public class TutorialSessionHandler : MonoBehaviour
                 _session = Enums.TutorialSessions.session_free;
                 break;
         }
+        UserLogsBuilder.InitFileNameSettings(_session);
     }
 
     public void SetLearningState(int index)

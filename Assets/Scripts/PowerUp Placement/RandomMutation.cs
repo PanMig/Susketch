@@ -82,7 +82,8 @@ public class RandomMutation : IPowerupPlacement
 
     private static Tile[,] MutateRandomly(Tile[,] map, List<Tile>[,] placementLocations)
     {
-        var diceRoll = MapSuggestionMng.RNG.Next(0, 4);
+        //var diceRoll = MapSuggestionMng.RNG.Next(0, 4);
+        var diceRoll = 2;
         switch (diceRoll)
         {
             case 0:

@@ -20,32 +20,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f27ec14b-5226-4ce3-b723-7e1deae0e226" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Undo Mechanism/Command.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Undo Mechanism/Command.cs.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Google.Protobuf.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Google.Protobuf.dll.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/NumSharp.Core.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/NumSharp.Core.dll.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/System.Buffers.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/System.Buffers.dll.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/System.Memory.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/System.Memory.dll.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/System.Runtime.CompilerServices.Unsafe.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/System.Runtime.CompilerServices.Unsafe.dll.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/TensorFlow.NET.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/TensorFlow.NET.dll.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.FPS-DL-Authoring-Tool-/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FPS-DL-Authoring-Tool-/.idea/contentModel.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.FPS-DL-Authoring-Tool-/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FPS-DL-Authoring-Tool-/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Plugins/tensorflow.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/tensorflow.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Plugins/tensorflow.dll.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/tensorflow.dll.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Daniel files.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Authoring tool.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Authoring tool.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Brush.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Brush.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Custom analytics/UserLogsWriter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Custom analytics/UserLogsWriter.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Managers/AuthoringTool.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Managers/AuthoringTool.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/TileMap/MiniTileMap.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/TileMap/MiniTileMap.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/TileMap/TileMap.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/TileMap/TileMap.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/TileMap/TileMapHandling.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/TileMap/TileMapHandling.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/TileMap/TileMapRepair.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/TileMap/TileMapRepair.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Tensorflow.NET.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectVersion.txt" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectVersion.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Managers/TutorialSessionHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Managers/TutorialSessionHandler.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Managers/UserLogsBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Custom analytics/UserLogsBuilder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Managers/UserLogsBuilder.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Custom analytics/UserLogsBuilder.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Pathfinding/PathManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Pathfinding/PathManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/PowerUp Placement/RandomMutation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/PowerUp Placement/RandomMutation.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/TileMap/TileCursor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/TileMap/TileCursor.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Undo Mechanism/CommandInvoker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Undo Mechanism/CommandInvoker.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/_.json" beforeDir="false" afterPath="$PROJECT_DIR$/_.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -58,6 +50,18 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Undo Mechanism/Command.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Custom analytics/LogDataTypes.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Custom analytics/UserLogsWriter.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/MapPlayabilityButton.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/TileOccurences.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/DeathHeatmap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/TileMap/TileMapRepair.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Undo Mechanism/TileMapEditCommand.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/TileMap/TileMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Undo Mechanism/CommandInvoker.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/TileMap/TileCursor.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/TileMap/Tile.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/TensorflowTest.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/TileMap/TileMapHandling.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/MiniMap.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Undo Mechanism/UndoRedoHandler.cs" root0="FORCE_HIGHLIGHTING" />
@@ -65,17 +69,17 @@
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/EventManagerUI.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/TileMap/MiniTileMap.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/MiniMapView.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Brush.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Managers/MetricsManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Managers/AuthoringTool.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/069E61B4-965E-4593-99A7-27A20F9E4A09/eb/d5c7e0e0/Binding.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/OutroManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Custom analytics/UserLogsBuilder.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Managers/TutorialSessionHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/TFModel.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/TileMap/TileMapRepair.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/FB001E01-371B-4ADC-A200-13E0AC763896/95/c386194c/Activator.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Undo Mechanism/TileMapEditCommand.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/TileMap/TileMap.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Undo Mechanism/CommandInvoker.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/TileMap/TileCursor.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/TileMap/Tile.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Pathfinding/PathManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Pathfinding/PathUtiils.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -91,10 +95,17 @@
         <option value="$PROJECT_DIR$/Assets/Scripts/Undo Mechanism/SetTileMapCommand.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Undo Mechanism/UndoCommand.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Undo Mechanism/Command.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/Undo Mechanism/CommandInvoker.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Undo Mechanism/UndoRedoHandler.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/Managers/AuthoringTool.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Undo Mechanism/TileMapEditCommand.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/TFModel.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/TileMap/TileCursor.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Brush.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Pathfinding/PathManager.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Undo Mechanism/CommandInvoker.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Managers/AuthoringTool.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Custom analytics/UserLogsBuilder.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Managers/TutorialSessionHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Custom analytics/UserLogsWriter.cs" />
       </list>
     </option>
   </component>
@@ -105,6 +116,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="DebuggerViewTab_PTCS_FirstProportionKey" value="0.34994584" />
     <property name="DebuggerViewTab_PTCS_LastProportionKey" value="0.30010834" />
     <property name="Discover.Launch.Via.Unity" value="true" />
@@ -113,17 +125,17 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="settings.editor.selected.configurable" value="preferences.sourceCode.C#" />
   </component>
-  <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
-    <configuration name="Attach to Unity Editor &amp; Play" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="UNITY_ATTACH_AND_PLAY" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
+  <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor &amp; Play">
+    <configuration name="Attach to Unity Editor &amp; Play" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="UNITY_ATTACH_AND_PLAY" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="11444">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" />
+      <option name="pid" value="11444" />
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="9500">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="11444">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" value="9500" />
+      <option name="pid" value="11444" />
       <method v="2" />
     </configuration>
   </component>
@@ -137,7 +149,11 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1599052055552</updated>
-      <workItem from="1599052102101" duration="36662000" />
+      <workItem from="1599052102101" duration="37350000" />
+      <workItem from="1599233955703" duration="15118000" />
+      <workItem from="1599998814966" duration="14109000" />
+      <workItem from="1600981639318" duration="656000" />
+      <workItem from="1602772889179" duration="3448000" />
     </task>
     <servers />
   </component>
@@ -153,75 +169,108 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1877" height="375" key="GridCell.Tab.0.bottom" timestamp="1599212508550">
+    <state width="1877" height="375" key="GridCell.Tab.0.bottom" timestamp="1603193058287">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="375" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1599212508550" />
-    <state width="1877" height="375" key="GridCell.Tab.0.center" timestamp="1599212508550">
+    <state width="1877" height="375" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1599606259482" />
+    <state width="1877" height="375" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1603193058287" />
+    <state width="1877" height="375" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1599566592834" />
+    <state width="1877" height="375" key="GridCell.Tab.0.center" timestamp="1603193058287">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="375" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1599212508550" />
-    <state width="1877" height="375" key="GridCell.Tab.0.left" timestamp="1599212508550">
+    <state width="1877" height="375" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1599606259481" />
+    <state width="1877" height="375" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1603193058287" />
+    <state width="1877" height="375" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1599566592834" />
+    <state width="1877" height="375" key="GridCell.Tab.0.left" timestamp="1603193058287">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="375" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1599212508550" />
-    <state width="1877" height="375" key="GridCell.Tab.0.right" timestamp="1599212508550">
+    <state width="1877" height="375" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1599606259481" />
+    <state width="1877" height="375" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1603193058287" />
+    <state width="1877" height="375" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1599566592834" />
+    <state width="1877" height="375" key="GridCell.Tab.0.right" timestamp="1603193058287">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="375" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1599212508550" />
-    <state width="1877" height="375" key="GridCell.Tab.1.bottom" timestamp="1599212508551">
+    <state width="1877" height="375" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1599606259481" />
+    <state width="1877" height="375" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1603193058287" />
+    <state width="1877" height="375" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1599566592834" />
+    <state width="1877" height="375" key="GridCell.Tab.1.bottom" timestamp="1603193058287">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="375" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1599212508551" />
-    <state width="1877" height="375" key="GridCell.Tab.1.center" timestamp="1599212508551">
+    <state width="1877" height="375" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1599606259482" />
+    <state width="1877" height="375" key="GridCell.Tab.1.bottom/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1603193058287" />
+    <state width="1877" height="375" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1599566592834" />
+    <state width="1877" height="375" key="GridCell.Tab.1.center" timestamp="1603193058287">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="375" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1599212508551" />
-    <state width="1877" height="375" key="GridCell.Tab.1.left" timestamp="1599212508550">
+    <state width="1877" height="375" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1599606259482" />
+    <state width="1877" height="375" key="GridCell.Tab.1.center/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1603193058287" />
+    <state width="1877" height="375" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1599566592834" />
+    <state width="1877" height="375" key="GridCell.Tab.1.left" timestamp="1603193058287">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="375" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1599212508550" />
-    <state width="1877" height="375" key="GridCell.Tab.1.right" timestamp="1599212508551">
+    <state width="1877" height="375" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1599606259482" />
+    <state width="1877" height="375" key="GridCell.Tab.1.left/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1603193058287" />
+    <state width="1877" height="375" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1599566592834" />
+    <state width="1877" height="375" key="GridCell.Tab.1.right" timestamp="1603193058287">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="375" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1599212508551" />
-    <state width="1877" height="375" key="GridCell.Tab.2.bottom" timestamp="1599212508551">
+    <state width="1877" height="375" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1599606259482" />
+    <state width="1877" height="375" key="GridCell.Tab.1.right/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1603193058287" />
+    <state width="1877" height="375" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1599566592834" />
+    <state width="1877" height="375" key="GridCell.Tab.2.bottom" timestamp="1603193058287">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="375" key="GridCell.Tab.2.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1599212508551" />
-    <state width="1877" height="375" key="GridCell.Tab.2.center" timestamp="1599212508551">
+    <state width="1877" height="375" key="GridCell.Tab.2.bottom/0.0.1536.824@0.0.1536.824" timestamp="1599606259482" />
+    <state width="1877" height="375" key="GridCell.Tab.2.bottom/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1603193058287" />
+    <state width="1877" height="375" key="GridCell.Tab.2.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1599566592835" />
+    <state width="1877" height="375" key="GridCell.Tab.2.center" timestamp="1603193058287">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="375" key="GridCell.Tab.2.center/0.0.1920.1040@0.0.1920.1040" timestamp="1599212508551" />
-    <state width="1877" height="375" key="GridCell.Tab.2.left" timestamp="1599212508551">
+    <state width="1877" height="375" key="GridCell.Tab.2.center/0.0.1536.824@0.0.1536.824" timestamp="1599606259482" />
+    <state width="1877" height="375" key="GridCell.Tab.2.center/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1603193058287" />
+    <state width="1877" height="375" key="GridCell.Tab.2.center/0.0.1920.1040@0.0.1920.1040" timestamp="1599566592834" />
+    <state width="1877" height="375" key="GridCell.Tab.2.left" timestamp="1603193058287">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="375" key="GridCell.Tab.2.left/0.0.1920.1040@0.0.1920.1040" timestamp="1599212508551" />
-    <state width="1877" height="375" key="GridCell.Tab.2.right" timestamp="1599212508551">
+    <state width="1877" height="375" key="GridCell.Tab.2.left/0.0.1536.824@0.0.1536.824" timestamp="1599606259482" />
+    <state width="1877" height="375" key="GridCell.Tab.2.left/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1603193058287" />
+    <state width="1877" height="375" key="GridCell.Tab.2.left/0.0.1920.1040@0.0.1920.1040" timestamp="1599566592834" />
+    <state width="1877" height="375" key="GridCell.Tab.2.right" timestamp="1603193058287">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="375" key="GridCell.Tab.2.right/0.0.1920.1040@0.0.1920.1040" timestamp="1599212508551" />
-    <state width="1877" height="375" key="GridCell.Tab.3.bottom" timestamp="1599212508551">
+    <state width="1877" height="375" key="GridCell.Tab.2.right/0.0.1536.824@0.0.1536.824" timestamp="1599606259482" />
+    <state width="1877" height="375" key="GridCell.Tab.2.right/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1603193058287" />
+    <state width="1877" height="375" key="GridCell.Tab.2.right/0.0.1920.1040@0.0.1920.1040" timestamp="1599566592835" />
+    <state width="1877" height="375" key="GridCell.Tab.3.bottom" timestamp="1603193058288">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="375" key="GridCell.Tab.3.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1599212508551" />
-    <state width="1877" height="375" key="GridCell.Tab.3.center" timestamp="1599212508551">
+    <state width="1877" height="375" key="GridCell.Tab.3.bottom/0.0.1536.824@0.0.1536.824" timestamp="1599606259483" />
+    <state width="1877" height="375" key="GridCell.Tab.3.bottom/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1603193058288" />
+    <state width="1877" height="375" key="GridCell.Tab.3.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1599566592835" />
+    <state width="1877" height="375" key="GridCell.Tab.3.center" timestamp="1603193058287">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="375" key="GridCell.Tab.3.center/0.0.1920.1040@0.0.1920.1040" timestamp="1599212508551" />
-    <state width="1877" height="375" key="GridCell.Tab.3.left" timestamp="1599212508551">
+    <state width="1877" height="375" key="GridCell.Tab.3.center/0.0.1536.824@0.0.1536.824" timestamp="1599606259482" />
+    <state width="1877" height="375" key="GridCell.Tab.3.center/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1603193058287" />
+    <state width="1877" height="375" key="GridCell.Tab.3.center/0.0.1920.1040@0.0.1920.1040" timestamp="1599566592835" />
+    <state width="1877" height="375" key="GridCell.Tab.3.left" timestamp="1603193058287">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="375" key="GridCell.Tab.3.left/0.0.1920.1040@0.0.1920.1040" timestamp="1599212508551" />
-    <state width="1877" height="375" key="GridCell.Tab.3.right" timestamp="1599212508551">
+    <state width="1877" height="375" key="GridCell.Tab.3.left/0.0.1536.824@0.0.1536.824" timestamp="1599606259482" />
+    <state width="1877" height="375" key="GridCell.Tab.3.left/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1603193058287" />
+    <state width="1877" height="375" key="GridCell.Tab.3.left/0.0.1920.1040@0.0.1920.1040" timestamp="1599566592835" />
+    <state width="1877" height="375" key="GridCell.Tab.3.right" timestamp="1603193058288">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="375" key="GridCell.Tab.3.right/0.0.1920.1040@0.0.1920.1040" timestamp="1599212508551" />
+    <state width="1877" height="375" key="GridCell.Tab.3.right/0.0.1536.824@0.0.1536.824" timestamp="1599606259482" />
+    <state width="1877" height="375" key="GridCell.Tab.3.right/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1603193058288" />
+    <state width="1877" height="375" key="GridCell.Tab.3.right/0.0.1920.1040@0.0.1920.1040" timestamp="1599566592835" />
     <state x="727" y="244" key="RiderGenerateDialog" timestamp="1599231215764">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -230,9 +279,32 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="461" y="165" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1599052190060" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1599142190991">
+    <state width="968" height="528" key="XDebugger.FullValuePopup" timestamp="1602775612856">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1599142190991" />
+    <state width="968" height="528" key="XDebugger.FullValuePopup/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1602775612856" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1600074352349">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1600074352349" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/Scripts/TileMap/TileMap.cs</url>
+          <line>612</line>
+          <properties documentPath="$PROJECT_DIR$/Assets/Scripts/TileMap/TileMap.cs" initialLine="612">
+            <startOffsets>
+              <option value="20366" />
+            </startOffsets>
+            <endOffsets>
+              <option value="20415" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
